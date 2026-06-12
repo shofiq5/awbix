@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bench *)",
+      "Bash(ruff *)",
+      "Bash(pre-commit *)",
+      "Bash(git *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)",
+      "Bash(mariadb *)",
+      "Bash(mariadb-admin *)",
+      "Bash(mysql *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(jq *)"
+    ]
+  }
+}
