@@ -1,0 +1,195 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rate_line_number",
+  "goods_data_identifier",
+  "description",
+  "hs_code",
+  "country_of_origin",
+  "slac",
+  "sb_8",
+  "volume_code",
+  "volume_amount",
+  "uld_type",
+  "uld_serial",
+  "uld_owner",
+  "sb_9",
+  "measurement_unit",
+  "dim_weight_code",
+  "dim_weight",
+  "cb_10",
+  "dim_length",
+  "dim_width",
+  "dim_height",
+  "dim_pieces",
+  "sb_11",
+  "service_code"
+ ],
+ "fields": [
+  {
+   "description": "Links to Shipment Rate Line.line_number",
+   "fieldname": "rate_line_number",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Line"
+  },
+  {
+   "description": "DE710",
+   "fieldname": "goods_data_identifier",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Type",
+   "options": "G\nC\nD\nV\nU\nS\nH\nO"
+  },
+  {
+   "description": "DE709 (G/C nature & quantity of goods)",
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description",
+   "length": 20
+  },
+  {
+   "description": "DE900 (H)",
+   "fieldname": "hs_code",
+   "fieldtype": "Data",
+   "label": "HS Code",
+   "length": 18
+  },
+  {
+   "description": "DE304 (O)",
+   "fieldname": "country_of_origin",
+   "fieldtype": "Link",
+   "label": "Country of Origin",
+   "options": "Country"
+  },
+  {
+   "description": "DE714 (S)",
+   "fieldname": "slac",
+   "fieldtype": "Int",
+   "label": "SLAC"
+  },
+  {
+   "fieldname": "sb_8",
+   "fieldtype": "Section Break",
+   "label": "Volume / ULD"
+  },
+  {
+   "description": "DE604 (V)",
+   "fieldname": "volume_code",
+   "fieldtype": "Link",
+   "label": "Volume Code",
+   "options": "Volume Code"
+  },
+  {
+   "description": "DE500 (V)",
+   "fieldname": "volume_amount",
+   "fieldtype": "Float",
+   "label": "Volume Amount"
+  },
+  {
+   "description": "DE802 (U)",
+   "fieldname": "uld_type",
+   "fieldtype": "Link",
+   "label": "ULD Type",
+   "options": "ULD Type"
+  },
+  {
+   "description": "DE115 (U)",
+   "fieldname": "uld_serial",
+   "fieldtype": "Data",
+   "label": "ULD Serial",
+   "length": 5
+  },
+  {
+   "description": "DE801 (U)",
+   "fieldname": "uld_owner",
+   "fieldtype": "Data",
+   "label": "ULD Owner",
+   "length": 2
+  },
+  {
+   "fieldname": "sb_9",
+   "fieldtype": "Section Break",
+   "label": "Dimensions"
+  },
+  {
+   "description": "DE611 (D)",
+   "fieldname": "measurement_unit",
+   "fieldtype": "Link",
+   "label": "Measurement Unit",
+   "options": "Measurement Unit Code"
+  },
+  {
+   "fieldname": "dim_weight_code",
+   "fieldtype": "Select",
+   "label": "Wt Code",
+   "options": "\nK\nL"
+  },
+  {
+   "description": "DE600 (D)",
+   "fieldname": "dim_weight",
+   "fieldtype": "Float",
+   "label": "Weight"
+  },
+  {
+   "fieldname": "cb_10",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE608",
+   "fieldname": "dim_length",
+   "fieldtype": "Float",
+   "label": "Length"
+  },
+  {
+   "description": "DE609",
+   "fieldname": "dim_width",
+   "fieldtype": "Float",
+   "label": "Width"
+  },
+  {
+   "description": "DE610",
+   "fieldname": "dim_height",
+   "fieldtype": "Float",
+   "label": "Height"
+  },
+  {
+   "description": "DE701",
+   "fieldname": "dim_pieces",
+   "fieldtype": "Int",
+   "label": "Pieces"
+  },
+  {
+   "fieldname": "sb_11",
+   "fieldtype": "Section Break",
+   "label": "Service Code"
+  },
+  {
+   "description": "DE505",
+   "fieldname": "service_code",
+   "fieldtype": "Link",
+   "label": "Service Code",
+   "options": "Service Code"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-12 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment Goods Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

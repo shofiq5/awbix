@@ -1,0 +1,305 @@
+{
+ "charts": [
+  {
+   "chart_name": "Shipment Trends",
+   "label": "Shipment Trends"
+  },
+  {
+   "chart_name": "Shipments by Airline",
+   "label": "Shipments by Airline"
+  },
+  {
+   "chart_name": "Shipments by Destination",
+   "label": "Shipments by Destination"
+  }
+ ],
+ "content": "[{\"id\":\"awbix_hdr_ov\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Overview</b></span>\",\"col\":12}},{\"id\":\"awbix_nc_total\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total AWBs\",\"col\":3}},{\"id\":\"awbix_nc_month\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"AWBs This Month\",\"col\":3}},{\"id\":\"awbix_nc_draft\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Draft AWBs\",\"col\":3}},{\"id\":\"awbix_nc_sub\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Submitted AWBs\",\"col\":3}},{\"id\":\"awbix_sp_1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_ch_trend\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipment Trends\",\"col\":12}},{\"id\":\"awbix_ch_air\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipments by Airline\",\"col\":6}},{\"id\":\"awbix_ch_dest\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipments by Destination\",\"col\":6}},{\"id\":\"awbix_sp_2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_hdr_qa\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"id\":\"awbix_sc_ship\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shipment\",\"col\":3}},{\"id\":\"awbix_sc_party\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Party\",\"col\":3}},{\"id\":\"awbix_sc_airl\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Airline\",\"col\":3}},{\"id\":\"awbix_sc_airp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Airport\",\"col\":3}},{\"id\":\"awbix_ql_recent\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Recent AWBs\",\"col\":4}},{\"id\":\"awbix_sp_3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_hdr_md\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters &amp; Reference Data</b></span>\",\"col\":12}},{\"id\":\"awbix_cd_ops\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"awbix_cd_geo\",\"type\":\"card\",\"data\":{\"card_name\":\"Geography and Carriers\",\"col\":4}},{\"id\":\"awbix_cd_party\",\"type\":\"card\",\"data\":{\"card_name\":\"Parties\",\"col\":4}},{\"id\":\"awbix_cd_codes\",\"type\":\"card\",\"data\":{\"card_name\":\"Codes and Identifiers\",\"col\":4}}]",
+ "creation": "2026-06-13 10:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "dashboard",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "AWBix Dashboard",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Operations",
+   "link_count": 1,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shipment",
+   "link_count": 0,
+   "link_to": "Shipment",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Geography and Carriers",
+   "link_count": 3,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Airport",
+   "link_count": 0,
+   "link_to": "Airport",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Airline",
+   "link_count": 0,
+   "link_to": "Airline",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "ULD Type",
+   "link_count": 0,
+   "link_to": "ULD Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Parties",
+   "link_count": 2,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Party",
+   "link_count": 0,
+   "link_to": "Party",
+   "link_type": "DocType",
+   "onboard": 1,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Participant Identifier",
+   "link_count": 0,
+   "link_to": "Participant Identifier",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Codes and Identifiers",
+   "link_count": 10,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Service Code",
+   "link_count": 0,
+   "link_to": "Service Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Charge Code",
+   "link_count": 0,
+   "link_to": "Charge Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Other Charge Code",
+   "link_count": 0,
+   "link_to": "Other Charge Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Rate Class Code",
+   "link_count": 0,
+   "link_to": "Rate Class Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Special Handling Code",
+   "link_count": 0,
+   "link_to": "Special Handling Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Measurement Unit Code",
+   "link_count": 0,
+   "link_to": "Measurement Unit Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Volume Code",
+   "link_count": 0,
+   "link_to": "Volume Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Accounting Information Identifier",
+   "link_count": 0,
+   "link_to": "Accounting Information Identifier",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customs Information Identifier",
+   "link_count": 0,
+   "link_to": "Customs Information Identifier",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "dependencies": "",
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "OCI Information Identifier",
+   "link_count": 0,
+   "link_to": "OCI Information Identifier",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-06-13 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Dashboard",
+ "name": "AWBix Dashboard",
+ "number_cards": [
+  {
+   "label": "Total AWBs",
+   "number_card_name": "Total AWBs"
+  },
+  {
+   "label": "AWBs This Month",
+   "number_card_name": "AWBs This Month"
+  },
+  {
+   "label": "Draft AWBs",
+   "number_card_name": "Draft AWBs"
+  },
+  {
+   "label": "Submitted AWBs",
+   "number_card_name": "Submitted AWBs"
+  }
+ ],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "Shipment",
+   "label": "Recent AWBs"
+  }
+ ],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "format": "{} Draft",
+   "label": "Shipment",
+   "link_to": "Shipment",
+   "stats_filter": "{\"docstatus\": 0}",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Party",
+   "link_to": "Party",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Airline",
+   "link_to": "Airline",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "label": "Airport",
+   "link_to": "Airport",
+   "type": "DocType"
+  }
+ ],
+ "title": "AWBix Dashboard",
+ "type": "Workspace"
+}

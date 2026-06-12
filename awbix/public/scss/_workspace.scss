@@ -1,0 +1,65 @@
+// Dashboard (workspace) polish: multi-color accented KPI cards, lifted chart and
+// shortcut widgets, and consistent link-card hover states.
+
+.widget {
+	&.number-widget-box,
+	&.dashboard-widget-box,
+	&.shortcut-widget-box,
+	&.quick-list-widget-box {
+		background-color: var(--card-bg);
+		border: 1px solid var(--border-color);
+		border-radius: var(--border-radius-md);
+		box-shadow: var(--shadow-sm);
+		transition:
+			box-shadow 0.15s ease,
+			transform 0.15s ease;
+
+		&:hover {
+			box-shadow: var(--shadow-md);
+		}
+	}
+
+	&.number-widget-box {
+		border-top: 3px solid var(--awbix-blue);
+
+		&:hover {
+			transform: translateY(-1px);
+		}
+
+		.widget-head .widget-label .widget-title {
+			color: var(--text-muted);
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			font-size: var(--text-sm);
+		}
+	}
+
+	&.shortcut-widget-box:hover {
+		border-color: var(--awbix-blue);
+	}
+}
+
+// Cycle KPI accent colors: green / blue / deep blue.
+.ce-block:nth-child(3n + 2) .widget.number-widget-box {
+	border-top-color: var(--awbix-green);
+}
+
+.ce-block:nth-child(3n + 1) .widget.number-widget-box {
+	border-top-color: var(--awbix-deep-blue-light);
+}
+
+// Link cards ("Masters & Reference Data" section).
+.widget.links-widget-box {
+	.widget-head .widget-title {
+		color: var(--awbix-deep-blue);
+	}
+
+	.link-item:hover {
+		background-color: var(--awbix-blue-tint);
+		border-radius: var(--border-radius-sm);
+	}
+}
+
+[data-theme="dark"] .widget.links-widget-box .widget-head .widget-title {
+	color: var(--text-color);
+}

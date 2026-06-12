@@ -1,0 +1,70 @@
+// Deep-blue navbar with light text/icons, and a tinted sidebar with green accent.
+
+header .navbar {
+	--icon-stroke: rgba(255, 255, 255, 0.92);
+
+	background: linear-gradient(90deg, var(--awbix-deep-blue), var(--awbix-deep-blue-light));
+	border-bottom: none;
+
+	.navbar-brand,
+	.nav-link,
+	#navbar-breadcrumbs a,
+	#navbar-breadcrumbs li.disabled a {
+		color: rgba(255, 255, 255, 0.92);
+	}
+
+	#navbar-breadcrumbs a:hover,
+	.nav-link:hover {
+		color: #ffffff;
+	}
+
+	.form-control {
+		background-color: rgba(255, 255, 255, 0.14);
+		color: #ffffff;
+		border: none;
+
+		&::placeholder {
+			color: rgba(255, 255, 255, 0.65);
+		}
+
+		&:focus {
+			background-color: rgba(255, 255, 255, 0.22);
+		}
+	}
+
+	.search-bar .search-icon {
+		--icon-stroke: rgba(255, 255, 255, 0.75);
+	}
+
+	.indicator-pill {
+		filter: brightness(1.05);
+	}
+}
+
+.desk-sidebar .desk-sidebar-item {
+	border-radius: var(--border-radius-md);
+
+	&.selected {
+		background-color: var(--sidebar-select-color);
+		box-shadow: inset 3px 0 0 var(--awbix-green);
+
+		.sidebar-item-label {
+			color: var(--awbix-deep-blue);
+			font-weight: 600;
+		}
+	}
+
+	&:hover:not(.selected) {
+		background-color: var(--fg-hover-color);
+	}
+}
+
+// Standard page heads pick up a subtle deep-blue title for consistency.
+.page-head .title-text {
+	color: var(--awbix-deep-blue);
+}
+
+[data-theme="dark"] .page-head .title-text,
+[data-theme="dark"] .desk-sidebar .desk-sidebar-item.selected .sidebar-item-label {
+	color: var(--text-color);
+}

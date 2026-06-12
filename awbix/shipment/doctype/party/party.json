@@ -1,0 +1,225 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-06-12 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "party_name",
+  "account_number",
+  "sb_1",
+  "street_address",
+  "place",
+  "state_province",
+  "cb_2",
+  "country",
+  "post_code",
+  "sb_3",
+  "is_shipper",
+  "is_consignee",
+  "cb_4",
+  "is_notify",
+  "is_agent",
+  "sb_5",
+  "contacts",
+  "sb_6",
+  "agent_section_note",
+  "iata_cargo_agent_code",
+  "cass_address",
+  "cb_7",
+  "participant_id",
+  "participant_code"
+ ],
+ "fields": [
+  {
+   "default": "PARTY-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "PARTY-.#####"
+  },
+  {
+   "description": "DE300",
+   "fieldname": "party_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "length": 35,
+   "reqd": 1
+  },
+  {
+   "description": "DE108",
+   "fieldname": "account_number",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "length": 14
+  },
+  {
+   "fieldname": "sb_1",
+   "fieldtype": "Section Break",
+   "label": "Address"
+  },
+  {
+   "description": "DE301",
+   "fieldname": "street_address",
+   "fieldtype": "Small Text",
+   "label": "Street Address",
+   "length": 35
+  },
+  {
+   "description": "DE302",
+   "fieldname": "place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "length": 17
+  },
+  {
+   "description": "DE303",
+   "fieldname": "state_province",
+   "fieldtype": "Data",
+   "label": "State / Province",
+   "length": 9
+  },
+  {
+   "fieldname": "cb_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE304",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "description": "DE305",
+   "fieldname": "post_code",
+   "fieldtype": "Data",
+   "label": "Post Code",
+   "length": 9
+  },
+  {
+   "fieldname": "sb_3",
+   "fieldtype": "Section Break",
+   "label": "Roles"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_shipper",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Shipper"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_consignee",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Consignee"
+  },
+  {
+   "fieldname": "cb_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_notify",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Notify Party"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_agent",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Agent"
+  },
+  {
+   "fieldname": "sb_5",
+   "fieldtype": "Section Break",
+   "label": "Contacts"
+  },
+  {
+   "fieldname": "contacts",
+   "fieldtype": "Table",
+   "label": "Contacts",
+   "options": "Party Contact"
+  },
+  {
+   "fieldname": "sb_6",
+   "fieldtype": "Section Break",
+   "label": "Agent Details"
+  },
+  {
+   "fieldname": "agent_section_note",
+   "fieldtype": "HTML",
+   "options": "<p>IATA cargo agent identification (used when this party is an Agent).</p>"
+  },
+  {
+   "depends_on": "eval:doc.is_agent",
+   "description": "DE311",
+   "fieldname": "iata_cargo_agent_code",
+   "fieldtype": "Data",
+   "label": "IATA Cargo Agent Code",
+   "length": 7
+  },
+  {
+   "depends_on": "eval:doc.is_agent",
+   "description": "DE309",
+   "fieldname": "cass_address",
+   "fieldtype": "Data",
+   "label": "CASS Address",
+   "length": 4
+  },
+  {
+   "fieldname": "cb_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.is_agent",
+   "description": "DE319",
+   "fieldname": "participant_id",
+   "fieldtype": "Data",
+   "label": "Participant Identifier",
+   "length": 3
+  },
+  {
+   "depends_on": "eval:doc.is_agent",
+   "description": "DE320",
+   "fieldname": "participant_code",
+   "fieldtype": "Data",
+   "label": "Participant Code",
+   "length": 17
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-12 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Party",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "party_name",
+ "track_changes": 1
+}

@@ -1,0 +1,43 @@
+// Common standard for every list page: tinted header band, hover rows,
+// and consistent indicator pills across all AWBix doctypes.
+
+.frappe-list {
+	.list-row-head {
+		background-color: var(--awbix-blue-tint);
+		border-bottom: 1px solid var(--border-color);
+
+		.list-row-col,
+		.list-check-all + .level-item,
+		span {
+			color: var(--awbix-deep-blue);
+			font-weight: 600;
+		}
+	}
+
+	.list-row:hover {
+		background-color: var(--fg-hover-color);
+	}
+
+	.list-row .level-left .bold a,
+	.list-subject a {
+		color: var(--awbix-deep-blue);
+
+		&:hover {
+			color: var(--awbix-blue);
+		}
+	}
+}
+
+.list-paging-area .btn-group .btn-default.btn-info {
+	background-color: var(--awbix-blue-tint);
+	color: var(--awbix-deep-blue);
+}
+
+[data-theme="dark"] .frappe-list {
+	.list-row-head .list-row-col,
+	.list-row-head span,
+	.list-row .level-left .bold a,
+	.list-subject a {
+		color: var(--text-color);
+	}
+}

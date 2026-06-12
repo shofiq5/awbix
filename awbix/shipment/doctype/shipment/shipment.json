@@ -1,0 +1,828 @@
+{
+ "actions": [],
+ "autoname": "format:{airline_prefix}-{awb_serial_number}",
+ "creation": "2026-06-12 12:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "sb_12",
+  "airline_prefix",
+  "awb_serial_number",
+  "awb_number",
+  "cb_13",
+  "origin",
+  "destination",
+  "cb_14",
+  "shipment_description_code",
+  "number_of_pieces",
+  "weight_code",
+  "weight",
+  "volume_code",
+  "volume_amount",
+  "density_indicator",
+  "density_group",
+  "sb_15",
+  "currency",
+  "charge_code",
+  "wt_val_prepaid_collect",
+  "other_charges_prepaid_collect",
+  "cb_16",
+  "declared_value_carriage_type",
+  "declared_value_carriage_amount",
+  "declared_value_customs_type",
+  "declared_value_customs_amount",
+  "insurance_type",
+  "insurance_amount",
+  "sb_17",
+  "shipper",
+  "shipper_name",
+  "shipper_account",
+  "cb_18",
+  "shipper_address",
+  "shipper_place",
+  "shipper_state",
+  "shipper_country",
+  "shipper_post_code",
+  "sb_19",
+  "consignee",
+  "consignee_name",
+  "consignee_account",
+  "cb_20",
+  "consignee_address",
+  "consignee_place",
+  "consignee_state",
+  "consignee_country",
+  "consignee_post_code",
+  "sb_21",
+  "agent",
+  "agent_name",
+  "agent_account",
+  "agent_place",
+  "cb_22",
+  "agent_iata_code",
+  "agent_cass_address",
+  "agent_participant_id",
+  "sb_23",
+  "also_notify",
+  "sb_24",
+  "flight_bookings",
+  "routing",
+  "sb_25",
+  "rate_lines",
+  "goods_details",
+  "sb_26",
+  "other_charges",
+  "sb_27",
+  "charge_summary",
+  "sb_28",
+  "cdc_section_note",
+  "cc_dest_currency",
+  "rate_of_exchange",
+  "cb_29",
+  "cc_charges_dest",
+  "charges_at_dest",
+  "total_collect_charges",
+  "sb_30",
+  "special_service_requests",
+  "other_service_info",
+  "special_handling",
+  "accounting_information",
+  "sb_31",
+  "shippers_certification_signature",
+  "cb_32",
+  "issue_date",
+  "issue_place",
+  "carrier_execution_signature",
+  "sb_33",
+  "sender_file_reference",
+  "sender_office_address",
+  "sender_participant_id",
+  "sender_participant_code",
+  "cb_34",
+  "customs_origin_code",
+  "nominated_handling_name",
+  "nominated_handling_place",
+  "sb_35",
+  "references",
+  "oci_customs",
+  "other_participants",
+  "sb_36",
+  "no_commission_indicator",
+  "commission_amount",
+  "commission_percentage",
+  "cb_37",
+  "sales_incentive_amount",
+  "sales_incentive_indicator",
+  "agent_reference",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "sb_12",
+   "fieldtype": "Section Break",
+   "label": "AWB Consignment Detail"
+  },
+  {
+   "fieldname": "airline_prefix",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Airline Prefix",
+   "options": "Airline",
+   "reqd": 1
+  },
+  {
+   "fieldname": "awb_serial_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AWB Serial Number",
+   "length": 8,
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AWB Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_13",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "origin",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Origin",
+   "options": "Airport",
+   "reqd": 1
+  },
+  {
+   "fieldname": "destination",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Destination",
+   "options": "Airport",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_14",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "T",
+   "fieldname": "shipment_description_code",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Shipment Description",
+   "options": "T\nP"
+  },
+  {
+   "fieldname": "number_of_pieces",
+   "fieldtype": "Int",
+   "label": "Number of Pieces"
+  },
+  {
+   "default": "K",
+   "fieldname": "weight_code",
+   "fieldtype": "Select",
+   "label": "Weight Code",
+   "options": "K\nL"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight"
+  },
+  {
+   "fieldname": "volume_code",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Volume Code",
+   "options": "Volume Code"
+  },
+  {
+   "fieldname": "volume_amount",
+   "fieldtype": "Float",
+   "label": "Volume Amount"
+  },
+  {
+   "fieldname": "density_indicator",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Density Indicator",
+   "length": 2
+  },
+  {
+   "fieldname": "density_group",
+   "fieldtype": "Int",
+   "hidden": 1,
+   "label": "Density Group"
+  },
+  {
+   "fieldname": "sb_15",
+   "fieldtype": "Section Break",
+   "label": "Charge Declarations (CVD)"
+  },
+  {
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "charge_code",
+   "fieldtype": "Link",
+   "label": "Charge Code",
+   "options": "Charge Code"
+  },
+  {
+   "default": "P",
+   "fieldname": "wt_val_prepaid_collect",
+   "fieldtype": "Select",
+   "label": "Weight/Valuation P/C",
+   "options": "P\nC"
+  },
+  {
+   "default": "P",
+   "fieldname": "other_charges_prepaid_collect",
+   "fieldtype": "Select",
+   "label": "Other Charges P/C",
+   "options": "P\nC"
+  },
+  {
+   "fieldname": "cb_16",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "NVD",
+   "fieldname": "declared_value_carriage_type",
+   "fieldtype": "Select",
+   "label": "Declared Value Carriage",
+   "options": "NVD\nValue"
+  },
+  {
+   "fieldname": "declared_value_carriage_amount",
+   "fieldtype": "Float",
+   "label": "Carriage Amount"
+  },
+  {
+   "default": "NCV",
+   "fieldname": "declared_value_customs_type",
+   "fieldtype": "Select",
+   "label": "Declared Value Customs",
+   "options": "NCV\nValue"
+  },
+  {
+   "fieldname": "declared_value_customs_amount",
+   "fieldtype": "Float",
+   "label": "Customs Amount"
+  },
+  {
+   "default": "XXX",
+   "fieldname": "insurance_type",
+   "fieldtype": "Select",
+   "label": "Insurance",
+   "options": "XXX\nValue"
+  },
+  {
+   "fieldname": "insurance_amount",
+   "fieldtype": "Float",
+   "label": "Insurance Amount"
+  },
+  {
+   "fieldname": "sb_17",
+   "fieldtype": "Section Break",
+   "label": "Shipper"
+  },
+  {
+   "fieldname": "shipper",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shipper",
+   "options": "Party"
+  },
+  {
+   "fetch_from": "shipper.party_name",
+   "fieldname": "shipper_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "length": 35,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "shipper.account_number",
+   "fieldname": "shipper_account",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "length": 14,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_18",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "shipper.street_address",
+   "fieldname": "shipper_address",
+   "fieldtype": "Small Text",
+   "label": "Street Address",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "shipper.place",
+   "fieldname": "shipper_place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "length": 17,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "shipper.state_province",
+   "fieldname": "shipper_state",
+   "fieldtype": "Data",
+   "label": "State / Province",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "shipper.country",
+   "fieldname": "shipper_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "shipper.post_code",
+   "fieldname": "shipper_post_code",
+   "fieldtype": "Data",
+   "label": "Post Code",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_19",
+   "fieldtype": "Section Break",
+   "label": "Consignee"
+  },
+  {
+   "fieldname": "consignee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Consignee",
+   "options": "Party"
+  },
+  {
+   "fetch_from": "consignee.party_name",
+   "fieldname": "consignee_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "length": 35,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "consignee.account_number",
+   "fieldname": "consignee_account",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "length": 14,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_20",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "consignee.street_address",
+   "fieldname": "consignee_address",
+   "fieldtype": "Small Text",
+   "label": "Street Address",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "consignee.place",
+   "fieldname": "consignee_place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "length": 17,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "consignee.state_province",
+   "fieldname": "consignee_state",
+   "fieldtype": "Data",
+   "label": "State / Province",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "consignee.country",
+   "fieldname": "consignee_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "consignee.post_code",
+   "fieldname": "consignee_post_code",
+   "fieldtype": "Data",
+   "label": "Post Code",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_21",
+   "fieldtype": "Section Break",
+   "label": "Agent"
+  },
+  {
+   "fieldname": "agent",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Agent",
+   "options": "Party"
+  },
+  {
+   "fetch_from": "agent.party_name",
+   "fieldname": "agent_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "length": 35,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "agent.account_number",
+   "fieldname": "agent_account",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "length": 14,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "agent.place",
+   "fieldname": "agent_place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "length": 17,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_22",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "agent.iata_cargo_agent_code",
+   "fieldname": "agent_iata_code",
+   "fieldtype": "Data",
+   "label": "IATA Cargo Agent Code",
+   "length": 7,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "agent.cass_address",
+   "fieldname": "agent_cass_address",
+   "fieldtype": "Data",
+   "label": "CASS Address",
+   "length": 4,
+   "read_only": 1
+  },
+  {
+   "fetch_from": "agent.participant_id",
+   "fieldname": "agent_participant_id",
+   "fieldtype": "Data",
+   "label": "Participant Identifier",
+   "length": 3,
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_23",
+   "fieldtype": "Section Break",
+   "label": "Also Notify"
+  },
+  {
+   "fieldname": "also_notify",
+   "fieldtype": "Table",
+   "label": "Also Notify",
+   "options": "Shipment Notify Party"
+  },
+  {
+   "fieldname": "sb_24",
+   "fieldtype": "Section Break",
+   "label": "Flights & Routing"
+  },
+  {
+   "fieldname": "flight_bookings",
+   "fieldtype": "Table",
+   "label": "Flight Bookings",
+   "options": "Shipment Flight Booking"
+  },
+  {
+   "fieldname": "routing",
+   "fieldtype": "Table",
+   "label": "Routing",
+   "options": "Shipment Routing"
+  },
+  {
+   "fieldname": "sb_25",
+   "fieldtype": "Section Break",
+   "label": "Rate Description (RTD)"
+  },
+  {
+   "fieldname": "rate_lines",
+   "fieldtype": "Table",
+   "label": "Rate Lines",
+   "options": "Shipment Rate Line"
+  },
+  {
+   "fieldname": "goods_details",
+   "fieldtype": "Table",
+   "label": "Goods Details",
+   "options": "Shipment Goods Detail"
+  },
+  {
+   "fieldname": "sb_26",
+   "fieldtype": "Section Break",
+   "label": "Other Charges (OTH)"
+  },
+  {
+   "fieldname": "other_charges",
+   "fieldtype": "Table",
+   "label": "Other Charges",
+   "options": "Shipment Other Charge"
+  },
+  {
+   "fieldname": "sb_27",
+   "fieldtype": "Section Break",
+   "label": "Charge Summary (PPD / COL)"
+  },
+  {
+   "fieldname": "charge_summary",
+   "fieldtype": "Table",
+   "label": "Charge Summary",
+   "options": "Shipment Charge Summary"
+  },
+  {
+   "fieldname": "sb_28",
+   "fieldtype": "Section Break",
+   "label": "CC Charges in Destination Currency (CDC)"
+  },
+  {
+   "fieldname": "cdc_section_note",
+   "fieldtype": "HTML",
+   "options": "<p>Optional - collect charges converted to destination currency.</p>"
+  },
+  {
+   "fieldname": "cc_dest_currency",
+   "fieldtype": "Link",
+   "label": "Destination Currency",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "rate_of_exchange",
+   "fieldtype": "Float",
+   "label": "Rate of Exchange"
+  },
+  {
+   "fieldname": "cb_29",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "cc_charges_dest",
+   "fieldtype": "Float",
+   "label": "CC Charges in Dest Currency"
+  },
+  {
+   "fieldname": "charges_at_dest",
+   "fieldtype": "Float",
+   "label": "Charges at Destination"
+  },
+  {
+   "fieldname": "total_collect_charges",
+   "fieldtype": "Float",
+   "label": "Total Collect Charges"
+  },
+  {
+   "fieldname": "sb_30",
+   "fieldtype": "Section Break",
+   "label": "Service & Handling"
+  },
+  {
+   "fieldname": "special_service_requests",
+   "fieldtype": "Table",
+   "label": "Special Service Requests (SSR)",
+   "options": "Shipment Special Service Request"
+  },
+  {
+   "fieldname": "other_service_info",
+   "fieldtype": "Table",
+   "label": "Other Service Information (OSI)",
+   "options": "Shipment Other Service Info"
+  },
+  {
+   "fieldname": "special_handling",
+   "fieldtype": "Table",
+   "label": "Special Handling (SPH)",
+   "options": "Shipment Special Handling"
+  },
+  {
+   "fieldname": "accounting_information",
+   "fieldtype": "Table",
+   "label": "Accounting Information (ACC)",
+   "options": "Shipment Accounting Info"
+  },
+  {
+   "fieldname": "sb_31",
+   "fieldtype": "Section Break",
+   "label": "Certification & Execution"
+  },
+  {
+   "fieldname": "shippers_certification_signature",
+   "fieldtype": "Data",
+   "label": "Shipper's Certification Signature",
+   "length": 20
+  },
+  {
+   "fieldname": "cb_32",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "issue_date",
+   "fieldtype": "Date",
+   "label": "Issue Date"
+  },
+  {
+   "fieldname": "issue_place",
+   "fieldtype": "Data",
+   "label": "Issue Place",
+   "length": 17
+  },
+  {
+   "fieldname": "carrier_execution_signature",
+   "fieldtype": "Data",
+   "label": "Carrier Execution Signature",
+   "length": 20
+  },
+  {
+   "fieldname": "sb_33",
+   "fieldtype": "Section Break",
+   "label": "References & Customs"
+  },
+  {
+   "fieldname": "sender_file_reference",
+   "fieldtype": "Data",
+   "label": "Sender File Reference",
+   "length": 15
+  },
+  {
+   "fieldname": "sender_office_address",
+   "fieldtype": "Data",
+   "label": "Sender Office Message Address",
+   "length": 8
+  },
+  {
+   "fieldname": "sender_participant_id",
+   "fieldtype": "Data",
+   "label": "Sender Participant Identifier",
+   "length": 3
+  },
+  {
+   "fieldname": "sender_participant_code",
+   "fieldtype": "Data",
+   "label": "Sender Participant Code",
+   "length": 17
+  },
+  {
+   "fieldname": "cb_34",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customs_origin_code",
+   "fieldtype": "Data",
+   "label": "Customs Origin Code",
+   "length": 2
+  },
+  {
+   "fieldname": "nominated_handling_name",
+   "fieldtype": "Data",
+   "label": "Nominated Handling Party",
+   "length": 35
+  },
+  {
+   "fieldname": "nominated_handling_place",
+   "fieldtype": "Data",
+   "label": "Nominated Handling Place",
+   "length": 17
+  },
+  {
+   "fieldname": "sb_35",
+   "fieldtype": "Section Break",
+   "label": "Customs / Participant Tables"
+  },
+  {
+   "fieldname": "references",
+   "fieldtype": "Table",
+   "label": "Shipment References (SRI)",
+   "options": "Shipment Reference"
+  },
+  {
+   "fieldname": "oci_customs",
+   "fieldtype": "Table",
+   "label": "Other Customs Information (OCI)",
+   "options": "Shipment Customs Info"
+  },
+  {
+   "fieldname": "other_participants",
+   "fieldtype": "Table",
+   "label": "Other Participant Information (OPI)",
+   "options": "Shipment Other Participant"
+  },
+  {
+   "fieldname": "sb_36",
+   "fieldtype": "Section Break",
+   "label": "Commission & Incentive (CASS)"
+  },
+  {
+   "fieldname": "no_commission_indicator",
+   "fieldtype": "Data",
+   "label": "No Commission Indicator",
+   "length": 2
+  },
+  {
+   "fieldname": "commission_amount",
+   "fieldtype": "Float",
+   "label": "Commission Amount"
+  },
+  {
+   "fieldname": "commission_percentage",
+   "fieldtype": "Float",
+   "label": "Commission Percentage"
+  },
+  {
+   "fieldname": "cb_37",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sales_incentive_amount",
+   "fieldtype": "Float",
+   "label": "Sales Incentive Amount"
+  },
+  {
+   "fieldname": "sales_incentive_indicator",
+   "fieldtype": "Data",
+   "label": "Sales Incentive Indicator",
+   "length": 2
+  },
+  {
+   "fieldname": "agent_reference",
+   "fieldtype": "Data",
+   "label": "Agent Reference",
+   "length": 15
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Shipment",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-13 01:17:48.278982",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "awb_number",
+ "track_changes": 1
+}

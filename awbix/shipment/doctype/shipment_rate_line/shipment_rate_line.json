@@ -1,0 +1,122 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "line_number",
+  "number_of_pieces",
+  "rate_combination_point",
+  "gross_weight_code",
+  "gross_weight",
+  "rate_class_code",
+  "commodity_item_number",
+  "uld_rate_class_type",
+  "rate_class_percentage",
+  "chargeable_weight",
+  "rate_charge",
+  "total"
+ ],
+ "fields": [
+  {
+   "description": "DE106",
+   "fieldname": "line_number",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Line"
+  },
+  {
+   "description": "DE701",
+   "fieldname": "number_of_pieces",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Pieces"
+  },
+  {
+   "description": "DE316",
+   "fieldname": "rate_combination_point",
+   "fieldtype": "Data",
+   "label": "RCP",
+   "length": 3
+  },
+  {
+   "default": "K",
+   "fieldname": "gross_weight_code",
+   "fieldtype": "Select",
+   "label": "Wt Code",
+   "options": "K\nL"
+  },
+  {
+   "description": "DE600",
+   "fieldname": "gross_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Gross Weight"
+  },
+  {
+   "description": "DE507",
+   "fieldname": "rate_class_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Rate Class",
+   "options": "Rate Class Code"
+  },
+  {
+   "description": "DE707",
+   "fieldname": "commodity_item_number",
+   "fieldtype": "Data",
+   "label": "Commodity Item No",
+   "length": 7
+  },
+  {
+   "description": "DE513",
+   "fieldname": "uld_rate_class_type",
+   "fieldtype": "Data",
+   "label": "ULD Rate Class Type",
+   "length": 4
+  },
+  {
+   "description": "DE511",
+   "fieldname": "rate_class_percentage",
+   "fieldtype": "Int",
+   "label": "Rate Class %"
+  },
+  {
+   "description": "DE600",
+   "fieldname": "chargeable_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Chargeable Weight"
+  },
+  {
+   "description": "DE506",
+   "fieldname": "rate_charge",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Rate / Charge"
+  },
+  {
+   "description": "DE501",
+   "fieldname": "total",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Total"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-12 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment Rate Line",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

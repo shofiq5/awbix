@@ -1,0 +1,68 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "participant_name",
+  "office_file_reference",
+  "participant_id",
+  "participant_code",
+  "airport"
+ ],
+ "fields": [
+  {
+   "description": "DE300",
+   "fieldname": "participant_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name",
+   "length": 35
+  },
+  {
+   "description": "DE117",
+   "fieldname": "office_file_reference",
+   "fieldtype": "Data",
+   "label": "Office / File Reference",
+   "length": 15
+  },
+  {
+   "description": "DE319",
+   "fieldname": "participant_id",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Participant Identifier",
+   "length": 3
+  },
+  {
+   "description": "DE320",
+   "fieldname": "participant_code",
+   "fieldtype": "Data",
+   "label": "Participant Code",
+   "length": 17
+  },
+  {
+   "description": "DE313",
+   "fieldname": "airport",
+   "fieldtype": "Link",
+   "label": "Airport",
+   "options": "Airport"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-12 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment Other Participant",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

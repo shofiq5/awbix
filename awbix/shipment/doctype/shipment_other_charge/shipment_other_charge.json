@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-12 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "prepaid_collect",
+  "other_charge_code",
+  "entitlement_code",
+  "amount"
+ ],
+ "fields": [
+  {
+   "description": "DE403",
+   "fieldname": "prepaid_collect",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "P/C",
+   "options": "P\nC"
+  },
+  {
+   "description": "DE504",
+   "fieldname": "other_charge_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Charge Code",
+   "options": "Other Charge Code",
+   "reqd": 1
+  },
+  {
+   "description": "DE315",
+   "fieldname": "entitlement_code",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Entitlement",
+   "options": "\nC\nA"
+  },
+  {
+   "description": "DE501",
+   "fieldname": "amount",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Amount"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-12 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment Other Charge",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

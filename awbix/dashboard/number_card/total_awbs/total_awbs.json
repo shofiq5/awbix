@@ -1,0 +1,21 @@
+{
+ "creation": "2026-06-13 10:00:00.000000",
+ "docstatus": 0,
+ "doctype": "Number Card",
+ "document_type": "Shipment",
+ "dynamic_filters_json": "[]",
+ "filters_json": "[[\"Shipment\",\"docstatus\",\"<\",\"2\",false]]",
+ "function": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "label": "Total AWBs",
+ "modified": "2026-06-13 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Dashboard",
+ "name": "Total AWBs",
+ "owner": "Administrator",
+ "show_percentage_stats": 1,
+ "stats_time_interval": "Monthly",
+ "type": "Document Type"
+}

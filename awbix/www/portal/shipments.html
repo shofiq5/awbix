@@ -1,0 +1,225 @@
+{% extends "templates/portal_base.html" %}
+
+{% block title %}Shipments{% endblock %}
+{% block meta_desc %}AWBix Portal — browse, search and manage all your Air Waybills{% endblock %}
+
+{% block content %}
+
+<div class="pt-page-header">
+  <div>
+    <h1 class="pt-page-header__title">Shipments</h1>
+    <p class="pt-page-header__subtitle">Search and manage all your Air Waybill records.</p>
+  </div>
+  <a href="/portal/shipments/new" class="pt-btn pt-btn--primary">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+    New AWB
+  </a>
+</div>
+
+<!-- Filter bar -->
+<div class="pt-card" style="margin-bottom:1.25rem">
+  <div class="pt-card__body" style="padding:1rem 1.5rem">
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:flex-end">
+
+      <div class="pt-form-group" style="margin:0;flex:1;min-width:200px">
+        <label for="search-input" style="font-size:.78rem;margin-bottom:.3rem">Search AWB Number</label>
+        <input id="search-input" class="pt-input" type="search"
+               placeholder="e.g. AA-12345678…"
+               style="padding:.5rem .9rem">
+      </div>
+
+      <div class="pt-form-group" style="margin:0;min-width:140px">
+        <label for="status-filter" style="font-size:.78rem;margin-bottom:.3rem">Status</label>
+        <select id="status-filter" class="pt-input" style="padding:.5rem .9rem">
+          <option value="">All statuses</option>
+          <option value="0">Draft</option>
+          <option value="1">Submitted</option>
+          <option value="2">Cancelled</option>
+        </select>
+      </div>
+
+      <button id="filter-btn" class="pt-btn pt-btn--secondary"
+              style="padding:.5rem 1.1rem;align-self:flex-end">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </svg>
+        Filter
+      </button>
+
+      <button id="reset-btn" class="pt-btn pt-btn--ghost"
+              style="padding:.5rem 1rem;align-self:flex-end">
+        Clear
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- Results count -->
+<div id="results-meta" style="font-size:.82rem;color:var(--pt-text-muted);margin-bottom:.75rem"></div>
+
+<!-- Table -->
+<div class="pt-card">
+  <div class="pt-table-wrap">
+    <table class="pt-table">
+      <thead>
+        <tr>
+          <th>AWB Number</th>
+          <th>Shipper</th>
+          <th>Route</th>
+          <th>Pieces</th>
+          <th>Weight (kg)</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="shipments-tbody">
+        <tr>
+          <td colspan="8" style="text-align:center;padding:3rem">
+            <div class="pt-spinner"></div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Pagination -->
+<div id="pt-pagination"
+     style="display:flex;justify-content:flex-end;align-items:center;gap:.5rem;margin-top:1rem">
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var page = 0;
+  var PAGE_SIZE = 20;
+  var currentTotal = 0;
+
+  function statusLabel(ds) { return ["Draft", "Submitted", "Cancelled"][ds] ?? "Unknown"; }
+  function statusClass(ds) { return ["draft", "active", "cancelled"][ds] ?? "draft"; }
+
+  async function load() {
+    var q  = document.getElementById("search-input").value.trim();
+    var st = document.getElementById("status-filter").value;
+    var tbody = document.getElementById("shipments-tbody");
+
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2.5rem">' +
+      '<div class="pt-spinner" style="margin:0 auto"></div></td></tr>';
+    document.getElementById("results-meta").textContent = "";
+
+    var params = new URLSearchParams({ page: page, page_size: PAGE_SIZE });
+    if (q)          params.set("search",   q);
+    if (st !== "")  params.set("docstatus", st);
+
+    try {
+      var r = await fetch("/api/method/awbix.portal.api.get_shipments?" + params, {
+        headers: { "X-Frappe-CSRF-Token": frappe.csrf_token }
+      });
+      var data = await r.json();
+      var d = data.message;
+
+      if (!d || !d.rows || !d.rows.length) {
+        tbody.innerHTML =
+          '<tr><td colspan="8" class="pt-empty" style="text-align:center;padding:3.5rem">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;opacity:.2;margin:0 auto .75rem;display:block">' +
+              '<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>' +
+              '<rect x="9" y="3" width="6" height="4" rx="1"/>' +
+            '</svg>' +
+            '<p>No shipments match your filters.</p>' +
+          '</td></tr>';
+        document.getElementById("results-meta").textContent = "0 records";
+        renderPagination(0);
+        return;
+      }
+
+      currentTotal = d.total || 0;
+      var start = page * PAGE_SIZE + 1;
+      var end   = Math.min(page * PAGE_SIZE + d.rows.length, currentTotal);
+      document.getElementById("results-meta").textContent =
+        "Showing " + start + "–" + end + " of " + currentTotal + " record" + (currentTotal !== 1 ? "s" : "");
+
+      tbody.innerHTML = d.rows.map(function (s) {
+        return '<tr>' +
+          '<td><a href="/portal/shipments/' + esc(s.name) + '" class="pt-awb">' + esc(s.awb_number || s.name) + '</a></td>' +
+          '<td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(s.shipper_name || "—") + '</td>' +
+          '<td>' + esc(s.origin || "—") + ' → ' + esc(s.destination || "—") + '</td>' +
+          '<td>' + (s.number_of_pieces ?? "—") + '</td>' +
+          '<td>' + (s.weight ?? "—") + '</td>' +
+          '<td><span class="pt-badge pt-badge--' + statusClass(s.docstatus) + '">' + statusLabel(s.docstatus) + '</span></td>' +
+          '<td style="color:var(--pt-text-muted)">' + esc((s.creation || "").substring(0, 10) || "—") + '</td>' +
+          '<td><a href="/portal/shipments/' + esc(s.name) + '" class="pt-btn pt-btn--ghost" ' +
+            'style="padding:.3rem .65rem;font-size:.78rem">View</a></td>' +
+        '</tr>';
+      }).join("");
+
+      renderPagination(currentTotal);
+
+    } catch (e) {
+      tbody.innerHTML =
+        '<tr><td colspan="8" class="pt-empty" style="text-align:center;padding:2rem">' +
+        '<p>Error loading shipments. Please try again.</p></td></tr>';
+    }
+  }
+
+  function renderPagination(total) {
+    var pages = Math.ceil(total / PAGE_SIZE);
+    var el = document.getElementById("pt-pagination");
+    if (pages <= 1) { el.innerHTML = ""; return; }
+
+    var btns = [];
+    if (page > 0) {
+      btns.push('<button class="pt-btn pt-btn--ghost" onclick="window._portalGoPage(' + (page - 1) + ')" ' +
+        'style="padding:.4rem .9rem">← Prev</button>');
+    }
+    btns.push('<span style="font-size:.85rem;color:var(--pt-text-muted)">Page ' + (page + 1) + ' of ' + pages + '</span>');
+    if (page < pages - 1) {
+      btns.push('<button class="pt-btn pt-btn--ghost" onclick="window._portalGoPage(' + (page + 1) + ')" ' +
+        'style="padding:.4rem .9rem">Next →</button>');
+    }
+    el.innerHTML = btns.join("");
+  }
+
+  window._portalGoPage = function (p) {
+    page = p;
+    load();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  function esc(s) {
+    return String(s || "")
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  // Controls
+  document.getElementById("filter-btn").addEventListener("click", function () {
+    page = 0; load();
+  });
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    document.getElementById("search-input").value = "";
+    document.getElementById("status-filter").value = "";
+    page = 0; load();
+  });
+  document.getElementById("search-input").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { page = 0; load(); }
+  });
+  document.getElementById("status-filter").addEventListener("change", function () {
+    page = 0; load();
+  });
+
+  // Apply URL param on load
+  var urlParams = new URLSearchParams(location.search);
+  var urlDocstatus = urlParams.get("docstatus");
+  if (urlDocstatus !== null) {
+    document.getElementById("status-filter").value = urlDocstatus;
+  }
+
+  load();
+})();
+</script>
+{% endblock %}

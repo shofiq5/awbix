@@ -25,12 +25,15 @@ app_license = "epl-2.0"
 # ------------------
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/awbix/css/awbix.css"
-# app_include_js = "/assets/awbix/js/awbix.js"
+app_include_css = "awbix.bundle.css"
+app_include_js = "awbix.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/awbix/css/awbix.css"
 # web_include_js = "/assets/awbix/js/awbix.js"
+
+# Portal pages — injected via portal_base.html using include_style / include_script
+# (not using web_include_* to avoid loading portal assets on non-portal pages)
 
 # include custom scss in every website theme (without file extension ".scss")
 # website_theme_scss = "awbix/public/scss/website"

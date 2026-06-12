@@ -1,0 +1,49 @@
+// AWBix brand palette — deep blue / blue / green multi-color theme.
+// Overrides Frappe desk CSS variables (see frappe/public/scss/common/css_variables.scss).
+
+$awbix-deep-blue: #16324f;
+$awbix-deep-blue-light: #1b4d7a;
+$awbix-blue: #1f6fd6;
+$awbix-blue-tint: #e8f1fc;
+$awbix-blue-soft: #f0f6fd;
+$awbix-green: #28a745;
+$awbix-green-tint: #e6f6ea;
+$awbix-bg: #f5f8fb;
+
+:root,
+[data-theme="light"] {
+	--awbix-deep-blue: #{$awbix-deep-blue};
+	--awbix-deep-blue-light: #{$awbix-deep-blue-light};
+	--awbix-blue: #{$awbix-blue};
+	--awbix-blue-tint: #{$awbix-blue-tint};
+	--awbix-green: #{$awbix-green};
+	--awbix-green-tint: #{$awbix-green-tint};
+
+	// Layout
+	--bg-color: #{$awbix-bg};
+	--navbar-bg: #{$awbix-deep-blue};
+	--fg-hover-color: #{$awbix-blue-soft};
+
+	// Primary actions
+	--primary-color: #{$awbix-blue};
+	--btn-primary: #{$awbix-blue};
+	--border-primary: #{$awbix-blue};
+	--checkbox-color: #{$awbix-blue};
+
+	// Sidebar
+	--sidebar-select-color: #{$awbix-blue-tint};
+}
+
+[data-theme="dark"] {
+	--awbix-deep-blue: #0f2236;
+	--awbix-deep-blue-light: #16324f;
+	--awbix-blue: #4d94e8;
+	--awbix-blue-tint: #1d3650;
+	--awbix-green: #48bb6a;
+	--awbix-green-tint: #1d3a28;
+
+	--navbar-bg: #0f2236;
+	--btn-primary: #1f6fd6;
+	--primary-color: #4d94e8;
+	--sidebar-select-color: #1d3650;
+}
