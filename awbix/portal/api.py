@@ -1,6 +1,26 @@
 import frappe
 from frappe import _
 
+_SHIPMENT_FIELDS = [
+	"name", "awb_number", "airline_prefix", "awb_serial_number",
+	"origin", "destination", "shipment_description_code",
+	"number_of_pieces", "weight_code", "weight", "volume_code", "volume_amount",
+	"currency", "charge_code",
+	"wt_val_prepaid_collect", "other_charges_prepaid_collect",
+	"declared_value_carriage_type", "declared_value_carriage_amount",
+	"declared_value_customs_type", "declared_value_customs_amount",
+	"insurance_type", "insurance_amount",
+	"shipper", "shipper_name", "shipper_account", "shipper_address",
+	"shipper_place", "shipper_state", "shipper_country", "shipper_post_code",
+	"consignee", "consignee_name", "consignee_account", "consignee_address",
+	"consignee_place", "consignee_state", "consignee_country", "consignee_post_code",
+	"agent", "agent_name", "agent_account", "agent_place",
+	"agent_iata_code", "agent_cass_address", "agent_participant_id",
+	"docstatus", "creation", "modified",
+]
+
+_EDITABLE_FIELDS = [f for f in _SHIPMENT_FIELDS if f not in ("name", "awb_number", "docstatus", "creation", "modified")]
+
 
 @frappe.whitelist(allow_guest=False)
 def get_dashboard_data():
@@ -118,3 +138,68 @@ def track_shipment(awb):
 		"weight": doc.get("weight"),
 		"events": events,
 	}
+
+
+@frappe.whitelist(allow_guest=False)
+def get_shipment(name):
+	doc = frappe.get_doc("Shipment", name)
+	if doc.owner != frappe.session.user and not frappe.has_permission("Shipment", "read", doc):
+		frappe.throw(_("Not permitted"), frappe.PermissionError)
+	return {f: doc.get(f) for f in _SHIPMENT_FIELDS}
+
+
+@frappe.whitelist(allow_guest=False)
+def save_shipment(data):
+	import json
+
+	if isinstance(data, str):
+		data = json.loads(data)
+
+	name = data.get("name")
+	is_new = not name or name == "new"
+
+	if is_new:
+		doc = frappe.new_doc("Shipment")
+	else:
+		doc = frappe.get_doc("Shipment", name)
+		if doc.owner != frappe.session.user and not frappe.has_permission("Shipment", "write", doc):
+			frappe.throw(_("Not permitted"), frappe.PermissionError)
+		if doc.docstatus == 1:
+			frappe.throw(_("Submitted AWBs cannot be edited. Amend first."))
+
+	for field in _EDITABLE_FIELDS:
+		val = data.get(field)
+		if val is not None and val != "":
+			doc.set(field, val)
+		elif field not in ("awb_number",) and val == "":
+			doc.set(field, None)
+
+	doc.save(ignore_permissions=False)
+	frappe.db.commit()
+
+	return {
+		"name": doc.name,
+		"awb_number": doc.awb_number,
+		"docstatus": doc.docstatus,
+		"is_new": is_new,
+	}
+
+
+@frappe.whitelist(allow_guest=False)
+def submit_shipment(name):
+	doc = frappe.get_doc("Shipment", name)
+	if doc.owner != frappe.session.user and not frappe.has_permission("Shipment", "submit", doc):
+		frappe.throw(_("Not permitted"), frappe.PermissionError)
+	doc.submit()
+	frappe.db.commit()
+	return {"name": doc.name, "awb_number": doc.awb_number, "docstatus": doc.docstatus}
+
+
+@frappe.whitelist(allow_guest=False)
+def cancel_shipment(name):
+	doc = frappe.get_doc("Shipment", name)
+	if doc.owner != frappe.session.user and not frappe.has_permission("Shipment", "cancel", doc):
+		frappe.throw(_("Not permitted"), frappe.PermissionError)
+	doc.cancel()
+	frappe.db.commit()
+	return {"name": doc.name, "docstatus": doc.docstatus}

@@ -1,0 +1,620 @@
+{% extends "templates/portal_base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block meta_desc %}Create or edit an AWBix Air Waybill{% endblock %}
+
+{% block breadcrumb %}
+<a href="/portal">AWBix</a>
+<span class="sep">›</span>
+<a href="/portal/shipments">Shipments</a>
+<span class="sep">›</span>
+<span class="current">{{ page_title }}</span>
+{% endblock %}
+{% block breadcrumb_current %}{% endblock %}
+
+{% block content %}
+
+<!-- Status banner (edit mode) / New badge (create mode) -->
+<div class="pt-page-header">
+  <div class="pt-page-header__left">
+    <h1 class="pt-page-header__title" id="pg-title">
+      {% if is_new %}
+        <span style="font-size:.75em;font-weight:500;color:var(--pt-text-muted)">Create</span>
+        New Air Waybill
+      {% else %}
+        <span id="hdr-awb" style="font-family:monospace;letter-spacing:.5px">{{ awb_display }}</span>
+      {% endif %}
+    </h1>
+    <p class="pt-page-header__subtitle" id="pg-subtitle">
+      {% if is_new %}Fill in the details below and save as draft.{% else %}Last saved: <span id="hdr-modified">—</span>{% endif %}
+    </p>
+  </div>
+
+  <div class="pt-page-header__actions" id="page-actions">
+    <a href="/portal/shipments" class="pt-btn pt-btn--ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+    {% if not is_new %}
+    <button class="pt-btn pt-btn--danger pt-btn--sm" id="btn-cancel-doc" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Cancel AWB
+    </button>
+    <button class="pt-btn pt-btn--success" id="btn-submit-doc" style="display:none">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      Submit AWB
+    </button>
+    {% endif %}
+    <button class="pt-btn pt-btn--primary" id="btn-save">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+      Save Draft
+    </button>
+  </div>
+</div>
+
+<!-- AWB summary bar (edit mode only) -->{% if not is_new %}
+<div class="pt-status-banner" id="status-banner">
+  <div class="pt-status-banner__left">
+    <span class="pt-badge" id="status-badge">Draft</span>
+    <span class="pt-status-banner__awb" id="status-awb">{{ awb_display }}</span>
+  </div>
+</div>
+{% endif %}
+
+<!-- Form card with tabs -->
+<div class="pt-card" style="margin-top:1.25rem" id="shipment-form-card">
+
+  <!-- Tab bar -->
+  <div class="pt-tabs" role="tablist" id="form-tabs">
+    <button class="pt-tab active" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      AWB Details
+    </button>
+    <button class="pt-tab" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      Parties
+    </button>
+    <button class="pt-tab" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Charges
+    </button>
+    <button class="pt-tab" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Special Services
+    </button>
+  </div>
+
+  <div class="pt-card__body">
+
+    <!-- ── TAB 1: AWB Details ─────────────────────────────────────────────── -->
+    <div class="pt-tab-panel active" id="panel-awb">
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">AWB Number</p>
+        <div class="pt-form-grid pt-form-grid--3">
+          <div class="pt-field pt-field--required">
+            <label for="f-airline-prefix">Airline Prefix</label>
+            <select class="pt-input" id="f-airline-prefix" name="airline_prefix">
+              <option value="">— select —</option>
+              {% for a in airlines %}
+              <option value="{{ a.name }}">{{ a.name }}{% if a.airline_name %} — {{ a.airline_name }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="pt-field pt-field--required">
+            <label for="f-awb-serial">AWB Serial Number</label>
+            <input class="pt-input" id="f-awb-serial" name="awb_serial_number"
+                   type="text" placeholder="12345678" maxlength="8" pattern="\d{8}">
+            <span class="pt-hint">8 digits; last digit is modulus-7 check digit</span>
+          </div>
+          <div class="pt-field pt-field--readonly">
+            <label for="f-awb-number">AWB Number <span style="font-weight:400;font-size:.72rem;color:var(--pt-text-muted)">(auto)</span></label>
+            <input class="pt-input" id="f-awb-number" name="awb_number" type="text" readonly placeholder="Generated on save">
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">Routing</p>
+        <div class="pt-form-grid pt-form-grid--2">
+          <div class="pt-field pt-field--required">
+            <label for="f-origin">Origin Airport</label>
+            <select class="pt-input" id="f-origin" name="origin">
+              <option value="">— select —</option>
+              {% for a in airports %}
+              <option value="{{ a.name }}">{{ a.name }}{% if a.airport_name %} — {{ a.airport_name }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="pt-field pt-field--required">
+            <label for="f-destination">Destination Airport</label>
+            <select class="pt-input" id="f-destination" name="destination">
+              <option value="">— select —</option>
+              {% for a in airports %}
+              <option value="{{ a.name }}">{{ a.name }}{% if a.airport_name %} — {{ a.airport_name }}{% endif %}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">Cargo</p>
+        <div class="pt-form-grid pt-form-grid--4">
+          <div class="pt-field pt-field--required">
+            <label for="f-pieces">Number of Pieces</label>
+            <input class="pt-input" id="f-pieces" name="number_of_pieces" type="number" min="1" placeholder="1">
+          </div>
+          <div class="pt-field">
+            <label for="f-weight-code">Weight Code</label>
+            <select class="pt-input" id="f-weight-code" name="weight_code">
+              <option value="">—</option>
+              <option value="K">K — Kilograms</option>
+              <option value="L">L — Pounds</option>
+            </select>
+          </div>
+          <div class="pt-field pt-field--required">
+            <label for="f-weight">Weight</label>
+            <input class="pt-input" id="f-weight" name="weight" type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="pt-field">
+            <label for="f-desc-code">Shipment Description</label>
+            <select class="pt-input" id="f-desc-code" name="shipment_description_code">
+              <option value="">—</option>
+              <option value="T">T — General Cargo</option>
+              <option value="P">P — Perishable</option>
+            </select>
+          </div>
+        </div>
+        <div class="pt-form-grid pt-form-grid--3" style="margin-top:1rem">
+          <div class="pt-field">
+            <label for="f-volume-code">Volume Code</label>
+            <input class="pt-input" id="f-volume-code" name="volume_code" type="text" placeholder="e.g. MC">
+          </div>
+          <div class="pt-field">
+            <label for="f-volume-amount">Volume Amount</label>
+            <input class="pt-input" id="f-volume-amount" name="volume_amount" type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-awb -->
+
+    <!-- ── TAB 2: Parties ────────────────────────────────────────────────── -->
+    <div class="pt-tab-panel" id="panel-parties">
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.75rem">
+
+        <!-- Shipper -->
+        <div>
+          <div class="pt-form-section">
+            <p class="pt-form-section__title">
+              <svg style="width:14px;height:14px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Shipper
+            </p>
+          </div>
+          <div class="pt-field" style="margin-bottom:.85rem">
+            <label for="f-shipper-name">Full Name</label>
+            <input class="pt-input" id="f-shipper-name" name="shipper_name" type="text" placeholder="Shipper name">
+          </div>
+          <div class="pt-field" style="margin-bottom:.85rem">
+            <label for="f-shipper-account">Account No.</label>
+            <input class="pt-input" id="f-shipper-account" name="shipper_account" type="text">
+          </div>
+          <div class="pt-field" style="margin-bottom:.85rem">
+            <label for="f-shipper-address">Street Address</label>
+            <textarea class="pt-input" id="f-shipper-address" name="shipper_address" rows="2"></textarea>
+          </div>
+          <div class="pt-form-grid pt-form-grid--2" style="margin-bottom:.85rem">
+            <div class="pt-field">
+              <label for="f-shipper-place">City / Place</label>
+              <input class="pt-input" id="f-shipper-place" name="shipper_place" type="text">
+            </div>
+            <div class="pt-field">
+              <label for="f-shipper-state">State / Province</label>
+              <input class="pt-input" id="f-shipper-state" name="shipper_state" type="text">
+            </div>
+          </div>
+          <div class="pt-form-grid pt-form-grid--2">
+            <div class="pt-field">
+              <label for="f-shipper-country">Country</label>
+              <select class="pt-input" id="f-shipper-country" name="shipper_country">
+                <option value="">— select —</option>
+                {% for c in countries %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="pt-field">
+              <label for="f-shipper-postcode">Post Code</label>
+              <input class="pt-input" id="f-shipper-postcode" name="shipper_post_code" type="text">
+            </div>
+          </div>
+        </div>
+
+        <!-- Consignee -->
+        <div>
+          <div class="pt-form-section">
+            <p class="pt-form-section__title">
+              <svg style="width:14px;height:14px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+              Consignee
+            </p>
+          </div>
+          <div class="pt-field" style="margin-bottom:.85rem">
+            <label for="f-consignee-name">Full Name</label>
+            <input class="pt-input" id="f-consignee-name" name="consignee_name" type="text" placeholder="Consignee name">
+          </div>
+          <div class="pt-field" style="margin-bottom:.85rem">
+            <label for="f-consignee-account">Account No.</label>
+            <input class="pt-input" id="f-consignee-account" name="consignee_account" type="text">
+          </div>
+          <div class="pt-field" style="margin-bottom:.85rem">
+            <label for="f-consignee-address">Street Address</label>
+            <textarea class="pt-input" id="f-consignee-address" name="consignee_address" rows="2"></textarea>
+          </div>
+          <div class="pt-form-grid pt-form-grid--2" style="margin-bottom:.85rem">
+            <div class="pt-field">
+              <label for="f-consignee-place">City / Place</label>
+              <input class="pt-input" id="f-consignee-place" name="consignee_place" type="text">
+            </div>
+            <div class="pt-field">
+              <label for="f-consignee-state">State / Province</label>
+              <input class="pt-input" id="f-consignee-state" name="consignee_state" type="text">
+            </div>
+          </div>
+          <div class="pt-form-grid pt-form-grid--2">
+            <div class="pt-field">
+              <label for="f-consignee-country">Country</label>
+              <select class="pt-input" id="f-consignee-country" name="consignee_country">
+                <option value="">— select —</option>
+                {% for c in countries %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
+              </select>
+            </div>
+            <div class="pt-field">
+              <label for="f-consignee-postcode">Post Code</label>
+              <input class="pt-input" id="f-consignee-postcode" name="consignee_post_code" type="text">
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /shipper+consignee grid -->
+
+      <!-- Agent -->
+      <div style="margin-top:1.5rem">
+        <div class="pt-form-section">
+          <p class="pt-form-section__title">
+            <svg style="width:14px;height:14px;flex-shrink:0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+            Handling Agent
+          </p>
+        </div>
+        <div class="pt-form-grid pt-form-grid--3">
+          <div class="pt-field">
+            <label for="f-agent-name">Agent Name</label>
+            <input class="pt-input" id="f-agent-name" name="agent_name" type="text">
+          </div>
+          <div class="pt-field">
+            <label for="f-agent-account">Account No.</label>
+            <input class="pt-input" id="f-agent-account" name="agent_account" type="text">
+          </div>
+          <div class="pt-field">
+            <label for="f-agent-place">Place</label>
+            <input class="pt-input" id="f-agent-place" name="agent_place" type="text">
+          </div>
+          <div class="pt-field">
+            <label for="f-agent-iata">IATA Cargo Code</label>
+            <input class="pt-input" id="f-agent-iata" name="agent_iata_code" type="text" placeholder="7 chars">
+          </div>
+          <div class="pt-field">
+            <label for="f-agent-cass">CASS Address</label>
+            <input class="pt-input" id="f-agent-cass" name="agent_cass_address" type="text">
+          </div>
+          <div class="pt-field">
+            <label for="f-agent-pid">Participant ID</label>
+            <input class="pt-input" id="f-agent-pid" name="agent_participant_id" type="text">
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-parties -->
+
+    <!-- ── TAB 3: Charges ────────────────────────────────────────────────── -->
+    <div class="pt-tab-panel" id="panel-charges">
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">Currency &amp; Charge Code</p>
+        <div class="pt-form-grid pt-form-grid--3">
+          <div class="pt-field">
+            <label for="f-currency">Currency</label>
+            <select class="pt-input" id="f-currency" name="currency">
+              <option value="">— select —</option>
+              {% for c in currencies %}<option value="{{ c.name }}">{{ c.name }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="pt-field">
+            <label for="f-charge-code">Charge Code</label>
+            <input class="pt-input" id="f-charge-code" name="charge_code" type="text" placeholder="e.g. PP">
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">Prepaid / Collect</p>
+        <div class="pt-form-grid pt-form-grid--2">
+          <div class="pt-field">
+            <label for="f-wt-val-pc">Weight &amp; Valuation Charges</label>
+            <select class="pt-input" id="f-wt-val-pc" name="wt_val_prepaid_collect">
+              <option value="">—</option>
+              <option value="P">P — Prepaid</option>
+              <option value="C">C — Collect</option>
+            </select>
+          </div>
+          <div class="pt-field">
+            <label for="f-other-pc">Other Charges</label>
+            <select class="pt-input" id="f-other-pc" name="other_charges_prepaid_collect">
+              <option value="">—</option>
+              <option value="P">P — Prepaid</option>
+              <option value="C">C — Collect</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">Declared Values</p>
+        <div class="pt-form-grid pt-form-grid--2">
+          <div class="pt-field">
+            <label for="f-dvc-type">Declared Value for Carriage</label>
+            <select class="pt-input" id="f-dvc-type" name="declared_value_carriage_type">
+              <option value="">—</option>
+              <option value="NVD">NVD — No Value Declared</option>
+              <option value="Value">Value — Declared amount</option>
+            </select>
+          </div>
+          <div class="pt-field">
+            <label for="f-dvc-amt">Carriage Amount</label>
+            <input class="pt-input" id="f-dvc-amt" name="declared_value_carriage_amount"
+                   type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+          <div class="pt-field">
+            <label for="f-dvu-type">Declared Value for Customs</label>
+            <select class="pt-input" id="f-dvu-type" name="declared_value_customs_type">
+              <option value="">—</option>
+              <option value="NCV">NCV — No Customs Value</option>
+              <option value="Value">Value — Declared amount</option>
+            </select>
+          </div>
+          <div class="pt-field">
+            <label for="f-dvu-amt">Customs Amount</label>
+            <input class="pt-input" id="f-dvu-amt" name="declared_value_customs_amount"
+                   type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-form-section">
+        <p class="pt-form-section__title">Insurance</p>
+        <div class="pt-form-grid pt-form-grid--2">
+          <div class="pt-field">
+            <label for="f-ins-type">Insurance Type</label>
+            <select class="pt-input" id="f-ins-type" name="insurance_type">
+              <option value="">—</option>
+              <option value="XXX">XXX — No Insurance</option>
+              <option value="Value">Value — Insured amount</option>
+            </select>
+          </div>
+          <div class="pt-field">
+            <label for="f-ins-amt">Insurance Amount</label>
+            <input class="pt-input" id="f-ins-amt" name="insurance_amount"
+                   type="number" step="0.01" min="0" placeholder="0.00">
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /panel-charges -->
+
+    <!-- ── TAB 4: Special Services ───────────────────────────────────────── -->
+    <div class="pt-tab-panel" id="panel-special">
+      <div class="pt-alert pt-alert--info" style="margin-bottom:1.25rem">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        Special Service Requests (SSR), Other Service Info (OSI), Special Handling Codes (SHC),
+        and Flight Routing child tables will be added in a future release.
+      </div>
+      <div class="pt-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <p>Special service details coming soon.</p>
+      </div>
+    </div>
+
+  </div><!-- /pt-card__body -->
+</div><!-- /pt-card -->
+
+<!-- Bottom action bar -->
+<div class="pt-btn-group" style="margin-top:1.25rem;justify-content:flex-end">
+  <a href="/portal/shipments" class="pt-btn pt-btn--ghost">Cancel</a>
+  <button class="pt-btn pt-btn--primary" id="btn-save-bottom">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+    Save Draft
+  </button>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  var IS_NEW     = {{ 'true' if is_new else 'false' }};
+  var DOC_NAME   = {{ ('"' + shipment_name + '"') if shipment_name else 'null' }};
+  var docStatus  = 0;
+
+  /* ── Collect all named inputs ─────────────────────────────────────────── */
+  function formData() {
+    var data = {};
+    document.querySelectorAll("[name]").forEach(function (el) {
+      var v = el.value.trim();
+      if (v !== "") data[el.name] = el.type === "number" ? parseFloat(v) || v : v;
+    });
+    if (!IS_NEW) data.name = DOC_NAME;
+    return data;
+  }
+
+  /* ── Populate form from API ───────────────────────────────────────────── */
+  function populate(d) {
+    Object.keys(d).forEach(function (k) {
+      var el = document.querySelector("[name='" + k + "']");
+      if (!el || d[k] == null) return;
+      el.value = d[k];
+    });
+    docStatus = d.docstatus || 0;
+    updateStatusUI(d);
+  }
+
+  function updateStatusUI(d) {
+    var labels = ["Draft", "Submitted", "Cancelled"];
+    var cls    = ["draft", "active", "cancelled"];
+    var badge  = document.getElementById("status-badge");
+    var awbEl  = document.getElementById("status-awb");
+    var mod    = document.getElementById("hdr-modified");
+    var hdrAwb = document.getElementById("hdr-awb");
+
+    if (badge) {
+      badge.textContent = labels[docStatus] || "Draft";
+      badge.className   = "pt-badge pt-badge--" + (cls[docStatus] || "draft");
+    }
+    if (awbEl && d.awb_number) awbEl.textContent = d.awb_number;
+    if (hdrAwb && d.awb_number) hdrAwb.textContent = d.awb_number;
+    if (mod && d.modified) mod.textContent = d.modified.substring(0, 16).replace("T", " ");
+
+    var awbInput = document.getElementById("f-awb-number");
+    if (awbInput && d.awb_number) awbInput.value = d.awb_number;
+
+    // Show/hide submit/cancel buttons
+    var btnSubmit = document.getElementById("btn-submit-doc");
+    var btnCancel = document.getElementById("btn-cancel-doc");
+    var btnSave   = document.getElementById("btn-save");
+    var btnSaveB  = document.getElementById("btn-save-bottom");
+
+    if (btnSubmit) btnSubmit.style.display = docStatus === 0 ? "" : "none";
+    if (btnCancel) btnCancel.style.display = docStatus === 1 ? "" : "none";
+    var savedisabled = docStatus !== 0;
+    if (btnSave)  { btnSave.disabled  = savedisabled; }
+    if (btnSaveB) { btnSaveB.disabled = savedisabled; }
+  }
+
+  /* ── Save ─────────────────────────────────────────────────────────────── */
+  async function save() {
+    var saveBtns = document.querySelectorAll("#btn-save, #btn-save-bottom");
+    saveBtns.forEach(function (b) { b.disabled = true; b.textContent = "Saving…"; });
+
+    try {
+      var res = await fetch("/api/method/awbix.portal.api.save_shipment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Frappe-CSRF-Token": frappe.csrf_token,
+        },
+        body: JSON.stringify({ data: formData() }),
+      });
+      var json = await res.json();
+      if (json.exc) throw new Error(json.exc_type || "Save failed");
+
+      var d = json.message;
+      ptToast("Saved successfully", "success");
+
+      if (IS_NEW && d.name) {
+        // Redirect to edit URL on first save
+        window.location.href = "/portal/shipment?name=" + encodeURIComponent(d.name);
+        return;
+      }
+      DOC_NAME = d.name;
+      IS_NEW   = false;
+      docStatus = d.docstatus || 0;
+      updateStatusUI(d);
+    } catch (e) {
+      ptToast(e.message || "Save failed. Please try again.", "error");
+    } finally {
+      saveBtns.forEach(function (b) {
+        b.disabled = docStatus !== 0;
+        b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Draft';
+      });
+    }
+  }
+
+  /* ── Submit AWB ───────────────────────────────────────────────────────── */
+  async function submitDoc() {
+    if (!DOC_NAME) return;
+    if (!confirm("Submit this AWB? It will become read-only.")) return;
+    try {
+      var res = await fetch("/api/method/awbix.portal.api.submit_shipment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Frappe-CSRF-Token": frappe.csrf_token },
+        body: JSON.stringify({ name: DOC_NAME }),
+      });
+      var json = await res.json();
+      if (json.exc) throw new Error(json.exc_type || "Submit failed");
+      docStatus = 1;
+      updateStatusUI(json.message);
+      ptToast("AWB submitted successfully", "success");
+    } catch (e) {
+      ptToast(e.message || "Submit failed.", "error");
+    }
+  }
+
+  /* ── Cancel AWB ───────────────────────────────────────────────────────── */
+  async function cancelDoc() {
+    if (!DOC_NAME) return;
+    if (!confirm("Cancel this AWB? This cannot be undone easily.")) return;
+    try {
+      var res = await fetch("/api/method/awbix.portal.api.cancel_shipment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Frappe-CSRF-Token": frappe.csrf_token },
+        body: JSON.stringify({ name: DOC_NAME }),
+      });
+      var json = await res.json();
+      if (json.exc) throw new Error(json.exc_type || "Cancel failed");
+      docStatus = 2;
+      updateStatusUI(json.message);
+      ptToast("AWB cancelled", "info");
+    } catch (e) {
+      ptToast(e.message || "Cancel failed.", "error");
+    }
+  }
+
+  /* ── Load existing doc ────────────────────────────────────────────────── */
+  async function loadDoc() {
+    if (IS_NEW || !DOC_NAME) return;
+    try {
+      var res = await fetch(
+        "/api/method/awbix.portal.api.get_shipment?name=" + encodeURIComponent(DOC_NAME),
+        { headers: { "X-Frappe-CSRF-Token": frappe.csrf_token } }
+      );
+      var json = await res.json();
+      if (json.message) populate(json.message);
+    } catch {
+      ptToast("Could not load shipment data.", "error");
+    }
+  }
+
+  /* ── Keyboard shortcut Ctrl+S / Cmd+S ───────────────────────────────── */
+  document.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+      e.preventDefault();
+      if (docStatus === 0) save();
+    }
+  });
+
+  /* ── Wire buttons ─────────────────────────────────────────────────────── */
+  document.getElementById("btn-save")?.addEventListener("click", save);
+  document.getElementById("btn-save-bottom")?.addEventListener("click", save);
+  document.getElementById("btn-submit-doc")?.addEventListener("click", submitDoc);
+  document.getElementById("btn-cancel-doc")?.addEventListener("click", cancelDoc);
+
+  /* ── Init ─────────────────────────────────────────────────────────────── */
+  document.addEventListener("DOMContentLoaded", function () {
+    ptInitTabs("#form-tabs");
+    loadDoc();
+  });
+})();
+</script>
+{% endblock %}

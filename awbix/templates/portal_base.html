@@ -1,263 +1,197 @@
 {%- set _user = frappe.session.user -%}
 {%- set _is_guest = _user == "Guest" -%}
+{%- set _user_short = _user.split("@")[0] if not _is_guest else "Guest" -%}
 <!DOCTYPE html>
 <html lang="{{ frappe.local.lang or 'en' }}" data-portal-theme="ocean">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ frappe.session.csrf_token }}">
-  <meta name="description" content="{% block meta_desc %}AWBix Cargo Portal — Air Waybill Management{% endblock %}">
+  <meta name="description" content="{% block meta_desc %}AWBix Cargo Portal{% endblock %}">
   <title>{% block title %}AWBix{% endblock %} — AWBix Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   {{ include_style('portal.bundle.css') }}
-  <script>
-    /* Apply saved theme before first paint to avoid flash */
-    (function () {
-      var t = localStorage.getItem('awbix_portal_theme') || 'ocean';
-      document.documentElement.setAttribute('data-portal-theme', t);
-    })();
+  <script>/* apply saved theme before paint */
+    (function(){var t=localStorage.getItem('awbix_portal_theme')||'ocean';document.documentElement.setAttribute('data-portal-theme',t);})();
   </script>
   {% block head %}{% endblock %}
 </head>
 <body>
 
-<!-- ── NAVBAR ────────────────────────────────────────────────────────────── -->
-<nav class="pt-navbar" role="navigation" aria-label="Main navigation">
-  <div class="pt-navbar__inner">
+<div class="pt-layout">
 
-    <a href="/portal" class="pt-navbar__brand" aria-label="AWBix Home">
-      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="white" fill-opacity=".12"/>
+  <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────────────── -->
+  <aside class="pt-sidebar" id="pt-sidebar" aria-label="Main navigation">
+
+    <!-- Brand -->
+    <a href="/portal" class="pt-sidebar__brand">
+      <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="white" fill-opacity=".1"/>
         <path d="M7 23L16 9L25 23" stroke="white" stroke-width="2" stroke-linejoin="round" fill="none"/>
         <path d="M10.5 20L16 11L21.5 20" stroke="#28a745" stroke-width="1.75" stroke-linejoin="round" fill="none"/>
-        <circle cx="16" cy="23" r="1.5" fill="white" fill-opacity=".4"/>
+        <circle cx="16" cy="23" r="1.5" fill="white" fill-opacity=".35"/>
       </svg>
       AWB<span class="accent">ix</span>
+      <span class="version">Portal</span>
     </a>
 
-    <!-- Desktop level-1 + level-2 nav -->
-    <ul class="pt-navbar__nav" role="list">
+    <!-- Nav -->
+    <nav class="pt-sidebar__nav" role="navigation">
 
-      <li class="pt-navbar__item">
-        <a href="/portal" class="pt-navbar__link">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-            <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
-          </svg>
-          Dashboard
-        </a>
-      </li>
+      <div class="pt-sidebar__group-label">Main</div>
 
-      <li class="pt-navbar__item">
-        <a href="/portal/shipments" class="pt-navbar__link" role="button" aria-haspopup="true">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
-          </svg>
-          Shipments
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </a>
-        <ul class="pt-navbar__dropdown" role="menu">
-          <li role="none">
-            <a href="/portal/shipments" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
-                <rect x="9" y="3" width="6" height="4" rx="1"/>
-              </svg>
-              All Shipments
-            </a>
-          </li>
-          <li role="none">
-            <a href="/portal/shipments/new" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-              </svg>
-              Create New AWB
-            </a>
-          </li>
-          <li class="pt-dropdown-divider" role="separator"></li>
-          <li role="none">
-            <a href="/portal/shipments?docstatus=0" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
-              </svg>
-              Draft AWBs
-            </a>
-          </li>
-        </ul>
-      </li>
+      <a href="/portal" class="pt-sidebar__link">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+        Dashboard
+      </a>
 
-      <li class="pt-navbar__item">
-        <a href="/portal/track" class="pt-navbar__link">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-          </svg>
-          Track AWB
-        </a>
-      </li>
+      <button class="pt-sidebar__link" data-has-sub="shipments-sub" aria-expanded="false">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+        </svg>
+        Shipments
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+      <div class="pt-sidebar__sub" id="shipments-sub">
+        <a href="/portal/shipments">All Shipments</a>
+        <a href="/portal/shipment?name=new">+ Create New AWB</a>
+        <a href="/portal/shipments?docstatus=0">Draft AWBs</a>
+      </div>
 
-      <li class="pt-navbar__item">
-        <a href="#" class="pt-navbar__link" role="button" aria-haspopup="true">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-          Reports
-          <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"/>
-          </svg>
-        </a>
-        <ul class="pt-navbar__dropdown" role="menu">
-          <li role="none">
-            <a href="/portal/reports/summary" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                <polyline points="14 2 14 8 20 8"/>
-                <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-              </svg>
-              Shipment Summary
-            </a>
-          </li>
-          <li role="none">
-            <a href="/portal/reports/revenue" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="12" y1="1" x2="12" y2="23"/>
-                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/>
-              </svg>
-              Revenue Report
-            </a>
-          </li>
-        </ul>
-      </li>
+      <a href="/portal/track" class="pt-sidebar__link">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+        Track AWB
+      </a>
 
-    </ul>
+      <div class="pt-sidebar__group-label" style="margin-top:.5rem">Reports</div>
 
-    <!-- Right: themes + user + hamburger -->
-    <div class="pt-navbar__right">
+      <button class="pt-sidebar__link" data-has-sub="reports-sub" aria-expanded="false">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+        </svg>
+        Reports
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </button>
+      <div class="pt-sidebar__sub" id="reports-sub">
+        <a href="/portal/reports/summary">Shipment Summary</a>
+        <a href="/portal/reports/revenue">Revenue Report</a>
+      </div>
 
-      <div class="pt-navbar__themes" role="group" aria-label="Choose colour theme">
-        <button class="theme-dot" data-theme="ocean" title="Ocean Blue"   aria-label="Ocean Blue theme"></button>
-        <button class="theme-dot" data-theme="teal"  title="Sky Teal"     aria-label="Sky Teal theme"></button>
-        <button class="theme-dot" data-theme="dark"  title="Carbon Dark"  aria-label="Carbon Dark theme"></button>
+    </nav>
+
+    <!-- Footer: themes + user -->
+    <div class="pt-sidebar__footer">
+
+      <div class="pt-sidebar__themes">
+        <span>Theme</span>
+        <button class="theme-dot" data-theme="ocean" title="Ocean Blue"   aria-label="Ocean Blue"></button>
+        <button class="theme-dot" data-theme="teal"  title="Sky Teal"     aria-label="Sky Teal"></button>
+        <button class="theme-dot" data-theme="dark"  title="Carbon Dark"  aria-label="Carbon Dark"></button>
       </div>
 
       {% if not _is_guest %}
-      <div class="pt-navbar__item">
-        <button class="pt-navbar__user" aria-haspopup="true" aria-label="User menu">
-          <span class="avatar" aria-hidden="true">{{ _user[0].upper() }}</span>
-          <span class="user-name">{{ _user.split("@")[0] }}</span>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="chevron" aria-hidden="true">
-            <polyline points="6 9 12 15 18 9"/>
+      <div class="pt-sidebar__user">
+        <span class="avatar" aria-hidden="true">{{ _user[0].upper() }}</span>
+        <div class="user-info">
+          <div class="name">{{ _user_short }}</div>
+          <div class="role">Portal User</div>
+        </div>
+        <a href="/logout" class="logout-link" title="Sign out" aria-label="Sign out">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+            <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
           </svg>
-        </button>
-        <ul class="pt-navbar__dropdown pt-navbar__dropdown--right" role="menu">
-          <li role="none">
-            <a href="/me" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>
-              </svg>
-              My Profile
-            </a>
-          </li>
-          <li class="pt-dropdown-divider" role="separator"></li>
-          <li role="none">
-            <a href="/logout" role="menuitem">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-                <polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
-              </svg>
-              Sign Out
-            </a>
-          </li>
-        </ul>
+        </a>
       </div>
       {% else %}
-      <a href="/login" class="pt-btn pt-btn--primary" style="padding:.4rem 1rem;font-size:.82rem">Sign In</a>
+      <a href="/login" class="pt-sidebar__user" style="text-decoration:none">
+        <span class="avatar" aria-hidden="true" style="background:var(--pt-sidebar-active-bar)">?</span>
+        <div class="user-info">
+          <div class="name">Guest</div>
+          <div class="role">Sign in to continue</div>
+        </div>
+      </a>
       {% endif %}
 
-      <button class="pt-navbar__hamburger" aria-label="Toggle navigation menu"
-              aria-expanded="false" aria-controls="pt-mobile-nav">
+    </div>
+  </aside>
+
+  <!-- Mobile overlay -->
+  <div class="pt-sidebar-overlay" id="pt-sidebar-overlay"></div>
+
+  <!-- ── CONTENT AREA ──────────────────────────────────────────────────────── -->
+  <div class="pt-content">
+
+    <!-- Top bar -->
+    <header class="pt-topbar">
+      <button class="pt-topbar__hamburger" id="pt-hamburger"
+              aria-label="Toggle navigation" aria-expanded="false" aria-controls="pt-sidebar">
         <span></span><span></span><span></span>
       </button>
 
-    </div>
-  </div>
-</nav>
+      <nav class="pt-topbar__breadcrumb" aria-label="Breadcrumb">
+        {% block breadcrumb %}
+        <a href="/portal">AWBix</a>
+        {% if self.title() != 'AWBix' %}
+        <span class="sep">›</span>
+        <span class="current">{% block breadcrumb_current %}{% block title %}{% endblock %}{% endblock %}</span>
+        {% endif %}
+        {% endblock %}
+      </nav>
 
-<!-- ── MOBILE DRAWER ─────────────────────────────────────────────────────── -->
-<div class="pt-mobile-nav" id="pt-mobile-nav" role="dialog" aria-modal="true" aria-label="Navigation">
-  <div class="pt-mobile-nav__overlay"></div>
-  <nav class="pt-mobile-nav__drawer">
+      <div class="pt-topbar__right">
+        <!-- Mini theme picker always visible -->
+        <div class="pt-topbar__themes" role="group" aria-label="Choose colour theme">
+          <button class="theme-dot" data-theme="ocean" title="Ocean Blue"   aria-label="Ocean Blue"></button>
+          <button class="theme-dot" data-theme="teal"  title="Sky Teal"     aria-label="Sky Teal"></button>
+          <button class="theme-dot" data-theme="dark"  title="Carbon Dark"  aria-label="Carbon Dark"></button>
+        </div>
 
-    <a href="/portal" class="pt-mobile-nav__brand">
-      <svg width="22" height="22" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-        <rect width="32" height="32" rx="8" fill="white" fill-opacity=".12"/>
-        <path d="M7 23L16 9L25 23" stroke="white" stroke-width="2" stroke-linejoin="round"/>
-        <path d="M10.5 20L16 11L21.5 20" stroke="#28a745" stroke-width="1.75" stroke-linejoin="round"/>
-      </svg>
-      AWBix
-    </a>
+        {% if not _is_guest %}
+        <a href="/me" style="display:flex;align-items:center;gap:.4rem;text-decoration:none;
+                             font-size:.8rem;font-weight:500;color:var(--pt-text-muted)">
+          <span style="width:26px;height:26px;border-radius:50%;background:var(--pt-primary);
+                       display:flex;align-items:center;justify-content:center;
+                       font-size:.68rem;font-weight:700;color:#fff;">
+            {{ _user[0].upper() }}
+          </span>
+          <span style="display:none" class="sm-hidden">{{ _user_short }}</span>
+        </a>
+        {% else %}
+        <a href="/login" class="pt-btn pt-btn--primary pt-btn--sm">Sign In</a>
+        {% endif %}
+      </div>
+    </header>
 
-    <a href="/portal" class="pt-mobile-nav__link">Dashboard</a>
+    <!-- Page content -->
+    <main class="pt-main" id="main-content" tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
 
-    <button class="pt-mobile-nav__link" data-has-sub aria-expanded="false">
-      Shipments
-      <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <div class="pt-mobile-nav__sub">
-      <a href="/portal/shipments">All Shipments</a>
-      <a href="/portal/shipments/new">Create New AWB</a>
-      <a href="/portal/shipments?docstatus=0">Draft AWBs</a>
-    </div>
+    <!-- Footer -->
+    <footer class="pt-footer">
+      <span>&copy; {{ frappe.utils.now_datetime().year }} AWBix &mdash; Air Waybill Management</span>
+      <span>
+        <a href="/portal/help">Help</a> &middot;
+        <a href="/privacy">Privacy</a>
+      </span>
+    </footer>
 
-    <a href="/portal/track" class="pt-mobile-nav__link">Track AWB</a>
+  </div><!-- /pt-content -->
+</div><!-- /pt-layout -->
 
-    <button class="pt-mobile-nav__link" data-has-sub aria-expanded="false">
-      Reports
-      <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="6 9 12 15 18 9"/>
-      </svg>
-    </button>
-    <div class="pt-mobile-nav__sub">
-      <a href="/portal/reports/summary">Shipment Summary</a>
-      <a href="/portal/reports/revenue">Revenue Report</a>
-    </div>
-
-    {% if not _is_guest %}
-    <a href="/me"     class="pt-mobile-nav__link" style="margin-top:.75rem">My Profile</a>
-    <a href="/logout" class="pt-mobile-nav__link" style="opacity:.7">Sign Out</a>
-    {% else %}
-    <a href="/login"  class="pt-mobile-nav__link" style="margin-top:.75rem;color:var(--pt-accent)">Sign In</a>
-    {% endif %}
-
-    <div class="pt-mobile-nav__themes">
-      <span>Theme</span>
-      <button class="theme-dot" data-theme="ocean" aria-label="Ocean Blue"  title="Ocean Blue"></button>
-      <button class="theme-dot" data-theme="teal"  aria-label="Sky Teal"    title="Sky Teal"></button>
-      <button class="theme-dot" data-theme="dark"  aria-label="Carbon Dark" title="Carbon Dark"></button>
-    </div>
-
-  </nav>
-</div>
-
-<!-- ── PAGE CONTENT ──────────────────────────────────────────────────────── -->
-<main class="pt-main" id="main-content" tabindex="-1">
-  {% block content %}{% endblock %}
-</main>
-
-<!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
-<footer class="pt-footer">
-  <div class="pt-footer__inner">
-    <span>&copy; {{ frappe.utils.now_datetime().year }} AWBix &mdash; Air Waybill Management System</span>
-    <span>
-      <a href="/portal/help">Help</a> &middot;
-      <a href="/privacy">Privacy</a>
-    </span>
-  </div>
-</footer>
+<!-- Toast container -->
+<div class="pt-toast-wrap" id="pt-toasts" aria-live="polite"></div>
 
 <script>
   window.frappe = window.frappe || {};
@@ -265,6 +199,5 @@
 </script>
 {{ include_script('portal.bundle.js') }}
 {% block scripts %}{% endblock %}
-
 </body>
 </html>
