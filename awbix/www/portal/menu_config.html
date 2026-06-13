@@ -1,0 +1,397 @@
+{% extends "templates/portal_base.html" %}
+
+{% block title %}Configure Menu{% endblock %}
+{% block meta_desc %}AWBix Portal — Configure the navigation menu{% endblock %}
+{% block breadcrumb_current %}Configure Menu{% endblock %}
+
+{% block content %}
+
+<div class="pt-page-header">
+  <div class="pt-page-header__left">
+    <h1 class="pt-page-header__title">Configure Portal Menu</h1>
+    <p class="pt-page-header__subtitle">Add, edit, reorder, or remove navigation items in the left sidebar.</p>
+  </div>
+  <div class="pt-page-header__actions">
+    <button class="pt-btn pt-btn--secondary" id="btn-seed" title="Reset to default AWBix menu items">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/>
+      </svg>
+      Load Defaults
+    </button>
+    <button class="pt-btn pt-btn--primary" id="btn-add">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+      </svg>
+      Add Item
+    </button>
+  </div>
+</div>
+
+<div class="pt-alert pt-alert--info" style="margin-bottom:1.25rem">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+  </svg>
+  <div>
+    Changes take effect on the next page load. Use <strong>Load Defaults</strong> to restore the built-in AWBix menu.
+    Sub-items: set a <strong>Parent Item</strong> to nest entries under a collapsible section.
+  </div>
+</div>
+
+<!-- Menu item list -->
+<div class="pt-card">
+  <div class="pt-card__header">
+    <h3>Menu Items</h3>
+    <span id="item-count" style="font-size:.78rem;color:var(--pt-text-muted)">Loading…</span>
+  </div>
+  <div class="pt-card__body" style="padding:0">
+    <div class="pt-menu-list" id="menu-list" style="margin:0;padding:1rem">
+      <div class="pt-spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADD / EDIT MODAL ─────────────────────────────────────────────────── -->
+<div class="pt-modal-overlay" id="item-modal" style="display:none" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="pt-modal">
+    <div class="pt-modal__header">
+      <h2 class="pt-modal__title" id="modal-title">Add Menu Item</h2>
+      <button class="pt-modal__close" id="modal-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <form class="pt-modal__body" id="item-form" autocomplete="off">
+      <input type="hidden" id="f-name">
+
+      <div class="pt-form-grid pt-form-grid--2" style="margin-bottom:1rem">
+        <div class="pt-form-group pt-field--required">
+          <label for="f-label">Menu Label</label>
+          <input id="f-label" class="pt-input" type="text" placeholder="e.g. My Reports" required>
+        </div>
+        <div class="pt-form-group pt-field--required">
+          <label for="f-type">Type</label>
+          <select id="f-type" class="pt-input">
+            <option value="Page">Page (internal portal route)</option>
+            <option value="DocType">DocType list view</option>
+            <option value="URL">URL (relative)</option>
+            <option value="External URL">External URL</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="pt-form-group pt-field--required">
+        <label for="f-route" id="route-label">Route / Path</label>
+        <input id="f-route" class="pt-input" type="text" placeholder="/portal/custom-page">
+        <div class="pt-hint" id="route-hint">For Page: /portal/track | For DocType: Shipment | For URL: /reports/summary | For External URL: https://…</div>
+      </div>
+
+      <div class="pt-form-grid pt-form-grid--2" style="margin-bottom:1rem">
+        <div class="pt-form-group">
+          <label for="f-icon">Icon</label>
+          <select id="f-icon" class="pt-input">
+            <option value="link">🔗 Link (default)</option>
+            <option value="dashboard">▦ Dashboard</option>
+            <option value="shipments">📍 Shipments</option>
+            <option value="track">🕐 Track</option>
+            <option value="reports">📊 Reports</option>
+            <option value="doctype">📋 Document</option>
+            <option value="cog">⚙ Settings</option>
+            <option value="user">👤 User</option>
+            <option value="chart">📈 Chart</option>
+            <option value="calendar">📅 Calendar</option>
+            <option value="bell">🔔 Bell</option>
+            <option value="folder">📁 Folder</option>
+            <option value="star">⭐ Star</option>
+            <option value="check">✓ Check</option>
+          </select>
+        </div>
+        <div class="pt-form-group">
+          <label for="f-group">Group / Section</label>
+          <input id="f-group" class="pt-input" type="text" placeholder="e.g. Main, Reports, Admin">
+        </div>
+      </div>
+
+      <div class="pt-form-grid pt-form-grid--2" style="margin-bottom:1rem">
+        <div class="pt-form-group">
+          <label for="f-parent">Parent Item (for sub-items)</label>
+          <input id="f-parent" class="pt-input" type="text" placeholder="Leave blank for top-level">
+          <div class="pt-hint">Enter the exact label of the parent item</div>
+        </div>
+        <div class="pt-form-group">
+          <label for="f-order">Sort Order</label>
+          <input id="f-order" class="pt-input" type="number" min="0" value="10">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:1.5rem;align-items:center;margin-top:.5rem">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.875rem">
+          <label class="pt-toggle">
+            <input type="checkbox" id="f-enabled" checked>
+            <span class="pt-toggle__slider"></span>
+          </label>
+          Enabled
+        </label>
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-size:.875rem">
+          <label class="pt-toggle">
+            <input type="checkbox" id="f-new-tab">
+            <span class="pt-toggle__slider"></span>
+          </label>
+          Open in new tab
+        </label>
+      </div>
+    </form>
+
+    <div class="pt-modal__footer">
+      <button class="pt-btn pt-btn--ghost" id="modal-cancel">Cancel</button>
+      <button class="pt-btn pt-btn--primary" id="modal-save">Save Item</button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  "use strict";
+
+  const ICON_LABELS = {
+    dashboard:"Dashboard", shipments:"Shipments", track:"Track", reports:"Reports",
+    doctype:"Document", link:"Link", cog:"Settings", user:"User", chart:"Chart",
+    calendar:"Calendar", bell:"Bell", folder:"Folder", star:"Star", heart:"Heart", check:"Check"
+  };
+  const TYPE_LABEL = {Page:"Page",DocType:"DocType","URL":"URL","External URL":"Ext. URL"};
+
+  let _items = [];
+
+  /* ── Load ─────────────────────────────────────────────── */
+  async function load() {
+    try {
+      const r = await call("awbix.portal.api.get_portal_menu");
+      _items = r.items || [];
+      render();
+    } catch {
+      document.getElementById("menu-list").innerHTML =
+        '<div class="pt-alert pt-alert--error"><p>Failed to load menu items.</p></div>';
+    }
+  }
+
+  function render() {
+    const list = document.getElementById("menu-list");
+    document.getElementById("item-count").textContent = _items.length + " item" + (_items.length === 1 ? "" : "s");
+
+    if (!_items.length) {
+      list.innerHTML = `
+        <div class="pt-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+          <p>No menu items yet. <button class="pt-btn pt-btn--ghost" style="display:inline;padding:.1rem .4rem" onclick="document.getElementById('btn-add').click()">Add one</button> or <button class="pt-btn pt-btn--ghost" style="display:inline;padding:.1rem .4rem" onclick="document.getElementById('btn-seed').click()">load defaults</button>.</p>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = _items.map(item => `
+      <div class="pt-menu-item-row" data-name="${esc(item.name || item.label)}">
+        <div class="pt-menu-item-row__drag" title="Drag to reorder" aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/>
+            <line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/>
+            <line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+          </svg>
+        </div>
+        <div class="pt-menu-item-row__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            ${item.icon_svg || '<line x1="10" y1="13" x2="14" y2="13"/><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/>'}
+          </svg>
+        </div>
+        <div class="pt-menu-item-row__info">
+          <div class="pt-menu-item-row__label">
+            ${item.parent_item ? '<span style="opacity:.4;margin-right:.3rem">↳</span>' : ""}
+            ${esc(item.label)}
+          </div>
+          <div class="pt-menu-item-row__meta">
+            <span style="background:var(--pt-surface-alt);padding:.1rem .4rem;border-radius:4px;font-size:.7rem;font-weight:600;margin-right:.4rem">${esc(TYPE_LABEL[item.type] || item.type)}</span>
+            ${esc(item.route || "")}
+            ${item.parent_item ? `<span style="opacity:.55"> · sub of <em>${esc(item.parent_item)}</em></span>` : ""}
+          </div>
+        </div>
+        ${item.group_label ? `<span class="pt-menu-item-row__group">${esc(item.group_label)}</span>` : ""}
+        <div class="pt-menu-item-row__actions">
+          <label class="pt-toggle" title="${item.enabled ? "Enabled" : "Disabled"}">
+            <input type="checkbox" ${item.enabled ? "checked" : ""}
+              onchange="toggleItem('${esc(item.name || item.label)}', this.checked)">
+            <span class="pt-toggle__slider"></span>
+          </label>
+          <button class="pt-btn pt-btn--ghost pt-btn--sm" title="Edit"
+            onclick="openEdit('${esc(item.name || item.label)}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+          </button>
+          <button class="pt-btn pt-btn--danger pt-btn--sm" title="Delete"
+            onclick="deleteItem('${esc(item.name || item.label)}')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+            </svg>
+          </button>
+        </div>
+      </div>`).join("");
+  }
+
+  /* ── Modal ────────────────────────────────────────────── */
+  function openAdd() {
+    document.getElementById("modal-title").textContent = "Add Menu Item";
+    document.getElementById("f-name").value = "";
+    document.getElementById("f-label").value = "";
+    document.getElementById("f-type").value = "Page";
+    document.getElementById("f-route").value = "";
+    document.getElementById("f-icon").value = "link";
+    document.getElementById("f-group").value = "";
+    document.getElementById("f-parent").value = "";
+    document.getElementById("f-order").value = "10";
+    document.getElementById("f-enabled").checked = true;
+    document.getElementById("f-new-tab").checked = false;
+    showModal();
+  }
+
+  window.openEdit = function (name) {
+    const item = _items.find(i => (i.name || i.label) === name);
+    if (!item) return;
+    document.getElementById("modal-title").textContent = "Edit Menu Item";
+    document.getElementById("f-name").value = item.name || item.label || "";
+    document.getElementById("f-label").value = item.label || "";
+    document.getElementById("f-type").value = item.type || "Page";
+    document.getElementById("f-route").value = item.route || "";
+    document.getElementById("f-icon").value = item.icon || "link";
+    document.getElementById("f-group").value = item.group_label || "";
+    document.getElementById("f-parent").value = item.parent_item || "";
+    document.getElementById("f-order").value = item.order ?? 10;
+    document.getElementById("f-enabled").checked = !!item.enabled;
+    document.getElementById("f-new-tab").checked = !!item.open_in_new_tab;
+    showModal();
+  };
+
+  function showModal()  { document.getElementById("item-modal").style.display = "flex"; document.getElementById("f-label").focus(); }
+  function closeModal() { document.getElementById("item-modal").style.display = "none"; }
+
+  async function saveItem() {
+    const label = document.getElementById("f-label").value.trim();
+    const route = document.getElementById("f-route").value.trim();
+    if (!label) { ptToast("Label is required", "error"); return; }
+    if (!route)  { ptToast("Route is required", "error"); return; }
+
+    const btn = document.getElementById("modal-save");
+    btn.disabled = true;
+    btn.textContent = "Saving…";
+
+    try {
+      await call("awbix.portal.api.save_menu_item", {
+        data: {
+          name:          document.getElementById("f-name").value || null,
+          label,
+          type:          document.getElementById("f-type").value,
+          route,
+          icon:          document.getElementById("f-icon").value,
+          group_label:   document.getElementById("f-group").value.trim(),
+          parent_item:   document.getElementById("f-parent").value.trim() || null,
+          order:         parseInt(document.getElementById("f-order").value) || 10,
+          enabled:       document.getElementById("f-enabled").checked ? 1 : 0,
+          open_in_new_tab: document.getElementById("f-new-tab").checked ? 1 : 0,
+        }
+      });
+      closeModal();
+      ptToast("Menu item saved", "success");
+      await load();
+    } catch (e) {
+      ptToast(e.message || "Save failed", "error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Save Item";
+    }
+  }
+
+  window.toggleItem = async function (name, enabled) {
+    try {
+      const item = _items.find(i => (i.name || i.label) === name);
+      if (!item) return;
+      await call("awbix.portal.api.save_menu_item", {
+        data: { name: item.name || item.label, enabled: enabled ? 1 : 0 }
+      });
+      ptToast(enabled ? "Item enabled" : "Item disabled", "info");
+      await load();
+    } catch (e) { ptToast(e.message || "Update failed", "error"); }
+  };
+
+  window.deleteItem = async function (name) {
+    if (!confirm("Delete this menu item?")) return;
+    try {
+      await call("awbix.portal.api.delete_menu_item", { name });
+      ptToast("Item deleted", "success");
+      await load();
+    } catch (e) { ptToast(e.message || "Delete failed", "error"); }
+  };
+
+  /* ── Seed defaults ────────────────────────────────────── */
+  async function seedDefaults() {
+    if (!confirm("This will add the default AWBix menu items (existing items are kept). Continue?")) return;
+    try {
+      const r = await call("awbix.portal.api.seed_default_menu");
+      ptToast(`Seeded ${r.seeded} default item(s)`, "success");
+      await load();
+    } catch (e) { ptToast(e.message || "Seed failed", "error"); }
+  }
+
+  /* ── Helpers ──────────────────────────────────────────── */
+  async function call(method, args = {}) {
+    const fd = new FormData();
+    for (const [k, v] of Object.entries(args)) {
+      fd.append(k, typeof v === "object" ? JSON.stringify(v) : v);
+    }
+    const res = await fetch(`/api/method/${method}`, {
+      method: "POST",
+      headers: { "X-Frappe-CSRF-Token": frappe.csrf_token },
+      body: fd,
+    });
+    const json = await res.json();
+    if (json.exc) throw new Error(json._server_messages ? JSON.parse(JSON.parse(json._server_messages)[0]).message : "Server error");
+    return json.message;
+  }
+
+  function esc(s) {
+    return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  }
+
+  /* ── Event wiring ─────────────────────────────────────── */
+  document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("btn-add").addEventListener("click", openAdd);
+    document.getElementById("btn-seed").addEventListener("click", seedDefaults);
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+    document.getElementById("modal-cancel").addEventListener("click", closeModal);
+    document.getElementById("modal-save").addEventListener("click", saveItem);
+    document.getElementById("item-modal").addEventListener("click", e => {
+      if (e.target === document.getElementById("item-modal")) closeModal();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeModal();
+    });
+    document.getElementById("f-type").addEventListener("change", function () {
+      const hints = {
+        Page: "/portal/track",
+        DocType: "Shipment",
+        URL: "/reports/summary",
+        "External URL": "https://example.com"
+      };
+      document.getElementById("f-route").placeholder = hints[this.value] || "";
+    });
+    load();
+  });
+})();
+</script>
+{% endblock %}

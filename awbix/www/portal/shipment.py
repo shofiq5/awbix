@@ -1,7 +1,9 @@
 import frappe
+from awbix.www.portal.portal import set_portal_context
 
 
 def get_context(context):
+	set_portal_context(context)
 	context.no_cache = 1
 	name = frappe.form_dict.get("name", "new")
 	context.is_new = name == "new"

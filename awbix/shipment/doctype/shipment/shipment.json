@@ -21,33 +21,23 @@
   "volume_amount",
   "density_indicator",
   "density_group",
-  "sb_15",
-  "currency",
-  "charge_code",
-  "wt_val_prepaid_collect",
-  "other_charges_prepaid_collect",
-  "cb_16",
-  "declared_value_carriage_type",
-  "declared_value_carriage_amount",
-  "declared_value_customs_type",
-  "declared_value_customs_amount",
-  "insurance_type",
-  "insurance_amount",
+  "sb_24",
+  "flight_bookings",
+  "routing",
+  "party_tab",
   "sb_17",
   "shipper",
   "shipper_name",
   "shipper_account",
-  "cb_18",
   "shipper_address",
   "shipper_place",
   "shipper_state",
   "shipper_country",
   "shipper_post_code",
-  "sb_19",
+  "cb_18",
   "consignee",
   "consignee_name",
   "consignee_account",
-  "cb_20",
   "consignee_address",
   "consignee_place",
   "consignee_state",
@@ -64,9 +54,24 @@
   "agent_participant_id",
   "sb_23",
   "also_notify",
-  "sb_24",
-  "flight_bookings",
-  "routing",
+  "tab_break_imtg",
+  "currency",
+  "column_break_vrcx",
+  "charge_code",
+  "column_break_lqrt",
+  "wt_val_prepaid_collect",
+  "column_break_fdlt",
+  "other_charges_prepaid_collect",
+  "sb_15",
+  "column_break_xwsy",
+  "declared_value_carriage_type",
+  "declared_value_carriage_amount",
+  "cb_16",
+  "declared_value_customs_type",
+  "declared_value_customs_amount",
+  "column_break_tvtx",
+  "insurance_type",
+  "insurance_amount",
   "sb_25",
   "rate_lines",
   "goods_details",
@@ -294,8 +299,7 @@
   },
   {
    "fieldname": "sb_17",
-   "fieldtype": "Section Break",
-   "label": "Shipper"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "shipper",
@@ -364,11 +368,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "sb_19",
-   "fieldtype": "Section Break",
-   "label": "Consignee"
-  },
-  {
    "fieldname": "consignee",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -390,10 +389,6 @@
    "label": "Account Number",
    "length": 14,
    "read_only": 1
-  },
-  {
-   "fieldname": "cb_20",
-   "fieldtype": "Column Break"
   },
   {
    "fetch_from": "consignee.street_address",
@@ -791,12 +786,42 @@
    "print_hide": 1,
    "read_only": 1,
    "search_index": 1
+  },
+  {
+   "fieldname": "party_tab",
+   "fieldtype": "Tab Break",
+   "label": "Party"
+  },
+  {
+   "fieldname": "tab_break_imtg",
+   "fieldtype": "Tab Break",
+   "label": "Charges"
+  },
+  {
+   "fieldname": "column_break_vrcx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lqrt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_fdlt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_xwsy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_tvtx",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-13 01:17:48.278982",
+ "modified": "2026-06-13 07:24:39.088510",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",

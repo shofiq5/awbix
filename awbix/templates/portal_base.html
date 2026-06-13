@@ -1,6 +1,4 @@
-{%- set _user = frappe.session.user -%}
-{%- set _is_guest = _user == "Guest" -%}
-{%- set _user_short = _user.split("@")[0] if not _is_guest else "Guest" -%}
+{# Context (_user, _is_guest, _user_short, _is_admin) provided by www/portal/portal.py #}
 <!DOCTYPE html>
 <html lang="{{ frappe.local.lang or 'en' }}" data-portal-theme="ocean">
 <head>
@@ -11,7 +9,7 @@
   <title>{% block title %}AWBix{% endblock %} — AWBix Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  {{ include_style('portal.bundle.css') }}
+  <link rel="stylesheet" href="/assets/awbix/css/portal.css">
   <script>/* apply saved theme before paint */
     (function(){var t=localStorage.getItem('awbix_portal_theme')||'ocean';document.documentElement.setAttribute('data-portal-theme',t);})();
   </script>
@@ -21,7 +19,7 @@
 
 <div class="pt-layout">
 
-  <!-- ── LEFT SIDEBAR ──────────────────────────────────────────────────────── -->
+  <!-- ── LEFT SIDEBAR ───────────────────────────────────────────────────── -->
   <aside class="pt-sidebar" id="pt-sidebar" aria-label="Main navigation">
 
     <!-- Brand -->
@@ -36,8 +34,8 @@
       <span class="version">Portal</span>
     </a>
 
-    <!-- Nav -->
-    <nav class="pt-sidebar__nav" role="navigation">
+    <!-- Nav — static fallback; JavaScript replaces with dynamic items on load -->
+    <nav class="pt-sidebar__nav" role="navigation" id="pt-nav">
 
       <div class="pt-sidebar__group-label">Main</div>
 
@@ -51,7 +49,8 @@
 
       <button class="pt-sidebar__link" data-has-sub="shipments-sub" aria-expanded="false">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/>
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
         </svg>
         Shipments
         <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -73,19 +72,15 @@
 
       <div class="pt-sidebar__group-label" style="margin-top:.5rem">Reports</div>
 
-      <button class="pt-sidebar__link" data-has-sub="reports-sub" aria-expanded="false">
+      <a href="/portal/reports/summary" class="pt-sidebar__link">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
         </svg>
         Reports
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="9 18 15 12 9 6"/>
-        </svg>
-      </button>
-      <div class="pt-sidebar__sub" id="reports-sub">
-        <a href="/portal/reports/summary">Shipment Summary</a>
-        <a href="/portal/reports/revenue">Revenue Report</a>
-      </div>
+      </a>
+
+      <!-- Admin items injected here by JS when is_admin is true -->
+      <div id="pt-nav-admin"></div>
 
     </nav>
 
@@ -129,7 +124,7 @@
   <!-- Mobile overlay -->
   <div class="pt-sidebar-overlay" id="pt-sidebar-overlay"></div>
 
-  <!-- ── CONTENT AREA ──────────────────────────────────────────────────────── -->
+  <!-- ── CONTENT AREA ───────────────────────────────────────────────────── -->
   <div class="pt-content">
 
     <!-- Top bar -->
@@ -150,7 +145,6 @@
       </nav>
 
       <div class="pt-topbar__right">
-        <!-- Mini theme picker always visible -->
         <div class="pt-topbar__themes" role="group" aria-label="Choose colour theme">
           <button class="theme-dot" data-theme="ocean" title="Ocean Blue"   aria-label="Ocean Blue"></button>
           <button class="theme-dot" data-theme="teal"  title="Sky Teal"     aria-label="Sky Teal"></button>
@@ -182,6 +176,7 @@
     <footer class="pt-footer">
       <span>&copy; {{ frappe.utils.now_datetime().year }} AWBix &mdash; Air Waybill Management</span>
       <span>
+        <a href="/portal/track">Track</a> &middot;
         <a href="/portal/help">Help</a> &middot;
         <a href="/privacy">Privacy</a>
       </span>
@@ -196,6 +191,10 @@
 <script>
   window.frappe = window.frappe || {};
   frappe.csrf_token = "{{ frappe.session.csrf_token }}";
+  frappe.session = frappe.session || {};
+  frappe.session.user = {{ ('"' ~ _user ~ '"') | safe }};
+  frappe.is_guest = {{ "true" if _is_guest else "false" }};
+  frappe.is_admin = {{ "true" if _is_admin else "false" }};
 </script>
 {{ include_script('portal.bundle.js') }}
 {% block scripts %}{% endblock %}
