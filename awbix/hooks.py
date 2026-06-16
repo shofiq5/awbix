@@ -88,6 +88,9 @@ app_include_js = "awbix.bundle.js"
 # before_install = "awbix.install.before_install"
 # after_install = "awbix.install.after_install"
 
+# EDX: seed/refresh message definitions (idempotent) after every migrate
+after_migrate = ["awbix.edx.install.after_migrate"]
+
 # Uninstallation
 # ------------
 
@@ -168,6 +171,17 @@ app_include_js = "awbix.bundle.js"
 # 		"awbix.tasks.monthly"
 # 	],
 # }
+
+# EDX messaging engine — poll inbound transports, dispatch outbound, retry failures.
+# poll_inbound_connections / dispatch_outbound_queue are no-ops until EDX Connection
+# exists (M4); they self-guard so this is safe to enable now.
+scheduler_events = {
+	"cron": {
+		"*/2 * * * *": ["awbix.edx.engine.pipeline.poll_inbound_connections"],
+		"*/1 * * * *": ["awbix.edx.engine.pipeline.dispatch_outbound_queue"],
+	},
+	"all": ["awbix.edx.engine.pipeline.retry_failed"],
+}
 
 # Testing
 # -------

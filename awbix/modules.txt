@@ -2,3 +2,4 @@ AWBix
 Shipment
 Dashboard
 Portal
+EDX

@@ -1,0 +1,108 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-06-16 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "business_key",
+  "target_doctype",
+  "target_name",
+  "cb_1",
+  "current_message_in",
+  "revision",
+  "last_source_received_at",
+  "locked",
+  "status"
+ ],
+ "fields": [
+  {
+   "description": "Stable business identity (e.g. AWB number)",
+   "fieldname": "business_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Business Key",
+   "reqd": 1,
+   "search_index": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Target DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "target_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Target Name",
+   "options": "target_doctype"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "current_message_in",
+   "fieldtype": "Link",
+   "label": "Current Message In",
+   "options": "EDX Message In"
+  },
+  {
+   "default": "1",
+   "fieldname": "revision",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Revision"
+  },
+  {
+   "description": "Stale-guard reference: source timestamp of the currently applied message",
+   "fieldname": "last_source_received_at",
+   "fieldtype": "Datetime",
+   "label": "Last Source Received At"
+  },
+  {
+   "default": "0",
+   "description": "When set, EDX will not auto-overwrite the target (manual override)",
+   "fieldname": "locked",
+   "fieldtype": "Check",
+   "label": "Locked"
+  },
+  {
+   "default": "Active",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Active\nLocked\nConflict"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-06-16 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "EDX",
+ "name": "EDX Delivery",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

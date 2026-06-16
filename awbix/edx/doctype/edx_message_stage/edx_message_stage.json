@@ -1,0 +1,137 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "EDX-STG-.YYYY.-.#####",
+ "creation": "2026-06-16 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "connection",
+  "received_at",
+  "external_id",
+  "content_hash",
+  "cb_1",
+  "detected_type",
+  "detected_version",
+  "status",
+  "message_in",
+  "sb_meta",
+  "sender",
+  "subject",
+  "sb_raw",
+  "raw_message"
+ ],
+ "fields": [
+  {
+   "description": "EDX Connection name; blank = manual ingest (becomes a Link in M4)",
+   "fieldname": "connection",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Connection"
+  },
+  {
+   "fieldname": "received_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Received At"
+  },
+  {
+   "description": "Provider id (email Message-ID, filename) for dedup",
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "label": "External ID"
+  },
+  {
+   "fieldname": "content_hash",
+   "fieldtype": "Data",
+   "label": "Content Hash",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "detected_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Detected Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "detected_version",
+   "fieldtype": "Data",
+   "label": "Detected Version",
+   "read_only": 1
+  },
+  {
+   "default": "Staged",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Staged\nPromoted\nUnrecognized\nDuplicate\nError",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message_in",
+   "fieldtype": "Link",
+   "label": "Message In",
+   "options": "EDX Message In",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_meta",
+   "fieldtype": "Section Break",
+   "label": "Source"
+  },
+  {
+   "fieldname": "sender",
+   "fieldtype": "Data",
+   "label": "Sender"
+  },
+  {
+   "fieldname": "subject",
+   "fieldtype": "Data",
+   "label": "Subject"
+  },
+  {
+   "fieldname": "sb_raw",
+   "fieldtype": "Section Break",
+   "label": "Raw Message"
+  },
+  {
+   "fieldname": "raw_message",
+   "fieldtype": "Long Text",
+   "label": "Raw Message"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-06-16 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "EDX",
+ "name": "EDX Message Stage",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

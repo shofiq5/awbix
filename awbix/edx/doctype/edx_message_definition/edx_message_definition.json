@@ -1,0 +1,156 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:{message_type}-{version}",
+ "creation": "2026-06-16 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "message_type",
+  "version",
+  "title",
+  "standard",
+  "cb_1",
+  "parser_class",
+  "composer_class",
+  "target_doctype",
+  "sb_flags",
+  "is_parser_enabled",
+  "is_composer_enabled",
+  "auto_promote",
+  "auto_process",
+  "amendment_mode",
+  "sb_detect",
+  "detection_pattern"
+ ],
+ "fields": [
+  {
+   "description": "e.g. FWB, FHL, FNA, FMA",
+   "fieldname": "message_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Message Type",
+   "reqd": 1
+  },
+  {
+   "description": "e.g. 16",
+   "fieldname": "version",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Version",
+   "reqd": 1
+  },
+  {
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Title"
+  },
+  {
+   "default": "Cargo-IMP",
+   "fieldname": "standard",
+   "fieldtype": "Select",
+   "label": "Standard",
+   "options": "Cargo-IMP\nCargo-XML\nEDIFACT\nCustom"
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Dotted path to a BaseParser subclass, e.g. awbix.edx.handlers.fwb.fwb16_parser.FWB16Parser",
+   "fieldname": "parser_class",
+   "fieldtype": "Data",
+   "label": "Parser Class"
+  },
+  {
+   "description": "Dotted path to a BaseComposer subclass (optional)",
+   "fieldname": "composer_class",
+   "fieldtype": "Data",
+   "label": "Composer Class"
+  },
+  {
+   "description": "Business DocType this message feeds, e.g. Shipment",
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "label": "Target DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "sb_flags",
+   "fieldtype": "Section Break",
+   "label": "Activation"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_parser_enabled",
+   "fieldtype": "Check",
+   "label": "Parser Enabled"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_composer_enabled",
+   "fieldtype": "Check",
+   "label": "Composer Enabled"
+  },
+  {
+   "default": "0",
+   "description": "Auto-promote recognized staged messages to Message In",
+   "fieldname": "auto_promote",
+   "fieldtype": "Check",
+   "label": "Auto Promote"
+  },
+  {
+   "default": "0",
+   "description": "Auto-process after a clean verify",
+   "fieldname": "auto_process",
+   "fieldtype": "Check",
+   "label": "Auto Process"
+  },
+  {
+   "default": "Auto Apply",
+   "description": "How re-received messages for the same business key are applied",
+   "fieldname": "amendment_mode",
+   "fieldtype": "Select",
+   "label": "Amendment Mode",
+   "options": "Auto Apply\nManual Review"
+  },
+  {
+   "fieldname": "sb_detect",
+   "fieldtype": "Section Break",
+   "label": "Detection"
+  },
+  {
+   "description": "Regex matched against the start of a raw payload to classify it, e.g. ^FWB/16",
+   "fieldname": "detection_pattern",
+   "fieldtype": "Small Text",
+   "label": "Detection Pattern"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-16 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "EDX",
+ "name": "EDX Message Definition",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "title"
+}

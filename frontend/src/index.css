@@ -1,0 +1,158 @@
+@import './assets/Inter/inter.css';
+@import 'frappe-ui/src/style.css';
+
+/* ─── Theme CSS Variables ───────────────────────────────────────────────── */
+
+:root {
+  /* Default theme: blue */
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #eff6ff;
+
+  /* Layout surfaces */
+  --color-bg: #f1f5f9;
+  --color-sidebar-bg: #ffffff;
+  --color-sidebar-border: #e2e8f0;
+  --color-topbar-bg: #ffffff;
+  --color-topbar-border: #e2e8f0;
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;
+
+  /* Typography */
+  --color-text-base: #0f172a;
+  --color-text-muted: #64748b;
+  --color-text-subtle: #94a3b8;
+}
+
+/* ─── Dark Mode ─────────────────────────────────────────────────────────── */
+
+.dark {
+  --color-bg: #0f172a;
+  --color-sidebar-bg: #1e293b;
+  --color-sidebar-border: #334155;
+  --color-topbar-bg: #1e293b;
+  --color-topbar-border: #334155;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-text-base: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-text-subtle: #64748b;
+}
+
+/* ─── Color Themes ──────────────────────────────────────────────────────── */
+
+.theme-blue {
+  --color-primary: #2563eb;
+  --color-primary-hover: #1d4ed8;
+  --color-primary-light: #eff6ff;
+}
+.dark.theme-blue {
+  --color-primary-light: rgba(37, 99, 235, 0.15);
+}
+
+.theme-green {
+  --color-primary: #16a34a;
+  --color-primary-hover: #15803d;
+  --color-primary-light: #f0fdf4;
+}
+.dark.theme-green {
+  --color-primary-light: rgba(22, 163, 74, 0.15);
+}
+
+.theme-emerald {
+  --color-primary: #059669;
+  --color-primary-hover: #047857;
+  --color-primary-light: #ecfdf5;
+}
+.dark.theme-emerald {
+  --color-primary-light: rgba(5, 150, 105, 0.15);
+}
+
+.theme-purple {
+  --color-primary: #7c3aed;
+  --color-primary-hover: #6d28d9;
+  --color-primary-light: #f5f3ff;
+}
+.dark.theme-purple {
+  --color-primary-light: rgba(124, 58, 237, 0.15);
+}
+
+.theme-orange {
+  --color-primary: #ea580c;
+  --color-primary-hover: #c2410c;
+  --color-primary-light: #fff7ed;
+}
+.dark.theme-orange {
+  --color-primary-light: rgba(234, 88, 12, 0.15);
+}
+
+/* ─── Base Layout ───────────────────────────────────────────────────────── */
+
+html,
+body,
+#app {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-base);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Router Transitions ────────────────────────────────────────────────── */
+
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.page-leave-to {
+  opacity: 0;
+}
+
+/* ─── Dropdown Transition ───────────────────────────────────────────────── */
+
+.dropdown-enter-active,
+.dropdown-leave-active {
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+.dropdown-enter-from,
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.97);
+}
+
+/* ─── Slide-in Panel Transition ─────────────────────────────────────────── */
+
+.panel-enter-active,
+.panel-leave-active {
+  transition: transform 250ms ease, opacity 250ms ease;
+}
+.panel-enter-from,
+.panel-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* ─── Scrollbar Styling ─────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-subtle);
+}

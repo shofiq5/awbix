@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "EDX-IN-.YYYY.-.#####",
+ "creation": "2026-06-16 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "stage",
+  "message_type",
+  "message_version",
+  "business_key",
+  "received_at",
+  "cb_1",
+  "parse_status",
+  "process_status",
+  "delivery_status",
+  "applied",
+  "target_doctype",
+  "target_name",
+  "sb_verify",
+  "parsed_json",
+  "verify_rows",
+  "issues",
+  "sb_amend",
+  "diff_json",
+  "retry_count",
+  "next_retry_at",
+  "sb_raw",
+  "raw_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "stage",
+   "fieldtype": "Link",
+   "label": "Stage",
+   "options": "EDX Message Stage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Message Type",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message_version",
+   "fieldtype": "Data",
+   "label": "Message Version",
+   "read_only": 1
+  },
+  {
+   "description": "Business identity (e.g. AWB number); drives amendment matching",
+   "fieldname": "business_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Business Key",
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "received_at",
+   "fieldtype": "Datetime",
+   "label": "Received At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "parse_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Parse Status",
+   "options": "Pending\nVerified\nVerification Failed",
+   "read_only": 1
+  },
+  {
+   "default": "Not Processed",
+   "fieldname": "process_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Process Status",
+   "options": "Not Processed\nProcessing\nProcessed\nFailed\nSuperseded\nNeeds Review",
+   "read_only": 1
+  },
+  {
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "label": "Delivery Status",
+   "options": "\nDelivered",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "description": "Whether this message actually modified the target",
+   "fieldname": "applied",
+   "fieldtype": "Check",
+   "label": "Applied",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_doctype",
+   "fieldtype": "Link",
+   "label": "Target DocType",
+   "options": "DocType",
+   "read_only": 1
+  },
+  {
+   "fieldname": "target_name",
+   "fieldtype": "Dynamic Link",
+   "label": "Target Name",
+   "options": "target_doctype",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_verify",
+   "fieldtype": "Section Break",
+   "label": "Verification"
+  },
+  {
+   "description": "Human-readable parser output (no DB writes performed to produce this)",
+   "fieldname": "parsed_json",
+   "fieldtype": "Code",
+   "label": "Parsed JSON",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "verify_rows",
+   "fieldtype": "Table",
+   "label": "Verify Rows",
+   "options": "EDX Verify Row",
+   "read_only": 1
+  },
+  {
+   "fieldname": "issues",
+   "fieldtype": "Table",
+   "label": "Issues",
+   "options": "EDX Message Issue",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_amend",
+   "fieldtype": "Section Break",
+   "label": "Amendment / Retry"
+  },
+  {
+   "description": "Field-level changes applied on amendment (see also Frappe version history)",
+   "fieldname": "diff_json",
+   "fieldtype": "Code",
+   "label": "Diff JSON",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Retry Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "next_retry_at",
+   "fieldtype": "Datetime",
+   "label": "Next Retry At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_raw",
+   "fieldtype": "Section Break",
+   "label": "Raw Message"
+  },
+  {
+   "fieldname": "raw_message",
+   "fieldtype": "Long Text",
+   "label": "Raw Message",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-06-16 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "EDX",
+ "name": "EDX Message In",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
