@@ -1,0 +1,142 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "hash",
+ "creation": "2026-06-17 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "message_type",
+  "carrier_code",
+  "cb_match",
+  "origin",
+  "destination",
+  "priority",
+  "sb_dest",
+  "address_type",
+  "address",
+  "cb_dest",
+  "connection"
+ ],
+ "fields": [
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "description": "Message type to route, e.g. FWB. Blank = any.",
+   "fieldname": "message_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Message Type"
+  },
+  {
+   "description": "Carrier / airline code. Blank = any (wildcard).",
+   "fieldname": "carrier_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Carrier Code"
+  },
+  {
+   "fieldname": "cb_match",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Origin airport code. Blank = any (wildcard).",
+   "fieldname": "origin",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Origin"
+  },
+  {
+   "description": "Destination airport code. Blank = any (wildcard).",
+   "fieldname": "destination",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Destination"
+  },
+  {
+   "default": "0",
+   "description": "Tiebreaker among equally specific rules; higher wins.",
+   "fieldname": "priority",
+   "fieldtype": "Int",
+   "label": "Priority"
+  },
+  {
+   "fieldname": "sb_dest",
+   "fieldtype": "Section Break",
+   "label": "Destination Address"
+  },
+  {
+   "default": "Email",
+   "fieldname": "address_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Address Type",
+   "options": "Email\nSITA\nMQ",
+   "reqd": 1
+  },
+  {
+   "description": "Email address, SITA Type-B address, or MQ queue / routing key.",
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_dest",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Endpoint that delivers the message.",
+   "fieldname": "connection",
+   "fieldtype": "Link",
+   "label": "Connection",
+   "options": "EDX Connection"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-06-17 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "EDX",
+ "name": "EDX Message Routing",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "EDX Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -13,7 +13,7 @@ import hashlib
 
 import frappe
 from frappe import _
-from frappe.utils import get_datetime, now_datetime
+from frappe.utils import add_to_date, get_datetime, now_datetime
 
 from awbix.edx.engine.classifier import classify
 from awbix.edx.engine.registry import get_definition, get_parser
@@ -210,6 +210,11 @@ def process_message_in(name):
 
 	mi.db_set("process_status", "Processing")
 
+	# Status/annotation messages (FNA/FMA): no amendment guards, no EDX Delivery ledger —
+	# process() only annotates an existing target, and must reach even a submitted one.
+	if definition.bypass_amendment:
+		return _process_annotation(mi, parser, data, target_doctype)
+
 	decision = _amendment_decision(definition, target_doctype, key, mi.received_at)
 	if decision != "apply":
 		status = "Superseded" if decision == "stale" else "Needs Review"
@@ -237,6 +242,38 @@ def process_message_in(name):
 	mi.db_set("delivery_status", "Delivered")
 	log_event("EDX Message In", name, "Processed", "Info", f"{target_doctype} {target_name} (rev {rev})")
 	return {"ok": True, "applied": True, "target": target_name, "revision": rev}
+
+
+def _process_annotation(mi, parser, data, target_doctype):
+	"""Process a bypass-amendment message: annotate the target, no ledger, no guards.
+
+	``process()`` returns the target docname when it found and updated one, or a falsy
+	value when the referenced business document doesn't exist (→ Needs Review).
+	"""
+	name = mi.name
+	try:
+		target_name = parser.process(data, mi)
+	except frappe.ValidationError as e:
+		frappe.db.rollback()
+		mi.reload()
+		mi.db_set("process_status", "Failed")
+		mi.append("issues", {"level": "Error", "code": "PROCESS", "message": str(e)})
+		mi.save(ignore_permissions=True)
+		log_event("EDX Message In", name, "Failed", "Error", str(e), frappe.get_traceback())
+		return {"ok": False, "status": "Failed", "error": str(e)}
+
+	if not target_name:
+		mi.db_set("process_status", "Needs Review")
+		log_event("EDX Message In", name, "Processed", "Warning", "No matching target document")
+		return {"ok": True, "applied": False, "reason": "target not found"}
+
+	mi.db_set("process_status", "Processed")
+	mi.db_set("applied", 1)
+	mi.db_set("target_doctype", target_doctype)
+	mi.db_set("target_name", target_name)
+	mi.db_set("delivery_status", "Delivered")
+	log_event("EDX Message In", name, "Processed", "Info", f"Annotated {target_doctype} {target_name}")
+	return {"ok": True, "applied": True, "target": target_name}
 
 
 def _amendment_decision(definition, target_doctype, key, received_at):
@@ -336,11 +373,169 @@ def poll_connection(connection):
 	conn.db_set("last_polled_at", now_datetime())
 
 
+# ---------------------------------------------------------------------------
+# Outbound: compose → verify → route → send  (Composer engine, M5)
+# ---------------------------------------------------------------------------
+
+_RETRY_BACKOFF_MIN = 10
+_MAX_RETRIES = 5
+
+
+@frappe.whitelist()
+def queue_outbound(source_doctype, source_name, message_type, version):
+	"""Create a Queued EDX Message Out for a source document and enqueue dispatch.
+
+	Trigger surface for the Desk button / API. Composition and sending happen
+	asynchronously in ``dispatch_message_out`` so the caller returns immediately.
+	"""
+	get_definition(message_type, version)  # fail fast if the type/version is unknown
+	source = frappe.get_doc(source_doctype, source_name)
+
+	mo = frappe.get_doc(
+		{
+			"doctype": "EDX Message Out",
+			"message_type": message_type,
+			"message_version": version,
+			"source_doctype": source_doctype,
+			"source_name": source_name,
+			"business_key": source.get("awb_number") or source.name,
+			"compose_status": "Pending",
+			"verify_status": "Pending",
+			"delivery_status": "Queued",
+		}
+	).insert(ignore_permissions=True)
+	log_event("EDX Message Out", mo.name, "Ingested", "Info", f"Queued from {source_doctype} {source_name}")
+
+	frappe.enqueue("awbix.edx.engine.pipeline.dispatch_message_out", queue="long", name=mo.name)
+	return mo.name
+
+
+def dispatch_message_out(name):
+	"""Run one outbound message through compose → verify → route → send.
+
+	Never raises: every failure is recorded on the row (status + issue + retry schedule)
+	so a bad message can't crash the dispatch worker (strategy R1 style).
+	"""
+	from awbix.edx.engine.registry import get_composer, get_transport
+	from awbix.edx.engine.routing import resolve_route
+
+	mo = frappe.get_doc("EDX Message Out", name)
+	source = frappe.get_doc(mo.source_doctype, mo.source_name)
+
+	# --- compose ---
+	try:
+		composer = get_composer(mo.message_type, mo.message_version)
+		raw = composer.compose(source)
+		mo.composed_raw = raw
+		mo.compose_status = "Composed"
+	except Exception as e:
+		return _fail_out(mo, "COMPOSE", e, retry=False, compose=True)
+
+	# --- verify (self-check; a data error must not be sent) ---
+	issues = composer.verify(raw) or []
+	mo.set("issues", issues)
+	if any(i.get("level") == "Error" for i in issues):
+		mo.verify_status = "Verification Failed"
+		mo.delivery_status = "Failed"
+		mo.save(ignore_permissions=True)
+		log_event("EDX Message Out", name, "Verified", "Error", f"{len(issues)} issue(s); not sent")
+		return {"ok": False, "status": "Verification Failed"}
+	mo.verify_status = "Verified"
+
+	# --- route ---
+	route = resolve_route(
+		mo.message_type,
+		source.get("airline_prefix"),
+		source.get("origin"),
+		source.get("destination"),
+	)
+	if not route or not route.get("connection"):
+		mo.save(ignore_permissions=True)
+		return _fail_out(mo, "ROUTE", _("No routing rule matched this message"), retry=False)
+	mo.connection = route["connection"]
+	mo.address_type = route.get("address_type")
+	mo.address = route.get("address")
+
+	# --- send ---
+	try:
+		transport = get_transport(mo.connection)
+		meta = {
+			"to": mo.address,
+			"subject": f"{mo.message_type}/{mo.message_version} {mo.business_key or ''}".strip(),
+			"routing_key": mo.address,
+			"external_id": mo.business_key,
+		}
+		result = transport.send(raw, meta) or {}
+	except Exception as e:
+		mo.save(ignore_permissions=True)
+		return _fail_out(mo, "SEND", e, retry=True)
+
+	if not result.get("ok"):
+		mo.save(ignore_permissions=True)
+		return _fail_out(mo, "SEND", result.get("response") or "Transport reported failure", retry=True)
+
+	mo.delivery_status = "Sent"
+	mo.sent_at = now_datetime()
+	mo.external_id = result.get("external_id")
+	mo.response = (result.get("response") or "")[:140]
+	mo.save(ignore_permissions=True)
+	log_event("EDX Message Out", name, "Sent", "Info", f"Sent via {mo.connection}")
+	return {"ok": True, "status": "Sent", "connection": mo.connection}
+
+
+def _fail_out(mo, code, error, retry=True, compose=False):
+	"""Record an outbound failure on the row; schedule a retry when retryable."""
+	message = str(error)
+	if compose:
+		mo.compose_status = "Compose Failed"
+	mo.append("issues", {"level": "Error", "code": code, "message": message[:500]})
+
+	if retry and (mo.retry_count or 0) < _MAX_RETRIES:
+		mo.retry_count = (mo.retry_count or 0) + 1
+		mo.next_retry_at = add_to_date(now_datetime(), minutes=_RETRY_BACKOFF_MIN * mo.retry_count)
+		mo.delivery_status = "Queued"
+	else:
+		mo.delivery_status = "Failed"
+	mo.save(ignore_permissions=True)
+	log_event("EDX Message Out", mo.name, "Failed", "Error", f"{code}: {message}", frappe.get_traceback())
+	return {"ok": False, "status": mo.delivery_status, "error": message}
+
+
 def dispatch_outbound_queue():
-	"""Compose + send queued outbound messages — implemented in M5."""
-	pass
+	"""Scheduler tick: enqueue dispatch for all Queued outbound messages that are due."""
+	if not frappe.db.exists("DocType", "EDX Message Out"):
+		return
+	now = now_datetime()
+	for name in frappe.get_all(
+		"EDX Message Out",
+		filters={"delivery_status": "Queued"},
+		pluck="name",
+	):
+		row = frappe.db.get_value("EDX Message Out", name, "next_retry_at")
+		if row and get_datetime(row) > get_datetime(now):
+			continue  # a retry that isn't due yet
+		frappe.enqueue("awbix.edx.engine.pipeline.dispatch_message_out", queue="long", name=name)
 
 
 def retry_failed():
-	"""Re-enqueue failed messages past their next_retry_at — implemented in M6."""
-	pass
+	"""Re-enqueue messages whose retry window has elapsed (inbound + outbound).
+
+	Only rows with a due ``next_retry_at`` are retried — failures aren't auto-scheduled, so
+	a permanent data error stays terminal until an operator (or a future dead-letter policy)
+	sets a retry time. The full dead-letter queue / perf pass is still open.
+	"""
+	if frappe.db.exists("DocType", "EDX Message Out"):
+		dispatch_outbound_queue()
+	_retry_inbound()
+
+
+def _retry_inbound():
+	if not frappe.db.exists("DocType", "EDX Message In"):
+		return
+	now = now_datetime()
+	for name in frappe.get_all(
+		"EDX Message In",
+		filters={"process_status": "Failed", "next_retry_at": ["<=", now]},
+		pluck="name",
+	):
+		frappe.enqueue("awbix.edx.engine.pipeline.process_message_in", queue="long", name=name)

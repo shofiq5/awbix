@@ -1,0 +1,218 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-06-17 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "message_type",
+  "message_version",
+  "business_key",
+  "cb_source",
+  "source_doctype",
+  "source_name",
+  "sb_route",
+  "connection",
+  "address_type",
+  "cb_route",
+  "address",
+  "sb_compose",
+  "composed_raw",
+  "compose_status",
+  "verify_status",
+  "issues",
+  "sb_delivery",
+  "delivery_status",
+  "sent_at",
+  "external_id",
+  "cb_delivery",
+  "retry_count",
+  "next_retry_at",
+  "response"
+ ],
+ "fields": [
+  {
+   "fieldname": "message_type",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Message Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "message_version",
+   "fieldtype": "Data",
+   "label": "Message Version",
+   "reqd": 1
+  },
+  {
+   "description": "Stable business identity of the source, e.g. AWB number",
+   "fieldname": "business_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Business Key",
+   "search_index": 1
+  },
+  {
+   "fieldname": "cb_source",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "source_doctype",
+   "fieldtype": "Link",
+   "label": "Source DocType",
+   "options": "DocType"
+  },
+  {
+   "fieldname": "source_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Source Name",
+   "options": "source_doctype"
+  },
+  {
+   "fieldname": "sb_route",
+   "fieldtype": "Section Break",
+   "label": "Routing"
+  },
+  {
+   "description": "Resolved at dispatch from EDX Message Routing",
+   "fieldname": "connection",
+   "fieldtype": "Link",
+   "label": "Connection",
+   "options": "EDX Connection"
+  },
+  {
+   "fieldname": "address_type",
+   "fieldtype": "Select",
+   "label": "Address Type",
+   "options": "\nEmail\nSITA\nMQ"
+  },
+  {
+   "fieldname": "cb_route",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "address",
+   "fieldtype": "Data",
+   "label": "Address"
+  },
+  {
+   "fieldname": "sb_compose",
+   "fieldtype": "Section Break",
+   "label": "Compose & Verify"
+  },
+  {
+   "fieldname": "composed_raw",
+   "fieldtype": "Long Text",
+   "label": "Composed Raw"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "compose_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Compose Status",
+   "options": "Pending\nComposed\nCompose Failed"
+  },
+  {
+   "default": "Pending",
+   "fieldname": "verify_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "Verify Status",
+   "options": "Pending\nVerified\nVerification Failed"
+  },
+  {
+   "fieldname": "issues",
+   "fieldtype": "Table",
+   "label": "Issues",
+   "options": "EDX Message Issue"
+  },
+  {
+   "fieldname": "sb_delivery",
+   "fieldtype": "Section Break",
+   "label": "Delivery"
+  },
+  {
+   "default": "Queued",
+   "fieldname": "delivery_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Delivery Status",
+   "options": "Queued\nSent\nDelivered\nFailed"
+  },
+  {
+   "fieldname": "sent_at",
+   "fieldtype": "Datetime",
+   "label": "Sent At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "external_id",
+   "fieldtype": "Data",
+   "label": "External ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_delivery",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "retry_count",
+   "fieldtype": "Int",
+   "label": "Retry Count"
+  },
+  {
+   "fieldname": "next_retry_at",
+   "fieldtype": "Datetime",
+   "label": "Next Retry At"
+  },
+  {
+   "fieldname": "response",
+   "fieldtype": "Small Text",
+   "label": "Response",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-06-17 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "EDX",
+ "name": "EDX Message Out",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "EDX Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

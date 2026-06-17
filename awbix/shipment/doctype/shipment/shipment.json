@@ -119,6 +119,10 @@
   "sales_incentive_amount",
   "sales_incentive_indicator",
   "agent_reference",
+  "sb_edx_ack",
+  "edx_ack_status",
+  "edx_ack_detail",
+  "edx_ack_at",
   "amended_from"
  ],
  "fields": [
@@ -776,6 +780,34 @@
    "fieldtype": "Data",
    "label": "Agent Reference",
    "length": 15
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_edx_ack",
+   "fieldtype": "Section Break",
+   "label": "EDX Acknowledgement"
+  },
+  {
+   "default": "Pending",
+   "description": "Set by EDX when an FMA/FNA is received for this AWB",
+   "fieldname": "edx_ack_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "EDX Ack Status",
+   "options": "\nPending\nAcknowledged\nRejected",
+   "read_only": 1
+  },
+  {
+   "fieldname": "edx_ack_detail",
+   "fieldtype": "Small Text",
+   "label": "EDX Ack Detail",
+   "read_only": 1
+  },
+  {
+   "fieldname": "edx_ack_at",
+   "fieldtype": "Datetime",
+   "label": "EDX Ack At",
+   "read_only": 1
   },
   {
    "fieldname": "amended_from",

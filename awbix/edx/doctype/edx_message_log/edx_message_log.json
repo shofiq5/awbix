@@ -1,8 +1,8 @@
 {
  "actions": [],
- "allow_rename": 0,
+ "app": "awbix",
  "autoname": "hash",
- "creation": "2026-06-16 12:00:00.000000",
+ "creation": "2026-06-16 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -12,9 +12,12 @@
   "cb_1",
   "reference_doctype",
   "reference_name",
+  "awb_prefix",
   "sb_1",
   "message",
-  "traceback"
+  "traceback",
+  "section_break_tcwn",
+  "status_timestamp"
  ],
  "fields": [
   {
@@ -73,13 +76,27 @@
    "fieldtype": "Code",
    "label": "Traceback",
    "options": "Text"
+  },
+  {
+   "fieldname": "awb_prefix",
+   "fieldtype": "Data",
+   "label": "AWB Prefix",
+   "length": 3
+  },
+  {
+   "fieldname": "section_break_tcwn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "status_timestamp",
+   "fieldtype": "Datetime",
+   "label": "Status Timestamp"
   }
  ],
  "in_create": 1,
- "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-06-16 12:00:00.000000",
- "modified_by": "Administrator",
+ "modified": "2026-06-17 05:12:37.573745",
+ "modified_by": "shofiq5@gmail.com",
  "module": "EDX",
  "name": "EDX Message Log",
  "naming_rule": "Random",
@@ -98,6 +115,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "timestamp",
  "sort_order": "DESC",
  "states": []

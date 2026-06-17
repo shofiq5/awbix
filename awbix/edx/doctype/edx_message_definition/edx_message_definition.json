@@ -20,6 +20,7 @@
   "auto_promote",
   "auto_process",
   "amendment_mode",
+  "bypass_amendment",
   "sb_detect",
   "detection_pattern"
  ],
@@ -114,6 +115,13 @@
    "fieldtype": "Select",
    "label": "Amendment Mode",
    "options": "Auto Apply\nManual Review"
+  },
+  {
+   "default": "0",
+   "description": "Status/annotation messages (e.g. FNA/FMA): skip the amendment guards and EDX Delivery ledger; process() only updates the target",
+   "fieldname": "bypass_amendment",
+   "fieldtype": "Check",
+   "label": "Bypass Amendment"
   },
   {
    "fieldname": "sb_detect",

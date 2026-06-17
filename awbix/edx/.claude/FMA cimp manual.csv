@@ -1,0 +1,11 @@
+﻿ref_num_code,cndn_code,msg_data_element_name,data_format,data_element_code,data_element_chk_ind,fixed_val,sort_seq_num,msg_ver,rmk,msg_std_code,def_msg_ind,cre_datt_bu,cre_by,mod_datt_bu,mod_by,txn_id,ver_id,eix_id,par_fmtr_ind
+1,M,Message Identifier,,,,,1,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+1.1,M,Message Type,aaa,101,,FMA,2,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+1.2,M,Separator,CRLF,,,,3,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+2,M,Reason Acknowledgement,,,,,4,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+2.1,M,Line Identifier,aaa,103,,ACK,5,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+2.2,M,Separator,Slant,,,,6,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+2.3,M,Reason For Acknowledgement,t[0...65],,,,7,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+2.4,M,Separator,CRLF,,,,8,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+3,M,Received Message Details,,,,,9,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B
+3.1,M,Received Message,x[0...1000],,,,10,0,FMA Message,CargoIMP,Y,01-FEB-14 11.45.52.0000000 AM,SYSTEM,,,100,,1,B

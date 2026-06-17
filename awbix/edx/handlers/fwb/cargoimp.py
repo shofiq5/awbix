@@ -53,3 +53,26 @@ def first(tokens: dict, code: str) -> dict | None:
 def continuation_text(segment: dict) -> list[str]:
 	"""Bodies of the ``/`` continuation lines (slash stripped); header excluded."""
 	return [ln[1:].strip() for ln in segment["lines"] if ln.startswith("/")]
+
+
+# --------------------------------------------------------------------------- compose
+# Composition helpers — the inverse of tokenize(), used by the outbound composers so the
+# Cargo-IMP line conventions live in one module.
+
+CRLF = "\r\n"
+
+
+def segment(code: str, *body: str) -> list[str]:
+	"""Build a segment as ``[header, "/body1", "/body2", …]``.
+
+	The header is the bare ``code`` (e.g. ``SHP``); each body line is emitted as a ``/``
+	continuation, matching how ``tokenize`` reads them back via ``continuation_text``.
+	"""
+	lines = [code]
+	lines += ["/" + (b or "") for b in body]
+	return lines
+
+
+def join(lines: list[str]) -> str:
+	"""Join composed lines with CRLF and a trailing terminator (Cargo-IMP convention)."""
+	return CRLF.join(ln for ln in lines if ln is not None) + CRLF

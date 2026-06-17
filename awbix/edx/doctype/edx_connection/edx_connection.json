@@ -1,0 +1,396 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "field:connection_name",
+ "creation": "2026-06-17 12:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "connection_name",
+  "channel",
+  "direction",
+  "cb_general",
+  "enabled",
+  "transport_class",
+  "max_messages_per_poll",
+  "sb_email",
+  "incoming_protocol",
+  "email_host",
+  "email_port",
+  "email_user",
+  "email_password",
+  "use_ssl",
+  "mailbox",
+  "cb_email_out",
+  "smtp_host",
+  "smtp_port",
+  "smtp_user",
+  "smtp_password",
+  "smtp_tls",
+  "sb_sftp",
+  "sftp_host",
+  "sftp_port",
+  "sftp_username",
+  "sftp_password",
+  "sftp_private_key",
+  "cb_sftp",
+  "remote_inbound_path",
+  "remote_outbound_path",
+  "archive_after_fetch",
+  "archive_path",
+  "sb_mq",
+  "mq_type",
+  "mq_host",
+  "mq_port",
+  "mq_vhost",
+  "mq_use_tls",
+  "cb_mq",
+  "mq_username",
+  "mq_password",
+  "queue_in",
+  "queue_out",
+  "mq_exchange",
+  "mq_routing_key",
+  "sb_status",
+  "last_polled_at",
+  "last_test_status",
+  "cb_status",
+  "last_test_at",
+  "last_test_message"
+ ],
+ "fields": [
+  {
+   "fieldname": "connection_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Connection Name",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "default": "Manual",
+   "fieldname": "channel",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Channel",
+   "options": "Email\nSFTP\nMQ\nManual",
+   "reqd": 1
+  },
+  {
+   "default": "Inbound",
+   "fieldname": "direction",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Direction",
+   "options": "Inbound\nOutbound\nBoth",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_general",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Enabled"
+  },
+  {
+   "description": "Optional dotted path to a BaseTransport subclass, overriding the channel default",
+   "fieldname": "transport_class",
+   "fieldtype": "Data",
+   "label": "Transport Class (override)"
+  },
+  {
+   "default": "50",
+   "description": "Volume guard: maximum messages fetched per poll",
+   "fieldname": "max_messages_per_poll",
+   "fieldtype": "Int",
+   "label": "Max Messages Per Poll"
+  },
+  {
+   "depends_on": "eval:doc.channel=='Email'",
+   "fieldname": "sb_email",
+   "fieldtype": "Section Break",
+   "label": "Email \u2014 Incoming (POP3/IMAP)"
+  },
+  {
+   "default": "IMAP",
+   "fieldname": "incoming_protocol",
+   "fieldtype": "Select",
+   "label": "Incoming Protocol",
+   "options": "IMAP\nPOP3"
+  },
+  {
+   "fieldname": "email_host",
+   "fieldtype": "Data",
+   "label": "Incoming Host"
+  },
+  {
+   "fieldname": "email_port",
+   "fieldtype": "Int",
+   "label": "Incoming Port"
+  },
+  {
+   "fieldname": "email_user",
+   "fieldtype": "Data",
+   "label": "Incoming User"
+  },
+  {
+   "fieldname": "email_password",
+   "fieldtype": "Password",
+   "label": "Incoming Password"
+  },
+  {
+   "default": "1",
+   "fieldname": "use_ssl",
+   "fieldtype": "Check",
+   "label": "Use SSL"
+  },
+  {
+   "default": "INBOX",
+   "description": "IMAP folder to read",
+   "fieldname": "mailbox",
+   "fieldtype": "Data",
+   "label": "Mailbox (IMAP)"
+  },
+  {
+   "fieldname": "cb_email_out",
+   "fieldtype": "Column Break",
+   "label": "Email \u2014 Outgoing (SMTP)"
+  },
+  {
+   "fieldname": "smtp_host",
+   "fieldtype": "Data",
+   "label": "SMTP Host"
+  },
+  {
+   "fieldname": "smtp_port",
+   "fieldtype": "Int",
+   "label": "SMTP Port"
+  },
+  {
+   "fieldname": "smtp_user",
+   "fieldtype": "Data",
+   "label": "SMTP User"
+  },
+  {
+   "fieldname": "smtp_password",
+   "fieldtype": "Password",
+   "label": "SMTP Password"
+  },
+  {
+   "default": "1",
+   "fieldname": "smtp_tls",
+   "fieldtype": "Check",
+   "label": "SMTP TLS"
+  },
+  {
+   "depends_on": "eval:doc.channel=='SFTP'",
+   "fieldname": "sb_sftp",
+   "fieldtype": "Section Break",
+   "label": "SFTP"
+  },
+  {
+   "fieldname": "sftp_host",
+   "fieldtype": "Data",
+   "label": "SFTP Host"
+  },
+  {
+   "default": "22",
+   "fieldname": "sftp_port",
+   "fieldtype": "Int",
+   "label": "SFTP Port"
+  },
+  {
+   "fieldname": "sftp_username",
+   "fieldtype": "Data",
+   "label": "SFTP Username"
+  },
+  {
+   "fieldname": "sftp_password",
+   "fieldtype": "Password",
+   "label": "SFTP Password"
+  },
+  {
+   "description": "PEM private key (used instead of password if set)",
+   "fieldname": "sftp_private_key",
+   "fieldtype": "Password",
+   "label": "SFTP Private Key"
+  },
+  {
+   "fieldname": "cb_sftp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "remote_inbound_path",
+   "fieldtype": "Data",
+   "label": "Remote Inbound Path"
+  },
+  {
+   "fieldname": "remote_outbound_path",
+   "fieldtype": "Data",
+   "label": "Remote Outbound Path"
+  },
+  {
+   "default": "0",
+   "fieldname": "archive_after_fetch",
+   "fieldtype": "Check",
+   "label": "Archive After Fetch"
+  },
+  {
+   "depends_on": "archive_after_fetch",
+   "fieldname": "archive_path",
+   "fieldtype": "Data",
+   "label": "Archive Path"
+  },
+  {
+   "depends_on": "eval:doc.channel=='MQ'",
+   "fieldname": "sb_mq",
+   "fieldtype": "Section Break",
+   "label": "MQ"
+  },
+  {
+   "default": "RabbitMQ",
+   "fieldname": "mq_type",
+   "fieldtype": "Select",
+   "label": "MQ Type",
+   "options": "RabbitMQ"
+  },
+  {
+   "fieldname": "mq_host",
+   "fieldtype": "Data",
+   "label": "MQ Host"
+  },
+  {
+   "default": "5672",
+   "fieldname": "mq_port",
+   "fieldtype": "Int",
+   "label": "MQ Port"
+  },
+  {
+   "default": "/",
+   "fieldname": "mq_vhost",
+   "fieldtype": "Data",
+   "label": "MQ Virtual Host"
+  },
+  {
+   "default": "0",
+   "fieldname": "mq_use_tls",
+   "fieldtype": "Check",
+   "label": "MQ Use TLS"
+  },
+  {
+   "fieldname": "cb_mq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mq_username",
+   "fieldtype": "Data",
+   "label": "MQ Username"
+  },
+  {
+   "fieldname": "mq_password",
+   "fieldtype": "Password",
+   "label": "MQ Password"
+  },
+  {
+   "description": "Queue consumed on inbound poll",
+   "fieldname": "queue_in",
+   "fieldtype": "Data",
+   "label": "Queue In"
+  },
+  {
+   "description": "Queue published to on outbound send (when no exchange given)",
+   "fieldname": "queue_out",
+   "fieldtype": "Data",
+   "label": "Queue Out"
+  },
+  {
+   "fieldname": "mq_exchange",
+   "fieldtype": "Data",
+   "label": "Exchange"
+  },
+  {
+   "fieldname": "mq_routing_key",
+   "fieldtype": "Data",
+   "label": "Routing Key"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_status",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "fieldname": "last_polled_at",
+   "fieldtype": "Datetime",
+   "label": "Last Polled At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_test_status",
+   "fieldtype": "Select",
+   "label": "Last Test Status",
+   "options": "\nOK\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_status",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_test_at",
+   "fieldtype": "Datetime",
+   "label": "Last Test At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_test_message",
+   "fieldtype": "Small Text",
+   "label": "Last Test Message",
+   "read_only": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-06-17 05:04:28.515653",
+ "modified_by": "shofiq5@gmail.com",
+ "module": "EDX",
+ "name": "EDX Connection",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "EDX Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "connection_name"
+}
