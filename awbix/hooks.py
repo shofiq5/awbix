@@ -259,6 +259,37 @@ scheduler_events = {
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+# Fixtures
+# ---------
+# Export DocTypes as fixtures (master/reference data), excluding transactional logs
+fixtures = [
+	"Portal Menu Item",
+	"OCI Information Identifier",
+	"Accounting Information Identifier",
+	"Measurement Unit Code",
+	"Airport",
+	"Airline",
+	"Charge Code",
+	"Customs Information Identifier",
+	"ULD Type",
+	"Service Code",
+	"Volume Code",
+	"Rate Class Code",
+	"Special Handling Code",
+	"Other Charge Code",
+	"Participant Identifier",
+	"Party",
+	"Party Contact",
+	"Shipment",
+	"EDX Connection",
+	"EDX Message Definition",
+	"EDX Message Issue",
+	"EDX Message Routing",
+	"EDX Message Stage",
+	"EDX Delivery",
+	"EDX Verify Row",
+]
+
 # Translation
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.

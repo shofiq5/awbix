@@ -1,0 +1,30 @@
+[
+ {
+  "business_key": "157-53765272",
+  "current_message_in": "EDX-IN-2026-00001",
+  "docstatus": 0,
+  "doctype": "EDX Delivery",
+  "last_source_received_at": "2026-06-17 05:52:48.672025",
+  "locked": 0,
+  "modified": "2026-06-17 06:05:56.060031",
+  "name": "kj5tu2hsv5",
+  "revision": 2,
+  "status": "Active",
+  "target_doctype": "Shipment",
+  "target_name": "157-53765272"
+ },
+ {
+  "business_key": "157-51340726",
+  "current_message_in": "EDX-IN-2026-00002",
+  "docstatus": 0,
+  "doctype": "EDX Delivery",
+  "last_source_received_at": "2026-06-17 06:08:08.470018",
+  "locked": 0,
+  "modified": "2026-06-17 06:08:08.881678",
+  "name": "tgobp2inj5",
+  "revision": 1,
+  "status": "Active",
+  "target_doctype": "Shipment",
+  "target_name": "157-51340726"
+ }
+]

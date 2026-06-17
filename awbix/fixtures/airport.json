@@ -1,0 +1,79 @@
+[
+ {
+  "airport_name": "Dhaka",
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "DAC",
+  "is_city_code": 0,
+  "modified": "2026-06-16 03:10:49.168013",
+  "name": "DAC"
+ },
+ {
+  "airport_name": "FRankfurt",
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "FRA",
+  "is_city_code": 0,
+  "modified": "2026-06-16 03:11:06.714193",
+  "name": "FRA"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "BOM",
+  "is_city_code": 0,
+  "modified": "2026-06-17 05:52:54.430108",
+  "name": "BOM"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "DOH",
+  "is_city_code": 0,
+  "modified": "2026-06-17 05:52:54.511523",
+  "name": "DOH"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "MEL",
+  "is_city_code": 0,
+  "modified": "2026-06-17 05:52:54.541325",
+  "name": "MEL"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "LHR",
+  "is_city_code": 0,
+  "modified": "2026-06-17 06:08:08.828082",
+  "name": "LHR"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "MLE",
+  "is_city_code": 0,
+  "modified": "2026-06-17 06:08:08.843925",
+  "name": "MLE"
+ }
+]
