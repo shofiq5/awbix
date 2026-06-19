@@ -16,7 +16,9 @@
       "Bash(grep *)",
       "Bash(ls *)",
       "Bash(cat *)",
-      "Bash(jq *)"
+      "Bash(jq *)",
+      "PowerShell(wsl -d Ubuntu-22.04 -e bash -c \"ls /var/bench/awbix_bench/apps/awbix/frontend/\")",
+      "PowerShell(wsl -d Ubuntu-22.04 -e bash -c \"cd /var/bench/awbix_bench/apps/awbix/frontend && yarn install 2>&1 | tail -10\")"
     ]
   }
 }

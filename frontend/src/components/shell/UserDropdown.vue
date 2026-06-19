@@ -86,10 +86,12 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useTheme, THEMES } from '@/composables/useTheme'
-import { frappeRequest } from 'frappe-ui'
+import { session, logout as endSession } from '@/composables/useSession'
 import Icon from '@/components/ui/Icon.vue'
 
+const router = useRouter()
 const { theme, isDark, setTheme, toggleDark } = useTheme()
 
 const el = ref(null)
@@ -109,8 +111,8 @@ const themeColors = {
   orange:  '#ea580c',
 }
 
-const fullName  = computed(() => window.frappe?.session?.user_fullname ?? 'User')
-const userEmail = computed(() => window.frappe?.session?.user ?? '')
+const fullName  = computed(() => session.fullName || 'User')
+const userEmail = computed(() => session.user || '')
 const firstName = computed(() => fullName.value.split(' ')[0])
 const initials  = computed(() => {
   const parts = fullName.value.trim().split(' ').filter(Boolean)
@@ -121,12 +123,8 @@ const initials  = computed(() => {
 
 async function logout() {
   open.value = false
-  try {
-    await frappeRequest({ url: '/api/method/frappe.auth.logout' })
-  } catch (_) {
-    // redirect regardless of request outcome
-  }
-  window.location.href = '/login'
+  await endSession()
+  router.push({ name: 'Login' })
 }
 </script>
 

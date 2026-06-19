@@ -1,7 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import AppShell from '@/layouts/AppShell.vue'
+import { session } from '@/composables/useSession'
 
 const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/pages/Login.vue'),
+    meta: { public: true, title: 'Sign In' },
+  },
   {
     path: '/',
     component: AppShell,
@@ -86,13 +93,18 @@ let router = createRouter({
   routes,
 })
 
-router.beforeEach(() => {
-  const user = window.frappe?.session?.user
-  if (!user || user === 'Guest') {
-    const next = encodeURIComponent(window.location.href)
-    window.location.href = `/login?redirect-to=${next}`
-    return false
+router.beforeEach((to) => {
+  // Public routes (login) are always reachable. If an already-authenticated
+  // user lands on the login page, send them to the dashboard instead.
+  if (to.meta.public) {
+    return session.isLoggedIn && to.name === 'Login' ? { path: '/' } : true
   }
+  // Protected routes require a session; otherwise route to the in-app login
+  // page, remembering where the user was headed.
+  if (!session.isLoggedIn) {
+    return { name: 'Login', query: { redirect: to.fullPath } }
+  }
+  return true
 })
 
 export default router

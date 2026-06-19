@@ -34,10 +34,6 @@ export default defineConfig({
         target: `http://localhost:${webserver_port}`,
         changeOrigin: true,
       },
-      '^/login': {
-        target: `http://localhost:${webserver_port}`,
-        changeOrigin: true,
-      },
       '^/assets': {
         target: `http://localhost:${webserver_port}`,
         changeOrigin: true,
