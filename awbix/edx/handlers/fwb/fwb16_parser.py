@@ -157,9 +157,21 @@ class FWB16Parser(BaseParser):
 		doc.agent_name = (data.get("agent") or {}).get("name") or doc.agent_name
 
 		doc.set("routing", [])
-		for r in data.get("routing", []):
+		routing_rows = data.get("routing", [])
+		for r in routing_rows:
 			self._ensure("Airport", {"iata_code": r["airport"]}, r["airport"])
-			doc.append("routing", {"sequence": r["sequence"], "airport": r["airport"]})
+			if r.get("carrier"):
+				self._ensure("Airline", {"airline_prefix": r["carrier"]}, r["carrier"])
+			doc.append("routing", {"sequence": r["sequence"], "airport": r["airport"], "carrier_code": r.get("carrier") or ""})
+
+		if routing_rows:
+			r0 = routing_rows[0]
+			doc.to_airport1 = r0["airport"]
+			doc.by_carrier1 = r0.get("carrier") or ""
+		if len(routing_rows) >= 2:
+			r1 = routing_rows[1]
+			doc.to_airport2 = r1["airport"]
+			doc.by_carrier2 = r1.get("carrier") or ""
 
 		doc.flags.ignore_permissions = True
 		doc.save()

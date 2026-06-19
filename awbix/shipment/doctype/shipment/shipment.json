@@ -21,6 +21,14 @@
   "volume_amount",
   "density_indicator",
   "density_group",
+  "routing_section",
+  "to_airport1",
+  "column_break_rrjl",
+  "by_carrier1",
+  "column_break_dkmj",
+  "to_airport2",
+  "column_break_easj",
+  "by_carrier2",
   "sb_24",
   "flight_bookings",
   "routing",
@@ -848,12 +856,53 @@
   {
    "fieldname": "column_break_tvtx",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "routing_section",
+   "fieldtype": "Section Break",
+   "label": "Routing"
+  },
+  {
+   "fieldname": "to_airport1",
+   "fieldtype": "Link",
+   "label": "To Airport1",
+   "options": "Airport"
+  },
+  {
+   "fieldname": "column_break_rrjl",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_dkmj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_easj",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "by_carrier1",
+   "fieldtype": "Link",
+   "label": "By Carrier1",
+   "options": "Airline"
+  },
+  {
+   "fieldname": "to_airport2",
+   "fieldtype": "Link",
+   "label": "To Airport2",
+   "options": "Airport"
+  },
+  {
+   "fieldname": "by_carrier2",
+   "fieldtype": "Link",
+   "label": "By Carrier2",
+   "options": "Airline"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-13 07:24:39.088510",
+ "modified": "2026-06-20 02:36:25.780766",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",

@@ -56,6 +56,18 @@ class FWB16Composer(BaseComposer):
 			if not airport:
 				continue
 			tokens.append(airport + (r.get("carrier_code") or "").strip().upper())
+
+		if not tokens:
+			# fall back to the flat route fields
+			a1 = (doc.get("to_airport1") or "").strip().upper()
+			c1 = (doc.get("by_carrier1") or "").strip().upper()
+			if a1:
+				tokens.append(a1 + c1)
+			a2 = (doc.get("to_airport2") or "").strip().upper()
+			c2 = (doc.get("by_carrier2") or "").strip().upper()
+			if a2:
+				tokens.append(a2 + c2)
+
 		return "RTG/" + "/".join(tokens) if tokens else ""
 
 	# ------------------------------------------------------------------- verify
