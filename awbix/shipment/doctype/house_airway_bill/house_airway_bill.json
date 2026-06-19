@@ -254,8 +254,9 @@
   },
   {
    "fieldname": "hs_codes",
-   "fieldtype": "Data",
-   "label": "HS Codes"
+   "fieldtype": "Table",
+   "label": "HS Codes",
+   "options": "House Airway Bill HS Code"
   },
   {
    "fieldname": "tab_parties",
@@ -601,7 +602,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-19 21:50:22.022300",
+ "modified": "2026-06-20 03:48:15.368826",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "House Airway Bill",

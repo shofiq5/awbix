@@ -357,6 +357,30 @@ def poll_inbound_connections():
 		frappe.enqueue("awbix.edx.engine.pipeline.poll_connection", queue="long", connection=name)
 
 
+@frappe.whitelist()
+def sync_email_messages():
+	"""Poll all enabled Email inbound connections immediately (on-demand from the Desk)."""
+	if not frappe.db.exists("DocType", "EDX Connection"):
+		return {"ok": False, "message": _("EDX Connection is not set up")}
+
+	connections = frappe.get_all(
+		"EDX Connection",
+		filters={"enabled": 1, "channel": "Email", "direction": ["in", ["Inbound", "Both"]]},
+		pluck="name",
+	)
+	if not connections:
+		return {"ok": False, "message": _("No enabled Email inbound connections found")}
+
+	for name in connections:
+		frappe.enqueue("awbix.edx.engine.pipeline.poll_connection", queue="long", connection=name)
+
+	return {
+		"ok": True,
+		"count": len(connections),
+		"message": _("Syncing {0} email connection(s)…").format(len(connections)),
+	}
+
+
 def poll_connection(connection):
 	from awbix.edx.engine.registry import get_transport
 
