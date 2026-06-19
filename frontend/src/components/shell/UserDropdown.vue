@@ -87,6 +87,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useTheme, THEMES } from '@/composables/useTheme'
+import { frappeRequest } from 'frappe-ui'
 import Icon from '@/components/ui/Icon.vue'
 
 const { theme, isDark, setTheme, toggleDark } = useTheme()
@@ -108,9 +109,8 @@ const themeColors = {
   orange:  '#ea580c',
 }
 
-const frappe = window.frappe ?? {}
-const fullName  = computed(() => frappe.session?.user_fullname ?? 'User')
-const userEmail = computed(() => frappe.session?.user ?? '')
+const fullName  = computed(() => window.frappe?.session?.user_fullname ?? 'User')
+const userEmail = computed(() => window.frappe?.session?.user ?? '')
 const firstName = computed(() => fullName.value.split(' ')[0])
 const initials  = computed(() => {
   const parts = fullName.value.trim().split(' ').filter(Boolean)
@@ -119,9 +119,10 @@ const initials  = computed(() => {
     : (parts[0]?.[0] ?? 'U').toUpperCase()
 })
 
-function logout() {
+async function logout() {
   open.value = false
-  window.location.href = '/logout'
+  await frappeRequest({ url: '/api/method/frappe.auth.logout' })
+  window.location.href = '/login'
 }
 </script>
 

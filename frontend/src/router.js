@@ -82,8 +82,18 @@ const routes = [
 ]
 
 let router = createRouter({
-  history: createWebHistory('/frontend'),
+  history: createWebHistory(import.meta.env.BASE_URL || '/'),
   routes,
+})
+
+router.beforeEach(() => {
+  const session = window.frappe?.session
+  if (!session) return  // frappe not yet initialised; let it load
+  const user = session.user
+  if (!user || user === 'Guest') {
+    window.location.href = '/login'
+    return false
+  }
 })
 
 export default router
