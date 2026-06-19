@@ -25,8 +25,8 @@ app_license = "epl-2.0"
 # ------------------
 
 # include js, css files in header of desk.html
-app_include_css = "awbix.bundle.css"
-app_include_js = "awbix.bundle.js"
+# app_include_css = "awbix.bundle.css"
+# app_include_js = "awbix.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/awbix/css/awbix.css"
