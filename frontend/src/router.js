@@ -87,9 +87,7 @@ let router = createRouter({
 })
 
 router.beforeEach(() => {
-  const session = window.frappe?.session
-  if (!session) return  // frappe not yet initialised; let it load
-  const user = session.user
+  const user = window.frappe?.session?.user
   if (!user || user === 'Guest') {
     window.location.href = '/login'
     return false

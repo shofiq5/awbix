@@ -121,7 +121,11 @@ const initials  = computed(() => {
 
 async function logout() {
   open.value = false
-  await frappeRequest({ url: '/api/method/frappe.auth.logout' })
+  try {
+    await frappeRequest({ url: '/api/method/frappe.auth.logout' })
+  } catch (_) {
+    // redirect regardless of request outcome
+  }
   window.location.href = '/login'
 }
 </script>
