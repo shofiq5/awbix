@@ -89,7 +89,8 @@ let router = createRouter({
 router.beforeEach(() => {
   const user = window.frappe?.session?.user
   if (!user || user === 'Guest') {
-    window.location.href = '/login'
+    const next = encodeURIComponent(window.location.href)
+    window.location.href = `/login?redirect-to=${next}`
     return false
   }
 })

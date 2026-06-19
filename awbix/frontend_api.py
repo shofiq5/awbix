@@ -2,6 +2,20 @@ import frappe
 from frappe import _
 
 
+@frappe.whitelist(allow_guest=True)
+def get_session_info():
+	"""Return current user, full name, and CSRF token for SPA bootstrap."""
+	user = frappe.session.user
+	if not user or user == "Guest":
+		return {"user": "Guest", "user_fullname": "Guest", "csrf_token": ""}
+	full_name = frappe.db.get_value("User", user, "full_name") or user
+	return {
+		"user": user,
+		"user_fullname": full_name,
+		"csrf_token": frappe.local.session.data.csrf_token,
+	}
+
+
 @frappe.whitelist(allow_guest=False)
 def get_parties(page=0, page_size=20, search=None, role_filter=None):
 	page = int(page)
