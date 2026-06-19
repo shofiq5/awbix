@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-19 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "country",
+  "information_identifier",
+  "customs_info_identifier",
+  "supplementary"
+ ],
+ "fields": [
+  {
+   "description": "DE304 — ISO Country Code (FHL30: at least one of country/info-id/customs-id required)",
+   "fieldname": "country",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Country",
+   "options": "Country"
+  },
+  {
+   "description": "DE103 — Information Identifier (e.g. ISS, OSS, EXP, IMP, CUS, AGT, DCL, SHP, CNE)",
+   "fieldname": "information_identifier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Info Identifier",
+   "options": "OCI Information Identifier"
+  },
+  {
+   "description": "DE941 — Customs, Security & Regulatory Control Info Identifier (e.g. RA, KC, M, T, ED, SM, SN, SD, ST, SS)",
+   "fieldname": "customs_info_identifier",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customs Info Identifier",
+   "options": "Customs Information Identifier"
+  },
+  {
+   "description": "DE940 — Supplementary info (continuation rows: country/info-id blank, only customs-id + supplementary filled)",
+   "fieldname": "supplementary",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Supplementary",
+   "length": 35
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-19 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "House Airway Bill Customs Info",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

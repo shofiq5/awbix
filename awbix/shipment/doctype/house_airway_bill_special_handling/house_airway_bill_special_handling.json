@@ -1,0 +1,45 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-19 12:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "special_handling_code",
+  "description"
+ ],
+ "fields": [
+  {
+   "description": "DE705",
+   "fieldname": "special_handling_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Special Handling Code",
+   "options": "Special Handling Code",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "special_handling_code.description",
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Description",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-19 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "House Airway Bill Special Handling",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,634 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-19 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "tab_consignment",
+  "sb_master_awb",
+  "master_shipment",
+  "master_awb_number",
+  "cb_master",
+  "master_origin",
+  "master_destination",
+  "sb_hbs",
+  "hwb_serial_number",
+  "hwb_number",
+  "cb_hbs_1",
+  "hwb_origin",
+  "hwb_destination",
+  "cb_hbs_2",
+  "number_of_pieces",
+  "weight_code",
+  "weight",
+  "slac",
+  "manifest_description",
+  "sb_sph",
+  "special_handling",
+  "sb_txt",
+  "free_text",
+  "sb_hts",
+  "hs_codes",
+  "tab_parties",
+  "sb_shipper",
+  "shipper",
+  "shipper_name",
+  "shipper_account",
+  "shipper_address",
+  "shipper_place",
+  "shipper_state",
+  "cb_shipper",
+  "shipper_country",
+  "shipper_post_code",
+  "shipper_contact_id",
+  "shipper_contact_number",
+  "sb_consignee",
+  "consignee",
+  "consignee_name",
+  "consignee_account",
+  "consignee_address",
+  "consignee_place",
+  "consignee_state",
+  "cb_consignee",
+  "consignee_country",
+  "consignee_post_code",
+  "consignee_contact_id",
+  "consignee_contact_number",
+  "tab_charges",
+  "sb_oci",
+  "oci_customs",
+  "sb_cvd",
+  "currency",
+  "cb_cvd_1",
+  "wt_val_prepaid_collect",
+  "other_charges_prepaid_collect",
+  "sb_cvd_values",
+  "cb_cvd_2",
+  "declared_value_carriage_type",
+  "declared_value_carriage_amount",
+  "cb_cvd_3",
+  "declared_value_customs_type",
+  "declared_value_customs_amount",
+  "cb_cvd_4",
+  "insurance_type",
+  "insurance_amount",
+  "tab_system",
+  "sb_edx_ack",
+  "edx_ack_status",
+  "edx_ack_detail",
+  "edx_ack_at",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "HWB-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "HWB-.#####"
+  },
+  {
+   "fieldname": "tab_consignment",
+   "fieldtype": "Tab Break",
+   "label": "Consignment"
+  },
+  {
+   "fieldname": "sb_master_awb",
+   "fieldtype": "Section Break",
+   "label": "Master AWB (MBI)"
+  },
+  {
+   "fieldname": "master_shipment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Master Shipment",
+   "options": "Shipment",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "master_shipment.awb_number",
+   "fieldname": "master_awb_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Master AWB Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_master",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE313",
+   "fetch_from": "master_shipment.origin",
+   "fieldname": "master_origin",
+   "fieldtype": "Link",
+   "label": "Master Origin",
+   "options": "Airport",
+   "read_only": 1
+  },
+  {
+   "description": "DE313",
+   "fetch_from": "master_shipment.destination",
+   "fieldname": "master_destination",
+   "fieldtype": "Link",
+   "label": "Master Destination",
+   "options": "Airport",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_hbs",
+   "fieldtype": "Section Break",
+   "label": "House Waybill Summary (HBS)"
+  },
+  {
+   "description": "DE119 — m[1...12] alphanumeric, agent-assigned",
+   "fieldname": "hwb_serial_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "HWB Serial Number",
+   "length": 12,
+   "reqd": 1
+  },
+  {
+   "bold": 1,
+   "fieldname": "hwb_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "HWB Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_hbs_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE313",
+   "fieldname": "hwb_origin",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Origin",
+   "options": "Airport",
+   "reqd": 1
+  },
+  {
+   "description": "DE313",
+   "fieldname": "hwb_destination",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Destination",
+   "options": "Airport",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_hbs_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE701 — n[...4]",
+   "fieldname": "number_of_pieces",
+   "fieldtype": "Int",
+   "label": "Number of Pieces",
+   "reqd": 1
+  },
+  {
+   "default": "K",
+   "description": "DE601",
+   "fieldname": "weight_code",
+   "fieldtype": "Select",
+   "label": "Weight Code",
+   "options": "K\nL",
+   "reqd": 1
+  },
+  {
+   "description": "DE600 — n[...7]p",
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight",
+   "reqd": 1
+  },
+  {
+   "description": "DE714 — n[...5] Shipper's Load and Count",
+   "fieldname": "slac",
+   "fieldtype": "Int",
+   "label": "SLAC"
+  },
+  {
+   "description": "DE708 — t[...15]",
+   "fieldname": "manifest_description",
+   "fieldtype": "Data",
+   "label": "Manifest Description of Goods",
+   "length": 15,
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_sph",
+   "fieldtype": "Section Break",
+   "label": "Special Handling (SPH)"
+  },
+  {
+   "fieldname": "special_handling",
+   "fieldtype": "Table",
+   "label": "Special Handling Codes",
+   "options": "House Airway Bill Special Handling"
+  },
+  {
+   "fieldname": "sb_txt",
+   "fieldtype": "Section Break",
+   "label": "Free Text Description of Goods (TXT)"
+  },
+  {
+   "fieldname": "free_text",
+   "fieldtype": "Table",
+   "label": "Free Text",
+   "options": "House Airway Bill Free Text"
+  },
+  {
+   "fieldname": "sb_hts",
+   "fieldtype": "Section Break",
+   "label": "Harmonised Tariff Schedule (HTS)"
+  },
+  {
+   "fieldname": "hs_codes",
+   "fieldtype": "Table",
+   "label": "HS Codes",
+   "options": "House Airway Bill HS Code"
+  },
+  {
+   "fieldname": "tab_parties",
+   "fieldtype": "Tab Break",
+   "label": "Parties"
+  },
+  {
+   "fieldname": "sb_shipper",
+   "fieldtype": "Section Break",
+   "label": "Shipper (SHP)"
+  },
+  {
+   "fieldname": "shipper",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shipper",
+   "options": "Party"
+  },
+  {
+   "description": "DE300",
+   "fetch_from": "shipper.party_name",
+   "fieldname": "shipper_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "length": 35,
+   "read_only": 1
+  },
+  {
+   "description": "DE108",
+   "fetch_from": "shipper.account_number",
+   "fieldname": "shipper_account",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "length": 14,
+   "read_only": 1
+  },
+  {
+   "description": "DE301",
+   "fetch_from": "shipper.street_address",
+   "fieldname": "shipper_address",
+   "fieldtype": "Small Text",
+   "label": "Street Address",
+   "read_only": 1
+  },
+  {
+   "description": "DE302",
+   "fetch_from": "shipper.place",
+   "fieldname": "shipper_place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "length": 17,
+   "read_only": 1
+  },
+  {
+   "description": "DE303",
+   "fetch_from": "shipper.state_province",
+   "fieldname": "shipper_state",
+   "fieldtype": "Data",
+   "label": "State / Province",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_shipper",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE304",
+   "fetch_from": "shipper.country",
+   "fieldname": "shipper_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "description": "DE305",
+   "fetch_from": "shipper.post_code",
+   "fieldname": "shipper_post_code",
+   "fieldtype": "Data",
+   "label": "Post Code",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "description": "DE122 — m[...3]: FX=Fax, TE=Telephone, TL=Telex",
+   "fieldname": "shipper_contact_id",
+   "fieldtype": "Data",
+   "label": "Contact Identifier",
+   "length": 3
+  },
+  {
+   "description": "DE123 — m[...25]",
+   "fieldname": "shipper_contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number",
+   "length": 25
+  },
+  {
+   "fieldname": "sb_consignee",
+   "fieldtype": "Section Break",
+   "label": "Consignee (CNE)"
+  },
+  {
+   "fieldname": "consignee",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Consignee",
+   "options": "Party"
+  },
+  {
+   "description": "DE300",
+   "fetch_from": "consignee.party_name",
+   "fieldname": "consignee_name",
+   "fieldtype": "Data",
+   "label": "Name",
+   "length": 35,
+   "read_only": 1
+  },
+  {
+   "description": "DE108",
+   "fetch_from": "consignee.account_number",
+   "fieldname": "consignee_account",
+   "fieldtype": "Data",
+   "label": "Account Number",
+   "length": 14,
+   "read_only": 1
+  },
+  {
+   "description": "DE301",
+   "fetch_from": "consignee.street_address",
+   "fieldname": "consignee_address",
+   "fieldtype": "Small Text",
+   "label": "Street Address",
+   "read_only": 1
+  },
+  {
+   "description": "DE302",
+   "fetch_from": "consignee.place",
+   "fieldname": "consignee_place",
+   "fieldtype": "Data",
+   "label": "Place",
+   "length": 17,
+   "read_only": 1
+  },
+  {
+   "description": "DE303",
+   "fetch_from": "consignee.state_province",
+   "fieldname": "consignee_state",
+   "fieldtype": "Data",
+   "label": "State / Province",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_consignee",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE304",
+   "fetch_from": "consignee.country",
+   "fieldname": "consignee_country",
+   "fieldtype": "Link",
+   "label": "Country",
+   "options": "Country",
+   "read_only": 1
+  },
+  {
+   "description": "DE305",
+   "fetch_from": "consignee.post_code",
+   "fieldname": "consignee_post_code",
+   "fieldtype": "Data",
+   "label": "Post Code",
+   "length": 9,
+   "read_only": 1
+  },
+  {
+   "description": "DE122 — m[...3]: FX=Fax, TE=Telephone, TL=Telex",
+   "fieldname": "consignee_contact_id",
+   "fieldtype": "Data",
+   "label": "Contact Identifier",
+   "length": 3
+  },
+  {
+   "description": "DE123 — m[...25]",
+   "fieldname": "consignee_contact_number",
+   "fieldtype": "Data",
+   "label": "Contact Number",
+   "length": 25
+  },
+  {
+   "fieldname": "tab_charges",
+   "fieldtype": "Tab Break",
+   "label": "Customs & Charges"
+  },
+  {
+   "fieldname": "sb_oci",
+   "fieldtype": "Section Break",
+   "label": "Other Customs, Security & Regulatory Control Information (OCI)"
+  },
+  {
+   "fieldname": "oci_customs",
+   "fieldtype": "Table",
+   "label": "OCI Lines",
+   "options": "House Airway Bill Customs Info"
+  },
+  {
+   "fieldname": "sb_cvd",
+   "fieldtype": "Section Break",
+   "label": "Charge Declarations (CVD)"
+  },
+  {
+   "description": "DE606",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_cvd_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "P",
+   "description": "DE403 — P=Prepaid, C=Collect",
+   "fieldname": "wt_val_prepaid_collect",
+   "fieldtype": "Select",
+   "label": "Weight/Valuation P/C",
+   "options": "P\nC"
+  },
+  {
+   "default": "P",
+   "description": "DE403 — P=Prepaid, C=Collect",
+   "fieldname": "other_charges_prepaid_collect",
+   "fieldtype": "Select",
+   "label": "Other Charges P/C",
+   "options": "P\nC"
+  },
+  {
+   "fieldname": "sb_cvd_values",
+   "fieldtype": "Section Break",
+   "label": "Declared Values"
+  },
+  {
+   "fieldname": "cb_cvd_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "NVD",
+   "description": "DE510",
+   "fieldname": "declared_value_carriage_type",
+   "fieldtype": "Select",
+   "label": "Declared Value for Carriage",
+   "options": "NVD\nValue"
+  },
+  {
+   "description": "DE510 — n[...12]p; required when type = Value",
+   "fieldname": "declared_value_carriage_amount",
+   "fieldtype": "Float",
+   "label": "Carriage Amount"
+  },
+  {
+   "fieldname": "cb_cvd_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "NCV",
+   "description": "DE509",
+   "fieldname": "declared_value_customs_type",
+   "fieldtype": "Select",
+   "label": "Declared Value for Customs",
+   "options": "NCV\nValue"
+  },
+  {
+   "description": "DE509 — n[...12]p; required when type = Value",
+   "fieldname": "declared_value_customs_amount",
+   "fieldtype": "Float",
+   "label": "Customs Amount"
+  },
+  {
+   "fieldname": "cb_cvd_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "XXX",
+   "description": "DE508",
+   "fieldname": "insurance_type",
+   "fieldtype": "Select",
+   "label": "Insurance",
+   "options": "XXX\nValue"
+  },
+  {
+   "description": "DE508 — n[...11]p; required when type = Value",
+   "fieldname": "insurance_amount",
+   "fieldtype": "Float",
+   "label": "Insurance Amount"
+  },
+  {
+   "fieldname": "tab_system",
+   "fieldtype": "Tab Break",
+   "label": "System"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "sb_edx_ack",
+   "fieldtype": "Section Break",
+   "label": "EDX Acknowledgement"
+  },
+  {
+   "default": "Pending",
+   "description": "Set by EDX when an FMA/FNA is received for this HWB",
+   "fieldname": "edx_ack_status",
+   "fieldtype": "Select",
+   "in_standard_filter": 1,
+   "label": "EDX Ack Status",
+   "options": "\nPending\nAcknowledged\nRejected",
+   "read_only": 1
+  },
+  {
+   "fieldname": "edx_ack_detail",
+   "fieldtype": "Small Text",
+   "label": "EDX Ack Detail",
+   "read_only": 1
+  },
+  {
+   "fieldname": "edx_ack_at",
+   "fieldtype": "Datetime",
+   "label": "EDX Ack At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "House Airway Bill",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-19 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "House Airway Bill",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "hwb_number",
+ "track_changes": 1
+}
