@@ -263,7 +263,6 @@ scheduler_events = {
 # ---------
 # Export DocTypes as fixtures (master/reference data), excluding transactional logs
 fixtures = [
-	"Portal Menu Item",
 	"OCI Information Identifier",
 	"Accounting Information Identifier",
 	"Measurement Unit Code",
