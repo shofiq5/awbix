@@ -1,7 +1,7 @@
 {
  "actions": [],
  "autoname": "naming_series:",
- "creation": "2026-06-19 12:00:00.000000",
+ "creation": "2026-06-19 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -144,7 +144,7 @@
    "label": "House Waybill Summary (HBS)"
   },
   {
-   "description": "DE119 — m[1...12] alphanumeric, agent-assigned",
+   "description": "DE119 \u2014 m[1...12] alphanumeric, agent-assigned",
    "fieldname": "hwb_serial_number",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -189,7 +189,7 @@
    "fieldtype": "Column Break"
   },
   {
-   "description": "DE701 — n[...4]",
+   "description": "DE701 \u2014 n[...4]",
    "fieldname": "number_of_pieces",
    "fieldtype": "Int",
    "label": "Number of Pieces",
@@ -205,20 +205,20 @@
    "reqd": 1
   },
   {
-   "description": "DE600 — n[...7]p",
+   "description": "DE600 \u2014 n[...7]p",
    "fieldname": "weight",
    "fieldtype": "Float",
    "label": "Weight",
    "reqd": 1
   },
   {
-   "description": "DE714 — n[...5] Shipper's Load and Count",
+   "description": "DE714 \u2014 n[...5] Shipper's Load and Count",
    "fieldname": "slac",
    "fieldtype": "Int",
    "label": "SLAC"
   },
   {
-   "description": "DE708 — t[...15]",
+   "description": "DE708 \u2014 t[...15]",
    "fieldname": "manifest_description",
    "fieldtype": "Data",
    "label": "Manifest Description of Goods",
@@ -254,9 +254,8 @@
   },
   {
    "fieldname": "hs_codes",
-   "fieldtype": "Table",
-   "label": "HS Codes",
-   "options": "House Airway Bill HS Code"
+   "fieldtype": "Data",
+   "label": "HS Codes"
   },
   {
    "fieldname": "tab_parties",
@@ -342,14 +341,14 @@
    "read_only": 1
   },
   {
-   "description": "DE122 — m[...3]: FX=Fax, TE=Telephone, TL=Telex",
+   "description": "DE122 \u2014 m[...3]: FX=Fax, TE=Telephone, TL=Telex",
    "fieldname": "shipper_contact_id",
    "fieldtype": "Data",
    "label": "Contact Identifier",
    "length": 3
   },
   {
-   "description": "DE123 — m[...25]",
+   "description": "DE123 \u2014 m[...25]",
    "fieldname": "shipper_contact_number",
    "fieldtype": "Data",
    "label": "Contact Number",
@@ -434,14 +433,14 @@
    "read_only": 1
   },
   {
-   "description": "DE122 — m[...3]: FX=Fax, TE=Telephone, TL=Telex",
+   "description": "DE122 \u2014 m[...3]: FX=Fax, TE=Telephone, TL=Telex",
    "fieldname": "consignee_contact_id",
    "fieldtype": "Data",
    "label": "Contact Identifier",
    "length": 3
   },
   {
-   "description": "DE123 — m[...25]",
+   "description": "DE123 \u2014 m[...25]",
    "fieldname": "consignee_contact_number",
    "fieldtype": "Data",
    "label": "Contact Number",
@@ -482,7 +481,7 @@
   },
   {
    "default": "P",
-   "description": "DE403 — P=Prepaid, C=Collect",
+   "description": "DE403 \u2014 P=Prepaid, C=Collect",
    "fieldname": "wt_val_prepaid_collect",
    "fieldtype": "Select",
    "label": "Weight/Valuation P/C",
@@ -490,7 +489,7 @@
   },
   {
    "default": "P",
-   "description": "DE403 — P=Prepaid, C=Collect",
+   "description": "DE403 \u2014 P=Prepaid, C=Collect",
    "fieldname": "other_charges_prepaid_collect",
    "fieldtype": "Select",
    "label": "Other Charges P/C",
@@ -514,7 +513,7 @@
    "options": "NVD\nValue"
   },
   {
-   "description": "DE510 — n[...12]p; required when type = Value",
+   "description": "DE510 \u2014 n[...12]p; required when type = Value",
    "fieldname": "declared_value_carriage_amount",
    "fieldtype": "Float",
    "label": "Carriage Amount"
@@ -532,7 +531,7 @@
    "options": "NCV\nValue"
   },
   {
-   "description": "DE509 — n[...12]p; required when type = Value",
+   "description": "DE509 \u2014 n[...12]p; required when type = Value",
    "fieldname": "declared_value_customs_amount",
    "fieldtype": "Float",
    "label": "Customs Amount"
@@ -550,7 +549,7 @@
    "options": "XXX\nValue"
   },
   {
-   "description": "DE508 — n[...11]p; required when type = Value",
+   "description": "DE508 \u2014 n[...11]p; required when type = Value",
    "fieldname": "insurance_amount",
    "fieldtype": "Float",
    "label": "Insurance Amount"
@@ -602,7 +601,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-19 12:00:00.000000",
+ "modified": "2026-06-19 21:50:22.022300",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "House Airway Bill",
