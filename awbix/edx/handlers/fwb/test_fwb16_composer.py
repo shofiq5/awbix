@@ -121,7 +121,7 @@ SHIPMENT_FULL = {
 		{"rate_line_number": 1, "goods_data_identifier": "H", "hs_code": "847130", "service_code": "E"},
 	],
 	"other_charges": [
-		{"prepaid_collect": "P", "other_charge_code": "MY", "entitlement_code": "A", "amount": 50.0},
+		{"prepaid_collect": "P", "other_charge_code": "MYA", "amount": 50.0},
 	],
 	"charge_summary": [
 		{"settlement": "Prepaid", "charge_identifier": "WT", "amount": 2750.0},
@@ -188,7 +188,7 @@ class TestFWB16ComposerFullCoverage(FrappeTestCase):
 
 	def test_charges_and_cvd(self):
 		self.assertEqual(self.data["charge_declarations"]["charge_code"], "CC")
-		self.assertEqual(self.data["other_charges"][0]["other_charge_code"], "MY")
+		self.assertEqual(self.data["other_charges"][0]["other_charge_code"], "MYA")
 		summary = {(r["settlement"], r["charge_identifier"]): r["amount"] for r in self.data["charge_summary"]}
 		self.assertEqual(summary[("Prepaid", "WT")], 2750.0)
 		self.assertEqual(summary[("Prepaid", "CT")], 2760.0)

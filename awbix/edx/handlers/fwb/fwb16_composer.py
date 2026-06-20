@@ -177,7 +177,8 @@ class FWB16Composer(BaseComposer):
 			name = (row.get("notify_name") or "").strip()
 			if not name:
 				continue
-			block = ["NFY", "/" + name]
+			# ABNF: NFY identifier and name share the first physical line (no CRLF between them).
+			block = [f"NFY/{name}"]
 			address = (row.get("street_address") or "").strip()
 			place = (row.get("place") or "").strip()
 			state = (row.get("state_province") or "").strip()
@@ -207,7 +208,8 @@ class FWB16Composer(BaseComposer):
 		values = [v for v in values if v][:3]
 		if not values:
 			return []
-		return [code] + ["/" + v for v in values]
+		# ABNF: identifier immediately followed by /value CRLF (no line-break between them).
+		return [f"{code}/{values[0]}"] + ["/" + v for v in values[1:]]
 
 	def _accounting_lines(self, doc) -> list[str]:
 		rows = doc.get("accounting_information") or []
@@ -217,7 +219,10 @@ class FWB16Composer(BaseComposer):
 			if not ident:
 				continue
 			out.append(f"/{ident}/{(r.get('information') or '').strip()}")
-		return ["ACC"] + out if out else []
+		if not out:
+			return []
+		# ABNF: ACC immediately followed by /identifier/info CRLF (no line-break before first detail).
+		return ["ACC" + out[0]] + out[1:]
 
 	def _sph_line(self, doc) -> str:
 		codes = [(r.get("special_handling_code") or "").strip() for r in (doc.get("special_handling") or [])]
@@ -271,23 +276,23 @@ class FWB16Composer(BaseComposer):
 		if r.get("number_of_pieces"):
 			out += f"/P{int(r.get('number_of_pieces'))}"
 		elif r.get("rate_combination_point"):
-			out += f"/P{r['rate_combination_point']}"
+			out += f"/P{r.get('rate_combination_point')}"
 		if r.get("gross_weight"):
-			out += f"/{(r.get('gross_weight_code') or 'K').strip()}{_num(r['gross_weight'])}"
+			out += f"/{(r.get('gross_weight_code') or 'K').strip()}{_num(r.get('gross_weight'))}"
 		if r.get("rate_class_code"):
-			out += f"/C{r['rate_class_code']}"
+			out += f"/C{r.get('rate_class_code')}"
 		if r.get("commodity_item_number"):
-			out += f"/S{r['commodity_item_number']}"
+			out += f"/S{r.get('commodity_item_number')}"
 		elif r.get("uld_rate_class_type"):
-			out += f"/S{r['uld_rate_class_type']}"
+			out += f"/S{r.get('uld_rate_class_type')}"
 		elif r.get("rate_class_percentage") and r.get("rate_class_code"):
-			out += f"/S{r['rate_class_code']}{int(r['rate_class_percentage'])}"
+			out += f"/S{r.get('rate_class_code')}{int(r.get('rate_class_percentage'))}"
 		if r.get("chargeable_weight"):
-			out += f"/W{_num(r['chargeable_weight'])}"
+			out += f"/W{_num(r.get('chargeable_weight'))}"
 		if r.get("rate_charge"):
-			out += f"/R{_num(r['rate_charge'])}"
+			out += f"/R{_num(r.get('rate_charge'))}"
 		if r.get("total"):
-			out += f"/T{_num(r['total'])}"
+			out += f"/T{_num(r.get('total'))}"
 		return out
 
 	def _goods_line(self, ln, g) -> str:
@@ -308,11 +313,11 @@ class FWB16Composer(BaseComposer):
 		if ident == "D":
 			weight = ""
 			if g.get("dim_weight"):
-				weight = f"{(g.get('dim_weight_code') or 'K').strip()}{_num(g['dim_weight'])}"
+				weight = f"{(g.get('dim_weight_code') or 'K').strip()}{_num(g.get('dim_weight'))}"
 			if g.get("dim_length") and g.get("dim_width") and g.get("dim_height"):
 				unit = (g.get("measurement_unit") or "CMT").strip()
-				dims = f"{unit}{_num(g['dim_length'])}-{_num(g['dim_width'])}-{_num(g['dim_height'])}"
-				pieces = int(g["dim_pieces"]) if g.get("dim_pieces") else ""
+				dims = f"{unit}{_num(g.get('dim_length'))}-{_num(g.get('dim_width'))}-{_num(g.get('dim_height'))}"
+				pieces = int(g.get("dim_pieces")) if g.get("dim_pieces") else ""
 				return f"{head}/{weight}/{dims}/{pieces}"
 			return f"{head}/{weight}/NDA"
 		if ident == "V":
@@ -322,7 +327,7 @@ class FWB16Composer(BaseComposer):
 			uld += (g.get("uld_owner") or "").strip()
 			return f"{head}/{uld}"
 		if ident == "S":
-			return f"{head}/{int(g['slac']) if g.get('slac') else ''}"
+			return f"{head}/{int(g.get('slac')) if g.get('slac') else ''}"
 		if ident == "H":
 			return f"{head}/{(g.get('hs_code') or '').strip()}"
 		if ident == "O":
@@ -360,9 +365,9 @@ class FWB16Composer(BaseComposer):
 			items.sort(key=lambda x: order.index(x[0]) if x[0] in order else 99)
 			first = [i for i in items if i[0] in ("WT", "VC", "TX")]
 			second = [i for i in items if i[0] in ("OA", "OC", "CT")]
-			block = [code]
-			if first:
-				block.append("".join(f"/{i}{_num(a)}" for i, a in first))
+			# ABNF: PPD/COL identifier on same line as WT/VC/TX (line 1); OA/OC/CT on line 2.
+			first_line = code + "".join(f"/{i}{_num(a)}" for i, a in first)
+			block = [first_line]
 			if second:
 				block.append("".join(f"/{i}{_num(a)}" for i, a in second))
 			lines += block

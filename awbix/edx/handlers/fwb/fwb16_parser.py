@@ -172,10 +172,21 @@ class FWB16Parser(BaseParser):
 		return self._assemble_party(cargoimp.continuation_text(seg), account=account)
 
 	def _parse_notify(self, t):
-		"""All NFY segments → one party each (no account line per ABNF)."""
+		"""All NFY segments → one party each.
+
+		ABNF: NFY identifier and name share the first physical line (NFY/name), unlike
+		SHP/CNE which have an explicit CRLF between the header and the name.  Extract
+		the name from the header and prepend it to the continuation text so that
+		``_assemble_party`` sees [name, address, place, country+contacts] as usual.
+		"""
 		rows = []
 		for seg in cargoimp.by_code(t, "NFY"):
-			party = self._assemble_party(cargoimp.continuation_text(seg))
+			header = seg["lines"][0]
+			slash = header.find("/")
+			name_from_header = header[slash + 1:].strip() if slash >= 0 else ""
+			cont = cargoimp.continuation_text(seg)
+			lines = [name_from_header] + cont if name_from_header else cont
+			party = self._assemble_party(lines)
 			if party.get("name"):
 				rows.append(party)
 		return rows
