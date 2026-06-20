@@ -285,3 +285,92 @@ class TestFWB16ParserFullCoverage(FrappeTestCase):
 				"supplementary": "EORI12345",
 			}],
 		)
+
+
+# RTD sample using real-world sequential line numbering: the NC description for
+# rate line 1 has no explicit line-number prefix, and subsequent goods lines carry
+# sequential RTD counters (/2/, /3/, …) rather than the rate-line number.
+SEQUENTIAL_RTD_SAMPLE = """FWB/16
+157-41510976DACFRA/T108K1599MC7.957
+FLT/QR639/04
+RTG/DOHQR/FRAQR
+SHP
+/CONTAINER TRANSPORTATION SERVICES L
+/NAFI TOWER  LEVEL-12  53  GULSHAN A
+/DHAKA
+/BD/1212
+CNE
+/HELLMANN WORLDWIDE LOGISTICS GERMAN
+/ADMIRAL-ROSENDAHL-STRASSE 11
+/FRANKFURT
+/DE/63263/TE/49696952160
+AGT/4273595/0000000
+/CONTAINER TRANSPORTATION SERVICES L
+/DHAKA
+CVD/USD//PP/NVD/NCV/XXX
+RTD/1/P108/K1599/CQ/S2199/W1599/R4.2/T6715.8
+/NC/CONSOL OF GARMENTS
+/2/NH/620711
+/3/NH/61082100
+/4/NH/620333
+/5/NV/MC7.957
+/6/ND//CMT58-40-38/52
+/7/ND//CMT58-40-30/5
+OTH/P/AHC31.98FEC127.92SCC127.92
+PPD/WT6715.8
+/CT7028.89
+ISU/03JUN26/DHAKA/CONTAINER TRANSPORTA
+"""
+
+
+class TestFWB16ParserSequentialRTD(FrappeTestCase):
+	"""RTD with implicit NC description and sequential goods-line counters."""
+
+	@classmethod
+	def setUpClass(cls):
+		super().setUpClass()
+		cls.data = FWB16Parser().parse(SEQUENTIAL_RTD_SAMPLE)
+
+	def test_rate_line(self):
+		rl = self.data["rate_lines"][0]
+		self.assertEqual(rl["line_number"], 1)
+		self.assertEqual(rl["number_of_pieces"], 108)
+		self.assertEqual(rl["gross_weight"], 1599.0)
+		self.assertEqual(rl["rate_class_code"], "Q")
+		self.assertEqual(rl["commodity_item_number"], "2199")
+		self.assertEqual(rl["chargeable_weight"], 1599.0)
+		self.assertEqual(rl["rate_charge"], 4.2)
+		self.assertEqual(rl["total"], 6715.8)
+
+	def test_nc_description_captured_for_rate_line_1(self):
+		# /NC/CONSOL OF GARMENTS has no line-number prefix; must be associated with
+		# rate line 1 and stored with goods_data_identifier='C'.
+		goods = {g["goods_data_identifier"]: g for g in self.data["goods"]}
+		self.assertIn("C", goods)
+		self.assertEqual(goods["C"]["description"], "CONSOL OF GARMENTS")
+		self.assertEqual(goods["C"]["rate_line_number"], 1)
+
+	def test_sequential_goods_lines_associated_with_rate_line_1(self):
+		# /2/NH/... through /7/ND/... carry sequential RTD counters, not rate-line
+		# refs; all must be linked to rate line 1.
+		for g in self.data["goods"]:
+			self.assertEqual(g["rate_line_number"], 1)
+
+	def test_hs_codes(self):
+		hs_codes = {g["hs_code"] for g in self.data["goods"] if g.get("hs_code")}
+		self.assertEqual(hs_codes, {"620711", "61082100", "620333"})
+
+	def test_volume(self):
+		goods = {g["goods_data_identifier"]: g for g in self.data["goods"]}
+		self.assertEqual(goods["V"]["volume_code"], "MC")
+		self.assertEqual(goods["V"]["volume_amount"], 7.957)
+
+	def test_dimensions(self):
+		dim_rows = [g for g in self.data["goods"] if g.get("goods_data_identifier") == "D"]
+		self.assertEqual(len(dim_rows), 2)
+		first = dim_rows[0]
+		self.assertEqual(first["measurement_unit"], "CMT")
+		self.assertEqual(first["dim_length"], 58.0)
+		self.assertEqual(first["dim_width"], 40.0)
+		self.assertEqual(first["dim_height"], 38.0)
+		self.assertEqual(first["dim_pieces"], 52)

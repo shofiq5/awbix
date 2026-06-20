@@ -321,7 +321,22 @@ class FWB16Parser(BaseParser):
 	def _parse_rtd(self, t):
 		"""Return (rate_lines, goods). Each RTD continuation line is keyed by its line
 		number; a line whose first token is ``N<id>`` is a goods sub-line, otherwise it is
-		a rate line with column-tagged tokens (P/K/L/C/S/W/R/T)."""
+		a rate line with column-tagged tokens (P/K/L/C/S/W/R/T).
+
+		Two RTD numbering styles are handled transparently:
+
+		* *Explicit* – every goods sub-line carries the rate-line number it belongs to
+		  (``/1/NC/... /1/NH/...``).
+		* *Sequential* – goods sub-lines are numbered sequentially across the whole RTD
+		  segment (``/NC/... /2/NH/...``).  In this style the NC/NG description for the
+		  first rate line has no line-number prefix, and subsequent goods lines carry a
+		  running counter that does **not** correspond to any rate-line number.
+
+		Detection: if the numeric prefix on a goods line matches a previously parsed rate
+		line it is treated as an explicit reference; otherwise the line is associated with
+		the most-recently parsed rate line (``current_rate_line_no``).  Implicit goods
+		lines (no numeric prefix at all) always use ``current_rate_line_no``.
+		"""
 		seg = cargoimp.first(t, "RTD")
 		rate_lines, goods = [], []
 		if not seg:
@@ -331,25 +346,43 @@ class FWB16Parser(BaseParser):
 		if raw_lines and raw_lines[0].startswith("RTD"):
 			raw_lines[0] = raw_lines[0][3:]
 
+		current_rate_line_no = 1  # fallback for implicit goods lines
+		parsed_rate_line_nos: set[int] = set()
+
 		for raw in raw_lines:
 			tokens = raw.split("/")
 			if tokens and tokens[0] == "":
 				tokens = tokens[1:]
 			if not tokens:
 				continue
-			line_no = tokens[0].strip()
-			rest = tokens[1:]
-			if not line_no.isdigit() or not rest:
+			first_token = tokens[0].strip()
+
+			if not first_token.isdigit():
+				# Implicit goods line – no line-number prefix (e.g. /NC/CONSOL OF GARMENTS)
+				if first_token[:1] == "N":
+					goods.append(self._parse_goods_line(current_rate_line_no, tokens))
 				continue
-			line_no = int(line_no)
+
+			line_no = int(first_token)
+			rest = tokens[1:]
+			if not rest:
+				continue
+
 			if rest[0][:1] == "N":
-				goods.append(self._parse_goods_line(line_no, rest))
+				# Goods sub-line: use explicit rate-line ref when it matches a parsed
+				# rate line, otherwise fall back to the current rate line so that
+				# sequential RTD counters are correctly associated.
+				assoc = line_no if line_no in parsed_rate_line_nos else current_rate_line_no
+				goods.append(self._parse_goods_line(assoc, rest))
 			elif len(rest) == 1 and len(rest[0]) == 1 and rest[0].isalpha():
-				# A second-line carrying only a service code (DE505).
-				goods.append({"rate_line_number": line_no, "service_code": rest[0]})
+				# A line carrying only a service code (DE505).
+				assoc = line_no if line_no in parsed_rate_line_nos else current_rate_line_no
+				goods.append({"rate_line_number": assoc, "service_code": rest[0]})
 			else:
 				row = self._parse_rate_line(line_no, rest)
 				if len(row) > 1:  # more than just line_number → real rate data
+					current_rate_line_no = line_no
+					parsed_rate_line_nos.add(line_no)
 					rate_lines.append(row)
 		return rate_lines, goods
 
