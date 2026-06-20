@@ -85,11 +85,11 @@
  ],
  "fields": [
   {
-   "default": "HWB-.#####",
+   "default": "HWB-.DD.MM.YY.#####",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "HWB-.#####"
+   "options": "HWB-.DD.MM.YY.#####"
   },
   {
    "fieldname": "tab_consignment",
@@ -622,7 +622,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-20 12:00:00.000000",
+ "modified": "2026-06-20 12:34:48.589394",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "House Airway Bill",
