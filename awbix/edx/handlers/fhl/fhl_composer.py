@@ -209,10 +209,4 @@ class FHLComposer(BaseComposer):
 
 	def _resolve_country_code(self, country_name) -> str:
 		"""Map Frappe Country name back to uppercase 2-letter ISO code."""
-		if not country_name:
-			return ""
-		try:
-			code = frappe.db.get_value("Country", country_name, "country_code")
-			return (code or "").upper()[:2]
-		except Exception:
-			return ""
+		return cargoimp.resolve_country_code(country_name)

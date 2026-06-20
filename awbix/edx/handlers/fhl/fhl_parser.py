@@ -523,9 +523,4 @@ class FHLParser(BaseParser):
 
 	def _resolve_country(self, iso_code: str) -> str | None:
 		"""Map a 2-letter ISO code to the Frappe Country name, or return None if not found."""
-		if not iso_code:
-			return None
-		try:
-			return frappe.db.get_value("Country", {"country_code": iso_code.lower()}, "name")
-		except Exception:
-			return None
+		return cargoimp.resolve_country_name(iso_code)

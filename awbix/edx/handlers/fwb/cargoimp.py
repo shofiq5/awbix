@@ -76,3 +76,53 @@ def segment(code: str, *body: str) -> list[str]:
 def join(lines: list[str]) -> str:
 	"""Join composed lines with CRLF and a trailing terminator (Cargo-IMP convention)."""
 	return CRLF.join(ln for ln in lines if ln is not None) + CRLF
+
+
+# --------------------------------------------------------------------------- values
+# Small value helpers shared by the FWB/FHL parsers and composers so number and
+# country-code conventions live in one place.
+
+
+def num(value) -> str:
+	"""Render a numeric value without a trailing ``.0`` (40.0 -> '40', 0.36 -> '0.36')."""
+	try:
+		f = float(value)
+	except (TypeError, ValueError):
+		return ""
+	return str(int(f)) if f.is_integer() else ("%g" % f)
+
+
+def to_decimal(text):
+	"""Parse a Cargo-IMP decimal string to ``float``; ``None`` when not numeric."""
+	try:
+		return float(str(text).strip())
+	except (TypeError, ValueError):
+		return None
+
+
+def resolve_country_name(iso_code):
+	"""Map a 2-letter ISO code to the Frappe Country docname, or ``None`` if unknown."""
+	iso = (iso_code or "").strip()
+	if not iso:
+		return None
+	import frappe
+
+	try:
+		return frappe.db.get_value("Country", {"code": iso.lower()}, "name") or frappe.db.get_value(
+			"Country", {"code": iso.upper()}, "name"
+		)
+	except Exception:
+		return None
+
+
+def resolve_country_code(country_name) -> str:
+	"""Map a Frappe Country docname back to the uppercase 2-letter ISO code."""
+	if not country_name:
+		return ""
+	import frappe
+
+	try:
+		code = frappe.db.get_value("Country", country_name, "code")
+		return (code or "").upper()[:2]
+	except Exception:
+		return ""

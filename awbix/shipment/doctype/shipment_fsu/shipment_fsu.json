@@ -1,0 +1,132 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-06-20 16:34:08.336548",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "awb_number",
+  "shipment",
+  "column_break_1",
+  "origin",
+  "destination",
+  "column_break_2",
+  "status_code",
+  "last_updated",
+  "section_break_handling",
+  "handling_information",
+  "section_break_raw",
+  "raw_message",
+  "section_break_records",
+  "fsu_status_records"
+ ],
+ "fields": [
+  {
+   "description": "Master air waybill number (e.g., 157-53806270)",
+   "fieldname": "awb_number",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AWB Number",
+   "reqd": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "shipment",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Shipment",
+   "options": "Shipment"
+  },
+  {
+   "fieldname": "column_break_1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "origin",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Origin",
+   "options": "Airport"
+  },
+  {
+   "fieldname": "destination",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Destination",
+   "options": "Airport"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Latest status code (RCS, BKD, DEP, ARR, DLV, FIW, \u2026). Free Data \u2014 a Select would reject valid Cargo-IMP codes.",
+   "fieldname": "status_code",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Status Code"
+  },
+  {
+   "fieldname": "last_updated",
+   "fieldtype": "Datetime",
+   "label": "Last Updated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_handling",
+   "fieldtype": "Section Break",
+   "label": "Handling Information"
+  },
+  {
+   "fieldname": "handling_information",
+   "fieldtype": "Text",
+   "label": "Handling Information"
+  },
+  {
+   "collapsible": 1,
+   "fieldname": "section_break_raw",
+   "fieldtype": "Section Break",
+   "label": "Raw Message"
+  },
+  {
+   "fieldname": "raw_message",
+   "fieldtype": "Long Text",
+   "label": "Raw FSU Message",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_records",
+   "fieldtype": "Section Break",
+   "label": "Status Timeline"
+  },
+  {
+   "fieldname": "fsu_status_records",
+   "fieldtype": "Table",
+   "label": "Status Records",
+   "options": "Shipment FSU Status Record"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-06-20 18:03:24.081982",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment FSU",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "read": 1,
+   "role": "System Manager",
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

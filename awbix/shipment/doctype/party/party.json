@@ -2,7 +2,7 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "naming_series:",
- "creation": "2026-06-12 12:00:00.000000",
+ "creation": "2026-06-12 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -34,11 +34,11 @@
  ],
  "fields": [
   {
-   "default": "PARTY-.#####",
+   "default": "PARTY-.#######",
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "PARTY-.#####"
+   "options": "PARTY-.#######"
   },
   {
    "description": "DE300",
@@ -197,7 +197,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-12 12:00:00.000000",
+ "modified": "2026-06-20 18:58:37.411811",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Party",
@@ -217,6 +217,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

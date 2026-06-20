@@ -280,6 +280,8 @@ fixtures = [
 	"Party",
 	"Party Contact",
 	"Shipment",
+	"Shipment FSU",
+	"Shipment FSU Status Record",
 	"EDX Connection",
 	"EDX Message Definition",
 	"EDX Message Issue",
