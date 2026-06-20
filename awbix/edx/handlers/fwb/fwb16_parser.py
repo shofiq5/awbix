@@ -319,23 +319,26 @@ class FWB16Parser(BaseParser):
 	# ------------------------------------------------------------ RTD (rate + goods)
 
 	def _parse_rtd(self, t):
-		"""Return (rate_lines, goods). Each RTD continuation line is keyed by its line
-		number; a line whose first token is ``N<id>`` is a goods sub-line, otherwise it is
-		a rate line with column-tagged tokens (P/K/L/C/S/W/R/T).
+		"""Return (rate_lines, goods).
 
-		Two RTD numbering styles are handled transparently:
+		Follows FWB/16 ABNF §RTD: each charge group starts with a single
+		RTD_ChargeLineCount (``/N``), then optionally RTD_FirstLine (rate columns
+		P/K/L/C/S/W/R/T) and/or RTD_SecondLine (goods identifier).
 
-		* *Explicit* – every goods sub-line carries the rate-line number it belongs to
-		  (``/1/NC/... /1/NH/...``).
-		* *Sequential* – goods sub-lines are numbered sequentially across the whole RTD
-		  segment (``/NC/... /2/NH/...``).  In this style the NC/NG description for the
-		  first rate line has no line-number prefix, and subsequent goods lines carry a
-		  running counter that does **not** correspond to any rate-line number.
+		An NC/NG SecondLine is the narrative description of the goods for its rate line
+		(DE710/DE709) and is stored *inside* the rate-line row rather than as a
+		goods-detail row.  All other goods identifiers (ND/NV/NH/NO/NU/NS) produce an
+		entry in the goods list whose ``rate_line_number`` is the RTD line-count for that
+		group, preserving the sequential numbering from the message.
 
-		Detection: if the numeric prefix on a goods line matches a previously parsed rate
-		line it is treated as an explicit reference; otherwise the line is associated with
-		the most-recently parsed rate line (``current_rate_line_no``).  Implicit goods
-		lines (no numeric prefix at all) always use ``current_rate_line_no``.
+		Two physical encodings are accepted:
+
+		* **Explicit** — every line carries its own RTD_ChargeLineCount (``/1/P.../``
+		  ``/1/NG/...``).  An NG/NC line sharing the same count as the preceding rate
+		  line is merged into that rate-line row.
+		* **Compact** — the FirstLine is merged onto the RTD header (``RTD/1/P.../``);
+		  the NC/NG SecondLine immediately following has no line-count prefix
+		  (``/NC/...``); subsequent goods groups use sequential counts starting at 2.
 		"""
 		seg = cargoimp.first(t, "RTD")
 		rate_lines, goods = [], []
@@ -346,8 +349,7 @@ class FWB16Parser(BaseParser):
 		if raw_lines and raw_lines[0].startswith("RTD"):
 			raw_lines[0] = raw_lines[0][3:]
 
-		current_rate_line_no = 1  # fallback for implicit goods lines
-		parsed_rate_line_nos: set[int] = set()
+		current_rate_line = None  # rate-line dict; mutated in-place by NC/NG SecondLine
 
 		for raw in raw_lines:
 			tokens = raw.split("/")
@@ -358,9 +360,16 @@ class FWB16Parser(BaseParser):
 			first_token = tokens[0].strip()
 
 			if not first_token.isdigit():
-				# Implicit goods line – no line-number prefix (e.g. /NC/CONSOL OF GARMENTS)
-				if first_token[:1] == "N":
-					goods.append(self._parse_goods_line(current_rate_line_no, tokens))
+				# Compact-format SecondLine: no RTD_ChargeLineCount — belongs to the
+				# immediately preceding rate-line group.
+				if first_token[:1] == "N" and current_rate_line is not None:
+					identifier = first_token[1:2]
+					data = tokens[1:]
+					if identifier in ("G", "C"):
+						current_rate_line["goods_data_identifier"] = identifier
+						current_rate_line["description"] = ("/".join(data)).strip()[:20]
+					else:
+						goods.append(self._parse_goods_line(current_rate_line["line_number"], tokens))
 				continue
 
 			line_no = int(first_token)
@@ -369,21 +378,29 @@ class FWB16Parser(BaseParser):
 				continue
 
 			if rest[0][:1] == "N":
-				# Goods sub-line: use explicit rate-line ref when it matches a parsed
-				# rate line, otherwise fall back to the current rate line so that
-				# sequential RTD counters are correctly associated.
-				assoc = line_no if line_no in parsed_rate_line_nos else current_rate_line_no
-				goods.append(self._parse_goods_line(assoc, rest))
+				identifier = rest[0][1:2]
+				if (
+					identifier in ("G", "C")
+					and current_rate_line is not None
+					and line_no == current_rate_line["line_number"]
+				):
+					# Explicit SecondLine (NC/NG) sharing the same RTD_ChargeLineCount as
+					# the current rate line — merge into the rate-line row.
+					data = rest[1:]
+					current_rate_line["goods_data_identifier"] = identifier
+					current_rate_line["description"] = ("/".join(data)).strip()[:20]
+				else:
+					# Independent goods group — preserve its own RTD line-count.
+					goods.append(self._parse_goods_line(line_no, rest))
 			elif len(rest) == 1 and len(rest[0]) == 1 and rest[0].isalpha():
-				# A line carrying only a service code (DE505).
-				assoc = line_no if line_no in parsed_rate_line_nos else current_rate_line_no
-				goods.append({"rate_line_number": assoc, "service_code": rest[0]})
+				# Service-code-only line (DE505).
+				goods.append({"rate_line_number": line_no, "service_code": rest[0]})
 			else:
 				row = self._parse_rate_line(line_no, rest)
 				if len(row) > 1:  # more than just line_number → real rate data
-					current_rate_line_no = line_no
-					parsed_rate_line_nos.add(line_no)
+					current_rate_line = row
 					rate_lines.append(row)
+
 		return rate_lines, goods
 
 	def _parse_rate_line(self, line_no, tokens):
@@ -974,6 +991,8 @@ class FWB16Parser(BaseParser):
 				"chargeable_weight": r.get("chargeable_weight"),
 				"rate_charge": r.get("rate_charge"),
 				"total": r.get("total"),
+				"goods_data_identifier": r.get("goods_data_identifier"),
+				"description": r.get("description"),
 			})
 
 		doc.set("goods_details", [])

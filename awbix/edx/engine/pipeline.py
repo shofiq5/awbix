@@ -507,6 +507,35 @@ def dispatch_message_out(name):
 	return {"ok": True, "status": "Sent", "connection": mo.connection}
 
 
+@frappe.whitelist()
+def verify_message_out(name):
+	"""Run structural ABNF validator against an already-composed EDX Message Out.
+
+	Does NOT recompose. Reads composed_raw, runs FWB16Composer().verify(),
+	persists issues and verify_status. Returns {valid: bool, violations: list[dict]}.
+	"""
+	from awbix.edx.engine.registry import get_composer
+
+	mo = frappe.get_doc("EDX Message Out", name)
+	if not mo.composed_raw:
+		frappe.throw(_("Message has not been composed yet (composed_raw is empty)"))
+
+	composer = get_composer(mo.message_type, mo.message_version)
+	issues = composer.verify(mo.composed_raw) or []
+
+	has_error = any(i.get("level") == "Error" for i in issues)
+	mo.set("issues", issues)
+	mo.verify_status = "Verification Failed" if has_error else "Verified"
+	mo.save(ignore_permissions=True)
+
+	log_event(
+		"EDX Message Out", name, "Verified",
+		"Error" if has_error else "Info",
+		f"{len(issues)} issue(s) from manual verify"
+	)
+	return {"valid": not has_error, "violations": issues}
+
+
 def _fail_out(mo, code, error, retry=True, compose=False):
 	"""Record an outbound failure on the row; schedule a retry when retryable."""
 	message = str(error)

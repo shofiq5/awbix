@@ -17,7 +17,9 @@
   "rate_class_percentage",
   "chargeable_weight",
   "rate_charge",
-  "total"
+  "total",
+  "goods_data_identifier",
+  "description"
  ],
  "fields": [
   {
@@ -103,6 +105,22 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Total"
+  },
+  {
+   "description": "DE710 — G = goods description (NG), C = consolidation description (NC)",
+   "fieldname": "goods_data_identifier",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "GDS Id",
+   "options": "\nG\nC"
+  },
+  {
+   "description": "DE709 — RTD_SecondLine nature and quantity of goods (NG/NC)",
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Nature of Goods",
+   "length": 20
   }
  ],
  "grid_page_length": 50,

@@ -6,7 +6,11 @@ from awbix.edx.engine.pipeline import dispatch_message_out, queue_outbound
 from awbix.edx.handlers.fwb.fwb16_composer import FWB16Composer
 from awbix.edx.handlers.fwb.fwb16_parser import FWB16Parser
 
-# A minimal Shipment-like source: the composer only reads via ``.get()``.
+# A complete Shipment-like source (the composer only reads via ``.get()``). It carries every
+# element the ABNF marks as mandatory - prefix/serial/origin/destination, quantity, routing,
+# shipper + consignee (name/address/place/country), currency, a rate line with a nature-of-goods
+# (NG) line, a charge summary total (CT), issue date/place and a sender reference - so that the
+# composer (which now refuses to emit a structurally-incomplete message) succeeds.
 SHIPMENT = {
 	"name": "157-68076960",
 	"airline_prefix": "157",
@@ -14,9 +18,6 @@ SHIPMENT = {
 	"origin": "BSL",
 	"destination": "DOH",
 	"currency": "CHF",
-	"shipper_name": "HOFFMANN - LA ROCHE LTD",
-	"consignee_name": "M S EBN SINA MEDICAL",
-	"agent_name": "DSV AIR SEA AG",
 	"number_of_pieces": 1,
 	"weight": 40.0,
 	"weight_code": "K",
@@ -24,6 +25,31 @@ SHIPMENT = {
 		{"sequence": 1, "airport": "ZRH", "carrier_code": "QR"},
 		{"sequence": 2, "airport": "DOH", "carrier_code": "QR"},
 	],
+	"shipper_name": "HOFFMANN - LA ROCHE LTD",
+	"shipper_address": "GRENZACHERSTRASSE 124",
+	"shipper_place": "BASEL",
+	"shipper_country": "Switzerland",
+	"consignee_name": "M S EBN SINA MEDICAL",
+	"consignee_address": "MEDICAL STREET 1",
+	"consignee_place": "DOHA",
+	"consignee_country": "Qatar",
+	"agent_name": "DSV AIR SEA AG",
+	"agent_iata_code": "8147158",
+	"agent_place": "BASEL",
+	"rate_lines": [
+		{"line_number": 1, "number_of_pieces": 1, "gross_weight_code": "K", "gross_weight": 40.0,
+		 "rate_class_code": "Q", "chargeable_weight": 40.0, "rate_charge": 5.0, "total": 200.0},
+	],
+	"goods_details": [
+		{"rate_line_number": 1, "goods_data_identifier": "G", "description": "PHARMACEUTICALS"},
+	],
+	"charge_summary": [
+		{"settlement": "Prepaid", "charge_identifier": "WT", "amount": 200.0},
+		{"settlement": "Prepaid", "charge_identifier": "CT", "amount": 200.0},
+	],
+	"issue_date": "2026-06-15",
+	"issue_place": "BSL",
+	"sender_office_address": "BSLFFQR",
 }
 
 
@@ -59,6 +85,19 @@ class TestFWB16Composer(FrappeTestCase):
 		issues = self.composer.verify(self.composer.compose(bad))
 		self.assertTrue(any(i["code"] == "AWB_CHECKDIGIT" for i in issues))
 
+	def test_compose_raises_on_missing_mandatory(self):
+		"""A source lacking mandatory data (routing, parties, RTD, summary, ISU, REF) is refused."""
+		incomplete = {
+			"airline_prefix": "157",
+			"awb_serial_number": "68076960",
+			"origin": "BSL",
+			"destination": "DOH",
+			"number_of_pieces": 1,
+			"weight": 40.0,
+		}
+		with self.assertRaises(frappe.ValidationError):
+			FWB16Composer().compose(incomplete)
+
 
 # A Shipment-like source exercising every composable segment, for a full round-trip.
 SHIPMENT_FULL = {
@@ -85,9 +124,11 @@ SHIPMENT_FULL = {
 	"shipper_place": "BASEL",
 	"shipper_state": "BS",
 	"shipper_post_code": "4070",
+	"shipper_country": "Switzerland",
 	"consignee_name": "EBN SINA MEDICAL",
 	"consignee_address": "MEDICAL STREET 1",
 	"consignee_place": "DOHA",
+	"consignee_country": "Qatar",
 	"agent_name": "DSV AIR SEA AG",
 	"agent_account": "12345",
 	"agent_iata_code": "8147158",
@@ -104,7 +145,7 @@ SHIPMENT_FULL = {
 	],
 	"also_notify": [
 		{"notify_name": "NOTIFY PARTY LTD", "street_address": "NOTIFY STREET",
-		 "place": "DOHA", "post_code": "12345", "telephone": "97412345"},
+		 "place": "DOHA", "country": "Qatar", "post_code": "12345", "telephone": "97412345"},
 	],
 	"special_service_requests": [{"special_service_request": "HANDLE WITH CARE"}],
 	"other_service_info": [{"other_service_information": "GENERAL INFO"}],
@@ -152,7 +193,8 @@ SHIPMENT_FULL = {
 		 "participant_id": "AB", "participant_code": "PARTCODE", "airport": "BSL"},
 	],
 	"oci_customs": [
-		{"information_identifier": "CT", "customs_info_identifier": "T", "supplementary": "EORI12345"},
+		{"country": "Bangladesh", "information_identifier": "ISS",
+		 "customs_info_identifier": "RA", "supplementary": "EORI12345"},
 	],
 	"special_handling": [{"special_handling_code": "PER"}, {"special_handling_code": "EAW"}],
 }
@@ -220,7 +262,7 @@ class TestFWB16ComposerFullCoverage(FrappeTestCase):
 		self.assertEqual(self.data["special_handling"], ["PER", "EAW"])
 		self.assertEqual(self.data["references"][0]["reference_number"], "REF12345")
 		self.assertEqual(self.data["other_participants"][0]["participant_code"], "PARTCODE")
-		self.assertEqual(self.data["oci"][0]["customs_info_identifier"], "T")
+		self.assertEqual(self.data["oci"][0]["customs_info_identifier"], "RA")
 
 	def test_verify_clean(self):
 		self.assertFalse([i for i in FWB16Composer().verify(self.raw) if i["level"] == "Error"])

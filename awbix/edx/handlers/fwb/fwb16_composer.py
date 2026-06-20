@@ -27,6 +27,7 @@ class FWB16Composer(BaseComposer):
 
 	def compose(self, source_doc) -> str:
 		d = source_doc
+		self._assert_mandatory(d)
 		lines = ["FWB/16", self._awb_line(d)]
 
 		lines += _opt(self._flt_line(d))
@@ -57,6 +58,126 @@ class FWB16Composer(BaseComposer):
 		lines += self._oci_lines(d)
 
 		return cargoimp.join(lines)
+
+	# ------------------------------------------------ mandatory-data enforcement
+	# The FWB/16 ABNF marks each segment/element as mandatory (bare), optional ([X]) or
+	# repeatable (*X / n*mX). Mandatory data that is absent cannot be invented, so the
+	# composer refuses to emit a structurally-incomplete message and reports exactly what
+	# is missing. Optional segments are emitted only when present; once present, their own
+	# mandatory ("conditional") elements are required too.
+
+	def _assert_mandatory(self, d) -> None:
+		missing = self._missing_mandatory(d)
+		if missing:
+			frappe.throw(
+				"Cannot compose FWB/16 for {0}: missing mandatory data - {1}".format(
+					d.get("name") or "shipment", "; ".join(missing)
+				)
+			)
+
+	def _missing_mandatory(self, d) -> list[str]:
+		m = []
+		# AWB consignment detail (incl. mandatory quantity detail)
+		if not (d.get("airline_prefix") or "").strip():
+			m.append("airline prefix (DE112)")
+		if not (d.get("awb_serial_number") or "").strip():
+			m.append("AWB serial number (DE113)")
+		if not (d.get("origin") or "").strip():
+			m.append("origin airport (DE313)")
+		if not (d.get("destination") or "").strip():
+			m.append("destination airport (DE313)")
+		if not d.get("number_of_pieces"):
+			m.append("number of pieces (DE701)")
+		if not d.get("weight"):
+			m.append("weight (DE600)")
+		# Routing - first destination carrier is mandatory
+		if not self._first_carrier(d):
+			m.append("routing first-destination carrier (RTG)")
+		# Shipper / Consignee
+		m += self._missing_party(d, "shipper", "shipper (SHP)")
+		m += self._missing_party(d, "consignee", "consignee (CNE)")
+		# Charge declarations
+		if not (d.get("currency") or "").strip():
+			m.append("currency (CVD/DE606)")
+		# Rate description - at least one line plus nature/quantity of goods (NG/NC)
+		if not (d.get("rate_lines") or d.get("goods_details")):
+			m.append("rate description lines (RTD)")
+		elif not self._has_goods_description(d):
+			m.append("nature and quantity of goods (RTD NG/NC, DE709)")
+		# Charge summary - at least one of PPD/COL, each carrying the CT total
+		if not self._has_charge_total(d):
+			m.append("a PPD or COL charge summary total (CT)")
+		# Carrier's execution
+		if not d.get("issue_date"):
+			m.append("issue date (ISU)")
+		if not (d.get("issue_place") or "").strip():
+			m.append("issue place (ISU)")
+		# Sender reference - office message address or participant identification
+		if not ((d.get("sender_office_address") or "").strip() or (d.get("sender_participant_id") or "").strip()):
+			m.append("sender reference office address or participant id (REF)")
+		m += self._missing_conditional(d)
+		return m
+
+	def _first_carrier(self, d) -> bool:
+		rows = sorted(d.get("routing") or [], key=lambda r: r.get("sequence") or 0)
+		if rows:
+			return bool((rows[0].get("carrier_code") or rows[0].get("carrier") or "").strip())
+		return bool((d.get("by_carrier1") or "").strip())
+
+	def _missing_party(self, d, prefix, label) -> list[str]:
+		if not (d.get(f"{prefix}_name") or "").strip():
+			return [f"{label} name (DE300)"]
+		out = []
+		if not (d.get(f"{prefix}_address") or "").strip():
+			out.append(f"{label} street address (DE301)")
+		if not (d.get(f"{prefix}_place") or "").strip():
+			out.append(f"{label} place (DE302)")
+		if not cargoimp.resolve_country_code(d.get(f"{prefix}_country")):
+			out.append(f"{label} country (DE304)")
+		return out
+
+	def _has_goods_description(self, d) -> bool:
+		return any(
+			(g.get("goods_data_identifier") or "").strip() in ("G", "C")
+			for g in d.get("goods_details") or []
+		)
+
+	def _has_charge_total(self, d) -> bool:
+		return any(
+			(r.get("charge_identifier") or "").strip() == "CT" and r.get("settlement") in ("Prepaid", "Collect")
+			for r in d.get("charge_summary") or []
+		)
+
+	def _missing_conditional(self, d) -> list[str]:
+		"""Mandatory elements of optional segments that are present in the source."""
+		out = []
+		# Agent (optional): IATA code (DE311) and place (DE302) are mandatory once present
+		if (d.get("agent_name") or "").strip():
+			if not (d.get("agent_iata_code") or "").strip():
+				out.append("agent IATA code (AGT/DE311)")
+			if not (d.get("agent_place") or "").strip():
+				out.append("agent place (AGT/DE302)")
+		# Also-Notify (optional): street, place and country mandatory per row
+		for row in d.get("also_notify") or []:
+			if not (row.get("notify_name") or "").strip():
+				continue
+			if not (row.get("street_address") or "").strip():
+				out.append("also-notify street address (NFY/DE301)")
+			if not (row.get("place") or "").strip():
+				out.append("also-notify place (NFY/DE302)")
+			if not cargoimp.resolve_country_code(row.get("country")):
+				out.append("also-notify country (NFY/DE304)")
+		# CDC (optional): rate of exchange mandatory once a destination currency is given
+		if (d.get("cc_dest_currency") or "").strip() and not d.get("rate_of_exchange"):
+			out.append("CDC rate of exchange (DE607)")
+		# NOM (optional): place mandatory once a name is given
+		if (d.get("nominated_handling_name") or "").strip() and not (d.get("nominated_handling_place") or "").strip():
+			out.append("nominated handling party place (NOM/DE302)")
+		# OPI (optional, repeatable): participant identifier mandatory per row
+		for p in d.get("other_participants") or []:
+			if (p.get("participant_name") or "").strip() and not (p.get("participant_id") or "").strip():
+				out.append("other-participant identifier (OPI/DE319)")
+		return out
 
 	# ------------------------------------------------------------ AWB / FLT / RTG
 
@@ -104,6 +225,8 @@ class FWB16Composer(BaseComposer):
 			a2 = (doc.get("to_airport2") or "").strip().upper()
 			if a2:
 				tokens.append(a2 + (doc.get("by_carrier2") or "").strip().upper())
+		# ABNF: RTG_FirstDestinationCarrier *2RTG_OnwardDestinationCarrier -> at most 3 entries.
+		tokens = tokens[:3]
 		return "RTG/" + "/".join(tokens) if tokens else ""
 
 	# ------------------------------------------------------------ parties
@@ -173,7 +296,8 @@ class FWB16Composer(BaseComposer):
 
 	def _notify_blocks(self, doc) -> list[str]:
 		lines = []
-		for row in doc.get("also_notify") or []:
+		# ABNF: [AlsoNotify] is optional and single - emit at most one NFY.
+		for row in (doc.get("also_notify") or [])[:1]:
 			name = (row.get("notify_name") or "").strip()
 			if not name:
 				continue
@@ -252,7 +376,8 @@ class FWB16Composer(BaseComposer):
 	# ------------------------------------------------------------ RTD
 
 	def _rtd_lines(self, doc) -> list[str]:
-		rate_lines = sorted(doc.get("rate_lines") or [], key=lambda r: r.get("line_number") or 0)
+		# ABNF: RateDescription = RTD 1*11(...) -> at most 11 charge lines.
+		rate_lines = sorted(doc.get("rate_lines") or [], key=lambda r: r.get("line_number") or 0)[:11]
 		goods = doc.get("goods_details") or []
 		if not rate_lines and not goods:
 			return []
@@ -458,7 +583,8 @@ class FWB16Composer(BaseComposer):
 
 	def _sri_lines(self, doc) -> list[str]:
 		lines = []
-		for r in doc.get("references") or []:
+		# ABNF: [ShipmentReferenceInformation] is optional and single - emit at most one SRI.
+		for r in (doc.get("references") or [])[:1]:
 			ref = (r.get("reference_number") or "").strip()
 			supp1 = (r.get("supplementary_1") or "").strip()
 			supp2 = (r.get("supplementary_2") or "").strip()
@@ -502,8 +628,14 @@ class FWB16Composer(BaseComposer):
 	# ------------------------------------------------------------------- verify
 
 	def verify(self, raw: str) -> list[dict]:
+		from awbix.edx.handlers.fwb.fwb16_validator import FWBABNFValidator
+
 		parser = FWB16Parser()
-		return parser.validate(parser.parse(raw))
+		parser_issues = parser.validate(parser.parse(raw))
+		validator = FWBABNFValidator()
+		structural_issues = validator.validate(raw)
+		existing_codes = {i["code"] for i in parser_issues}
+		return parser_issues + [i for i in structural_issues if i["code"] not in existing_codes]
 
 
 def _opt(line: str) -> list[str]:
