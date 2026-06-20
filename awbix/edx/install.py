@@ -10,6 +10,21 @@ import frappe
 # Built-in definitions. Add new (type, version) handlers here or create them in the UI.
 _DEFINITIONS = [
 	{
+		"message_type": "FHL",
+		"version": "5",
+		"title": "FHL/5 — Consolidation List / House Waybills (Cargo-IMP)",
+		"standard": "Cargo-IMP",
+		"parser_class": "awbix.edx.handlers.fhl.fhl_parser.FHLParser",
+		"composer_class": "awbix.edx.handlers.fhl.fhl_composer.FHLComposer",
+		"target_doctype": "House Airway Bill",
+		"is_parser_enabled": 1,
+		"is_composer_enabled": 1,
+		"auto_promote": 1,
+		"auto_process": 1,
+		"detection_pattern": "^FHL/5",
+		"amendment_mode": "Auto Apply",
+	},
+	{
 		"message_type": "FWB",
 		"version": "16",
 		"title": "FWB/16 — Air Waybill (Cargo-IMP)",

@@ -10,6 +10,8 @@
   "sb_master_awb",
   "master_shipment",
   "master_awb_number",
+  "awb_assignment_status",
+  "pending_awb_number",
   "cb_master",
   "master_origin",
   "master_destination",
@@ -114,6 +116,24 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Master AWB Number",
+   "read_only": 1
+  },
+  {
+   "default": "Assigned",
+   "fieldname": "awb_assignment_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "AWB Assignment Status",
+   "options": "Assigned\nUnassigned AWB",
+   "read_only": 1
+  },
+  {
+   "description": "Expected AWB number pending master shipment creation",
+   "fieldname": "pending_awb_number",
+   "fieldtype": "Data",
+   "label": "Pending AWB Number",
+   "length": 12,
    "read_only": 1
   },
   {
@@ -602,7 +622,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-20 03:48:15.368826",
+ "modified": "2026-06-20 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "House Airway Bill",

@@ -277,6 +277,14 @@ def _seed_masters():
 		frappe.get_doc({"doctype": "Currency", "currency_name": "INR", "enabled": 1}).insert(
 			ignore_permissions=True
 		)
+	if not frappe.db.exists("Shipment", "157-67661882"):
+		doc = frappe.new_doc("Shipment")
+		doc.airline_prefix = "157"
+		doc.awb_serial_number = "67661882"
+		doc.origin = "BLR"
+		doc.destination = "CDG"
+		doc.flags.ignore_permissions = True
+		doc.save()
 
 
 class TestFHLParserProcess(FrappeTestCase):
@@ -302,13 +310,21 @@ class TestFHLParserProcess(FrappeTestCase):
 		self.assertEqual(doc.manifest_description, "HOSE ASSEMBLY")
 		self.assertEqual(doc.currency, "INR")
 
-	def test_process_creates_master_shipment_if_missing(self):
-		# Remove the master if it exists, then process
+	def test_process_unassigned_when_master_missing(self):
 		if frappe.db.exists("Shipment", "157-67661882"):
 			frappe.delete_doc("Shipment", "157-67661882", force=True, ignore_permissions=True)
 		data = self.parser.parse(SAMPLE_SINGLE)
 		self.parser.process(data, None)
-		self.assertTrue(frappe.db.exists("Shipment", "157-67661882"))
+		self.assertFalse(frappe.db.exists("Shipment", "157-67661882"))
+		name = frappe.db.get_value(
+			"House Airway Bill",
+			{"pending_awb_number": "157-67661882", "hwb_serial_number": "530510258554"},
+			"name",
+		)
+		self.assertIsNotNone(name)
+		doc = frappe.get_doc("House Airway Bill", name)
+		self.assertEqual(doc.awb_assignment_status, "Unassigned AWB")
+		self.assertIsNone(doc.master_shipment)
 
 	def test_process_is_idempotent(self):
 		data = self.parser.parse(SAMPLE_SINGLE)
@@ -324,6 +340,14 @@ class TestFHLParserProcess(FrappeTestCase):
 		_ensure("Airline", "220", {"airline_prefix": "220"})
 		for code in ("FRA", "JFK", "BOS", "ORD"):
 			_ensure("Airport", code, {"iata_code": code})
+		if not frappe.db.exists("Shipment", "220-12345675"):
+			doc = frappe.new_doc("Shipment")
+			doc.airline_prefix = "220"
+			doc.awb_serial_number = "12345675"
+			doc.origin = "FRA"
+			doc.destination = "JFK"
+			doc.flags.ignore_permissions = True
+			doc.save()
 		data = self.parser.parse(SAMPLE_CHECKLIST)
 		self.parser.process(data, None)
 		count = frappe.db.count(

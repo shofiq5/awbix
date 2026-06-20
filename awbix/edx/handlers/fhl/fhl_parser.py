@@ -345,10 +345,12 @@ class FHLParser(BaseParser):
 	# ---------------------------------------------------------------- process
 
 	def process(self, data, message_in) -> str:
-		"""Create/update Shipment (master) and one House Airway Bill per HBS block.
+		"""Create/update one House Airway Bill per HBS block, linked to the master Shipment
+		when it exists. When the master Shipment is not yet in the system, HAWBs are saved
+		with awb_assignment_status='Unassigned AWB' and pending_awb_number set so they can
+		be linked later via the 'Assign AWB' list action.
 
-		Returns the master AWB number as the representative target_name. Individual
-		house idempotency is keyed on (master_shipment, hwb_serial_number).
+		Returns the master AWB number as the representative target_name.
 		"""
 		master = data["master"]
 		awb_number = master["awb_number"]
@@ -357,21 +359,14 @@ class FHLParser(BaseParser):
 		self._ensure("Airport", {"iata_code": master["origin"]}, master["origin"])
 		self._ensure("Airport", {"iata_code": master["destination"]}, master["destination"])
 
-		if not frappe.db.exists("Shipment", awb_number):
-			doc = frappe.new_doc("Shipment")
-			doc.airline_prefix = master["airline_prefix"]
-			doc.awb_serial_number = master["awb_serial_number"]
-			doc.origin = master["origin"]
-			doc.destination = master["destination"]
-			doc.flags.ignore_permissions = True
-			doc.save()
+		master_shipment = awb_number if frappe.db.exists("Shipment", awb_number) else None
 
 		for house in data.get("houses") or []:
-			self._process_house(awb_number, house)
+			self._process_house(awb_number, master_shipment, house)
 
 		return awb_number
 
-	def _process_house(self, master_shipment, house):
+	def _process_house(self, awb_number, master_shipment, house):
 		serial = house.get("hwb_serial_number", "")
 		cvd = house.get("charge_declarations") or {}
 		currency = cvd.get("currency") or "USD"
@@ -381,17 +376,31 @@ class FHLParser(BaseParser):
 				self._ensure("Airport", {"iata_code": airport_code}, airport_code)
 		self._ensure_currency(currency)
 
-		existing = frappe.db.get_value(
-			"House Airway Bill",
-			{"master_shipment": master_shipment, "hwb_serial_number": serial, "docstatus": ("!=", 2)},
-			"name",
-		)
+		# Idempotency: check by master_shipment first, then by pending_awb_number so that
+		# a previously-unassigned HAWB is updated (rather than duplicated) when the master
+		# Shipment arrives and the FHL is reprocessed.
+		existing = None
+		if master_shipment:
+			existing = frappe.db.get_value(
+				"House Airway Bill",
+				{"master_shipment": master_shipment, "hwb_serial_number": serial, "docstatus": ("!=", 2)},
+				"name",
+			)
+		if not existing:
+			existing = frappe.db.get_value(
+				"House Airway Bill",
+				{"pending_awb_number": awb_number, "hwb_serial_number": serial, "docstatus": ("!=", 2)},
+				"name",
+			)
+
 		if existing:
 			doc = frappe.get_doc("House Airway Bill", existing)
 		else:
 			doc = frappe.new_doc("House Airway Bill")
 
 		doc.master_shipment = master_shipment
+		doc.awb_assignment_status = "Assigned" if master_shipment else "Unassigned AWB"
+		doc.pending_awb_number = None if master_shipment else awb_number
 		doc.hwb_serial_number = serial
 		doc.hwb_origin = house.get("hwb_origin") or doc.hwb_origin
 		doc.hwb_destination = house.get("hwb_destination") or doc.hwb_destination
@@ -449,6 +458,8 @@ class FHLParser(BaseParser):
 		doc.insurance_amount = cvd.get("insurance_amount") or 0.0
 
 		doc.flags.ignore_permissions = True
+		if not master_shipment:
+			doc.flags.ignore_mandatory = True
 		doc.save()
 
 		# Stamp denormalized party fields via db_set — bypasses fetch_from

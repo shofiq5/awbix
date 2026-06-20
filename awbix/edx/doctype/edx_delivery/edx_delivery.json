@@ -36,10 +36,9 @@
   },
   {
    "fieldname": "target_name",
-   "fieldtype": "Dynamic Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Target Name",
-   "options": "target_doctype"
+   "label": "Target Name"
   },
   {
    "fieldname": "cb_1",
@@ -82,7 +81,7 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-06-16 12:00:00.000000",
+ "modified": "2026-06-20 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "EDX",
  "name": "EDX Delivery",

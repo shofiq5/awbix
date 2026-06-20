@@ -1,6 +1,7 @@
 import re
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
 
 _SERIAL_RE = re.compile(r"^[A-Za-z0-9]{1,12}$")
@@ -14,6 +15,8 @@ _OCI_SS_MAX_ONE = "SS"
 
 class HouseAirwayBill(Document):
 	def validate(self):
+		if not self.master_shipment and self.awb_assignment_status != "Unassigned AWB":
+			frappe.throw(_("Master Shipment is required."))
 		self.validate_hwb_serial_number()
 		self.validate_hwb_route()
 		self.validate_pieces_and_weight()
@@ -34,6 +37,8 @@ class HouseAirwayBill(Document):
 		master_awb = self.master_awb_number
 		if not master_awb and self.master_shipment:
 			master_awb = frappe.db.get_value("Shipment", self.master_shipment, "awb_number")
+		if not master_awb and self.pending_awb_number:
+			master_awb = self.pending_awb_number
 		if master_awb and self.hwb_serial_number:
 			self.hwb_number = f"{master_awb} / {self.hwb_serial_number}"
 
@@ -190,3 +195,35 @@ class HouseAirwayBill(Document):
 				frappe.throw(
 					f"{label} ({de}): amount is required when declaration type is 'Value'."
 				)
+
+
+@frappe.whitelist()
+def assign_awb(names):
+	"""Search for and link the master Shipment to each Unassigned AWB House Airway Bill.
+
+	Returns {"assigned": [...names...], "not_found": [...names...]}. Safe to call
+	repeatedly — records whose master is still not in the system remain unchanged.
+	"""
+	if isinstance(names, str):
+		names = frappe.parse_json(names)
+
+	assigned, not_found = [], []
+	for name in names:
+		doc = frappe.get_doc("House Airway Bill", name)
+		if doc.awb_assignment_status != "Unassigned AWB":
+			continue
+		awb_number = doc.pending_awb_number
+		if not awb_number:
+			not_found.append(name)
+			continue
+		if frappe.db.exists("Shipment", awb_number):
+			doc.master_shipment = awb_number
+			doc.awb_assignment_status = "Assigned"
+			doc.pending_awb_number = None
+			doc.flags.ignore_permissions = True
+			doc.save()
+			assigned.append(name)
+		else:
+			not_found.append(name)
+
+	return {"assigned": assigned, "not_found": not_found}
