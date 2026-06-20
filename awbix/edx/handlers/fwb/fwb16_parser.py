@@ -448,8 +448,7 @@ class FWB16Parser(BaseParser):
 			for code, ent, amt in re.findall(r"([A-Z]{2})([A-Z])([\d.]+)", body):
 				rows.append({
 					"prepaid_collect": pc or "P",
-					"other_charge_code": code,
-					"entitlement_code": ent,
+					"other_charge_code": code + ent,
 					"amount": _to_float(amt),
 				})
 		return rows
@@ -974,11 +973,9 @@ class FWB16Parser(BaseParser):
 			if not code:
 				continue
 			self._ensure_code("Other Charge Code", code)
-			entitlement = (o.get("entitlement_code") or "").strip().upper()
 			doc.append("other_charges", {
 				"prepaid_collect": o.get("prepaid_collect") or "P",
 				"other_charge_code": code,
-				"entitlement_code": entitlement if entitlement in ("C", "A") else None,
 				"amount": o.get("amount"),
 			})
 

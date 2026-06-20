@@ -336,11 +336,10 @@ class FWB16Composer(BaseComposer):
 		out = []
 		for r in rows:
 			code = (r.get("other_charge_code") or "").strip()
-			if not code:
+			if len(code) < 3:
 				continue
 			pc = (r.get("prepaid_collect") or "P").strip()
-			ent = (r.get("entitlement_code") or "").strip()
-			out.append(f"/{pc}/{code}{ent}{_num(r.get('amount') or 0)}")
+			out.append(f"/{pc}/{code}{_num(r.get('amount') or 0)}")
 		return ["OTH"] + out if out else []
 
 	def _charge_summary_lines(self, doc) -> list[str]:

@@ -30,8 +30,8 @@
   "column_break_easj",
   "by_carrier2",
   "sb_24",
-  "flight_bookings",
   "routing",
+  "flight_bookings",
   "party_tab",
   "sb_17",
   "shipper",
@@ -131,10 +131,7 @@
   "edx_ack_status",
   "edx_ack_detail",
   "edx_ack_at",
-  "amended_from",
-  "fsu_tab",
-  "fsu_section",
-  "shipment_fsu"
+  "amended_from"
  ],
  "fields": [
   {
@@ -900,28 +897,12 @@
    "fieldtype": "Link",
    "label": "By Carrier2",
    "options": "Airline"
-  },
-  {
-   "fieldname": "fsu_section",
-   "fieldtype": "Section Break",
-   "label": "FSU"
-  },
-  {
-   "fieldname": "shipment_fsu",
-   "fieldtype": "Table",
-   "label": "Shipment FSU",
-   "options": "Shipment FSU"
-  },
-  {
-   "fieldname": "fsu_tab",
-   "fieldtype": "Tab Break",
-   "label": "FSU"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-20 16:57:42.211068",
+ "modified": "2026-06-20 21:16:45.312594",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",
