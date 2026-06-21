@@ -406,6 +406,31 @@ _MAX_RETRIES = 5
 
 
 @frappe.whitelist()
+def compose_and_validate_outbound(source_doctype, source_name, message_type, version):
+	"""Compose and validate a message without queuing it.
+
+	Returns {ok: bool, issues: list[dict]} so the Desk button can show errors before
+	committing to a queue entry.
+	"""
+	from awbix.edx.engine.registry import get_composer
+
+	get_definition(message_type, version)
+	source = frappe.get_doc(source_doctype, source_name)
+
+	try:
+		composer = get_composer(message_type, version)
+		raw = composer.compose(source)
+	except frappe.ValidationError as e:
+		return {"ok": False, "issues": [{"level": "Error", "code": "COMPOSE", "message": str(e)}]}
+	except Exception as e:
+		return {"ok": False, "issues": [{"level": "Error", "code": "COMPOSE", "message": str(e)}]}
+
+	issues = composer.verify(raw) or []
+	has_error = any(i.get("level") == "Error" for i in issues)
+	return {"ok": not has_error, "issues": issues}
+
+
+@frappe.whitelist()
 def queue_outbound(source_doctype, source_name, message_type, version):
 	"""Create a Queued EDX Message Out for a source document and enqueue dispatch.
 

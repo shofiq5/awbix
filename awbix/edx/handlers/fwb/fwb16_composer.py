@@ -138,6 +138,9 @@ class FWB16Composer(BaseComposer):
 
 	def _has_goods_description(self, d) -> bool:
 		return any(
+			(r.get("goods_data_identifier") or "").strip() in ("G", "C")
+			for r in d.get("rate_lines") or []
+		) or any(
 			(g.get("goods_data_identifier") or "").strip() in ("G", "C")
 			for g in d.get("goods_details") or []
 		)
@@ -390,11 +393,23 @@ class FWB16Composer(BaseComposer):
 		for r in rate_lines:
 			ln = r.get("line_number") or 0
 			lines.append(self._rate_line(ln, r))
+			# Emit NG/NC line from the rate line row itself (goods_data_identifier + description).
+			inline = self._goods_line_from_rate(ln, r)
+			if inline:
+				lines.append(inline)
 			lines += _opt_many(self._goods_line(ln, g) for g in goods_by_line.pop(ln, []))
 		# goods whose rate line wasn't emitted (orphans) still get included
 		for ln, rows in goods_by_line.items():
 			lines += _opt_many(self._goods_line(ln, g) for g in rows)
 		return lines
+
+	def _goods_line_from_rate(self, ln, r) -> str:
+		"""Emit the /ln/NC or /ln/NG line stored directly on a Shipment Rate Line row."""
+		ident = (r.get("goods_data_identifier") or "").strip()
+		if ident not in ("G", "C"):
+			return ""
+		desc = (r.get("description") or "").strip()
+		return f"/{ln}/N{ident}/{desc}"
 
 	def _rate_line(self, ln, r) -> str:
 		out = f"/{ln}"

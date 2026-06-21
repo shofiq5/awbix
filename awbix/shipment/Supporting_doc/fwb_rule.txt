@@ -1,0 +1,2842 @@
+AIR WAYBILL DATA (FWB) MESSAGE
+
+1. STANDARD MESSAGE IDENTIFIER = FWB
+
+2. MESSAGE FUNCTION
+
+     To transmit a complete set of Air Waybill data in accordance with the Cargo
+     Services Conference Resolutions Manual.
+
+3. MESSAGE APPLICATION
+
+     Computer-to-Computer.
+
+4. MESSAGE EXCHANGE PARTIES
+
+From:  the access address of the Cargo Control Computer of a
+       participant involved in the movement of a consignment.
+
+To     the access address of the Cargo Control Computer of a
+
+(Computer): participant involved in the movement of a consignment.
+
+To (Manual): the message address of the requestor for Air Waybill data
+                   as indicated in the last line of the FWR message.
+
+5. MESSAGE USE
+
+5.1 Intention
+
+     To eliminate the need to re-enter Air Waybill data which has been already entered
+     by an earlier participant in the movement of a consignment.
+     To eliminate the need for the paper copy of an air waybill to accompany the
+     consignment in accordance with ICAO Annex 9, Section B, Chapter 4.
+5.2 Various cases where a FWB message is used:
+· when a cargo agent delivers a consignment to an airline;
+· when an airline transfers a consignment to another airline;
+· when an airline delivers a consignment to a handling party;
+· when a handling party delivers a consignment to an airline;
+· when an airline delivers a consignment to a cargo agent;
+· when a participant requests Air Waybill data by a FWR message.
+5.3 When to send an automatic FWB message:
+· an unsolicited FWB message must be sent prior to the physical delivery of the goods.
+
+6. MESSAGE EXAMPLES
+
+6.1 This example illustrates an agent to airline message indicating:
+· a minimum charge;
+· a declared value for customs (see Attachment 2).
+
+     Ref. Message Content
+       1 FWB/17
+       2 777-12345675BOMSUV/T1K3.5
+       4 RTG/SUVII
+       5 SHP
+            NAM/T. ULSIDAS LTD.
+            ADR/105 VEER TAMAN ROAD
+            LOC/MUMBAI
+            /IN
+       6 CNE
+            NAM/J. JONES IMPORTERS
+            ADR/.
+            LOC/SUVA
+            /FJ
+       7 AGT//1430288
+            /SPEEDAIR SERVICES
+            /MUMBAI
+      11 CVD/INR//PP/NVD/1500.00/XXX
+      12 RTD/1/P1/K3.5/CM/W3.5/R800.00/T800.00
+            /NG/CLOTH SAMPLES
+            /2/ND//NDA
+      14 PPD/WT800.00
+            /CT800.00
+      16 CER/T.ULSIDAS LTD.
+      17 ISU/01OCT06/MUMBAI/SPEEDAIR SERVICES
+      20 REF///AGT/SPEEDAIRSERVICES/BOM
+
+6.2 This example illustrates an airline to airline message indicating:
+· a class rate based on the normal rate (for live animals);
+· a charge for an animal container;
+· volume (not shown on AWB example but calculated according dimensions (see
+
+  Attachment 3)).
+     Ref. Message Content
+       1 FWB/17
+       2 777-12345675RIONRT/T1K48.0
+       4 RTG/MIAII/LAXYY/NRTZZ
+       5 SHP
+            NAM/AIRPORT PET SHOP
+            ADR/AEROPORTO SANTOS DUMONT
+            LOC/RIO DE JANEIRO
+            /BR
+       6 CNE
+            NAM/ORIENT ANIMAL HOSPITAL
+            ADR/NARITA AIRPORT
+            LOC/TOKYO
+            /JP
+       7 AGT//5710375
+            /SPEEDAIR SERVICES
+            /RIO INTERNACIONAL
+       8 SSR/SHIPPERS CERTIFICATION FOR LIVE ANIMALS
+            ATTACHED
+            /DO NOT FEED BUT FRESH WATER TO BE PROVIDED
+      11 CVD/USD/PX/PP/NVD/NCV/XXX
+      12 RTD/1/P1/K48.0/CS/SN100/W96/R22.20/T2131.20
+            /NG/1 LIVE DOG
+            /2/ND//CMT60-80-120/1
+            /3/NV/MC0.57
+      13 OTH/P/ACC22.00
+      14 PPD/WT2131.20
+            /OC22.00/CT2153.20
+      16 CER/AIRPORT PET SHOP
+      17 ISU/01OCT06/RIO INTERNACIONAL/SPEEDAIR SERVICES
+      20 REF///AIR/SPEEDAIRSERVICES/RIO
+
+6.3 This example illustrates an airline to cargo community system message indicating:
+· a consignment of dangerous goods, acceptable for carriage on a passenger aircraft,
+
+  and mixed with non-dangerous goods, not rated separately (see Attachment 4).
+     Ref. Message Content
+       1 FWB/17
+       2 777-12345675JFKLHR/T2L150
+       4 RTG/LHRII
+       5 SHP
+            NAM/ACME MACHINERY LTD.
+            ADR/2000 LEXINGTON
+            LOC/NEW YORK/NY
+            /US
+       6 CNE
+            NAM/ACME MACHINERY LTD.
+            ADR/12 PETTY COAT LANE
+            LOC/LONDON
+            /GB
+       8 SSR/DANGEROUS GOODS AS PER ATTACHED SHIPPERS
+            DECLARATION ­ 1 PACKAGE
+      11 CVD/USD/PX/PP/NVD/NCV/XXX
+      12 RTD/1/P1/L150/CQ/W150/R4.25/T637.50
+            /NG/AUTOMOTIVE PARTS
+            /2/ND//INH69-36-36/1
+      13 OTH/P/RAC80.00
+      14 PPD/WT637.50
+            /OC50.00/CT717.50
+      16 CER/ACME MACHINERY LTD.
+      17 ISU/01OCT06/J.F. KENNEDY/TRANSPARENT AIR
+      20 REF///AIR/TRANSPARENTAIR/JFK
+
+6.4 This example illustrates a forwarder to airline message indicating:
+· a consolidated consignment, presented on one skid;
+· an indication that the agent reports the house waybill details directly to Customs;
+· an indication that a local transfer at destination is required;
+· application of a Shippers Load and Count (SLAC) for a loaded piece that is not a
+
+  ULD;
+· an indication that the consolidation is secure.(see Attachment 5).
+
+     Ref. Message Content
+1 FWB/17
+2 777-12345675LHRJFK/T1K913.0
+4 RTG/JFKII
+5 SHP
+
+     NAM/EXPORTANT LTD.
+     ADR/WAPPING TRADING ESTATE
+     LOC/LONDON
+     /GB
+6 CNE
+     NAM/ACME CONSOLIDATORS
+     ADR/500 MADISON AVE
+     LOC/NEW YORK/NY
+     /US
+7 AGT//9147123
+     /EXPORTANT LTD.
+     /HEATHROW
+11 CVD/GBP//PP/NVD/NCV/XXX
+12 RTD/1/P1/K913.0/CQ/W913/R1.36/T1241.68
+     /NC/CONSOLIDATION
+     /2/NC/AS PER ATTACHED LIST
+     /3/NS/18
+     /4/ND//NDA
+14 PPD/WT1241.68
+     /CT1241.68
+16 CER/EXPORTANT LTD.
+17 ISU/01OCT06/HEATHROW/EXPORTANT LTD.
+20 REF///AGT/EXPORTANTLTD/LHR
+25 SPH/SPX
+29 OCI/US/AGT/A/BCBP123
+     /US/TID/F/A999
+     /GB/ISS/RA/001-011
+     ///ED/0213
+     ///ST/THIS MASTER AIR WAYBILL CONTAINS NO
+///ST/1. FREIGHT FROM THAT COUNTRY
+///ST/2. TONER CARTRIDGE GREATER THAN 550
+///ST/ GRAMS TRANSFERRING THIS COUNTRY
+
+7. FWB MESSAGE SPECIFICATION
+
+Air Waybill Data
+
+Cargo-IMP Manual Edition Number/Version Number
+
+Mail Vote         15th
+12th 01 Jan 93 13th 14th Supp. 16th 18th 20th 21st 24th 25th 26th 29th 32nd
+
+4 5 6 7 8 9 10 11 12 13 14 15 16 17
+
+1. Standard Message Identification
+
+Status:                 Note: GEN1
+
+1.1 Standard Message Identifier
+
+           Status:               Character Format: aaa Note: FWB1 Data Element No. 101
+
+1.2 Separator : Slant
+
+           Status:
+
+1.3 Message Type Version Number
+
+           Status:               Character Format: n[...3] Data Element No. 124
+
+1.4 Separator : CRLF
+
+          Status:
+
+2. AWB Consignment Details
+
+Status:
+
+2.1 AWB Identification
+
+           Status:
+
+                  2.1.1 Airline Prefix
+
+                        Status:         Character Format:    AWB Box:            Data Element No.
+                                        nnn                  1A                  112
+
+                  2.1.2 Separator : Hyphen                   AWB Box:            Data Element No.
+                                                             1B                  113
+                        Status:
+                                                                                 Data Element No.
+                  2.1.3 AWB Serial Number                                        313
+                                                                                 Data Element No.
+                        Status:         Character Format: n                      313
+                                        [8]
+
+2.2 AWB Origin and Destination
+
+           Status:
+
+                  2.2.1 Airport/City Code (of Origin)
+
+                        Status:         Character Format:    AWB Box:
+                                        aaa                  1,9
+
+                  2.2.2 Airport/City Code (of Destination)
+
+                        Status:         Character Format:    AWB Box:
+                                        aaa                  18
+2.3 Quantity Detail
+
+         Status:
+
+         2.3.1 Separator : Slant
+
+                   Status:
+
+         2.3.2 Shipment Description Code (T)
+
+                    Status:      Character Format: a Data Element No. 703
+
+         2.3.3 Number of Pieces
+
+                    Status:      Character          Note:         AWB       Data Element
+                                 Format: n[...4]    FWB66         Box: 22J  No. 701
+
+         2.3.4 Weight Code
+
+                    Status:      Character Format:      AWB Box:         Data Element No.
+                                 a                      22C              601
+
+         2.3.5 Weight            Character          Note:         AWB       Data Element
+                                 Format: n[...7]p   FWB67
+                   Status:                                        Box: 22K No. 600
+
+2.4 Volume Detail
+
+         Status:
+
+         2.4.1 Volume Code
+
+                    Status:      Character Format: aa Data Element No. 604
+
+         2.4.2 Volume Amount
+
+                    Status:      Character Format: n[...9]p Data Element No. 500
+
+2.5 Density Group
+
+         Status:             Note: FWB84
+
+         2.5.1 Density Indicator (DG)
+
+                    Status:      Character Format: aa Data Element No. 603
+
+         2.5.2 Density Group
+
+                    Status:      Character Format: n[...2] Data Element No. 602
+
+2.6 Separator : CRLF
+
+         Status:
+
+3. Flight Bookings
+
+Status:             Note: FWB20
+
+3.1 Line Identifier (FLT)
+
+         Status:             Character Format: aaa Data Element No. 103
+
+3.2 Flight Identification
+
+         Status:
+
+         3.2.1 Separator : Slant
+
+                    Status:
+
+         3.2.2 Carrier Code
+
+                    Status:      Character          Note:  AWB Box: Data Element
+                                 Format: mm         GEN4
+                                                           19A              No. 312
+
+         3.2.3 Flight Number
+
+                    Status:      Character Format: nnn     AWB Box:         Data Element No.
+                                 (n)(a)                    19A              800
+            3.2.4 Separator : Slant
+
+                     Status:
+
+            3.2.5 Day
+
+                     Status:    Character            Note:  AWB            AWB    Data
+                                Format: nn           GEN2   Box:           Box:   Element
+                                                            19A            19B    No. 202
+
+Element 3.2 can be repeated. Can occur a maximum of two times.
+
+   3.3 Separator : CRLF
+
+               Status:
+
+4. Routing
+
+Status:
+
+4.1 Line Identifier (RTG)
+
+            Status:           Character Format: aaa Data Element No. 103
+
+4.2 1st Destination/Carrier
+
+            Status:
+
+            4.2.1 Separator : Slant
+
+                      Status:
+
+            4.2.2 Airport/City Code
+
+                     Status:    Character Format:           AWB Box:       Data Element No.
+                                aaa                         11A            313
+
+            4.2.3 Carrier Code
+
+                     Status:    Character            Note:        AWB Box: Data Element
+                                Format: mm           GEN4
+                                                                  11B             No. 312
+
+4.3 Onward Destination/Carrier
+
+            Status:
+
+            4.3.1 Separator : Slant
+
+                      Status:
+
+            4.3.2 Airport/City Code
+
+                     Status:    Character Format:           AWB Box:       Data Element No.
+                                aaa                         11C            313
+
+            4.3.3 Carrier Code
+
+                     Status:    Character            Note:  AWB            AWB    Data
+                                Format: mm           GEN4   Box:           Box:   Element
+                                                            11D            11E/F  No. 312
+
+Element 4.3 can be repeated. Can occur a maximum of two times.
+
+4.4 Separator : CRLF
+
+          Status:
+
+5. Shipper
+
+Status:
+
+5.1 Line Identifier (SHP)
+
+            Status:           Character Format: aaa  Data Element No. 103
+
+5.2 Account Detail
+
+            Status:           Note: FWB32
+5.2.1 Separator : Slant
+
+              Status:
+
+5.2.2 Account Number
+
+              Status:  Character Format: t    AWB Box:  Data Element No.
+                       [...14]                3         108
+
+5.3 Separator : CRLF
+
+Status:
+
+5.4 Name
+
+Status:
+
+5.4.1 Information Identifier (NAM)
+
+              Status:  Character Format: aaa  Data Element No. 103
+
+5.4.2 Separator : Slant
+
+              Status:
+
+5.4.3 Name             Character Format: t    AWB Box:  Data Element No.
+                       [...35]                2         300
+          Status:
+
+5.4.4 Separator : CRLF
+
+              Status:
+
+Elements 5.4.2 thru 5.4.4 can be repeated. Can occur a maximum of two times.
+
+5.5 Street Address
+
+Status:
+
+5.5.1 Information Identifier (ADR)
+
+              Status:  Character Format: aaa  Data Element No. 103
+
+5.5.2 Separator : Slant
+
+              Status:
+
+5.5.3 Street Address
+
+              Status:  Character Format: t    AWB Box:  Data Element No.
+                       [...35]                2         301
+
+5.5.4 Separator : CRLF
+
+              Status:
+
+Elements 5.5.2 thru 5.5.4 can be repeated. Can occur a maximum of two times.
+
+5.6 Location
+
+Status:
+
+5.6.1 Information Identifier (LOC)
+
+              Status:  Character Format: aaa  Data Element No. 103
+
+5.6.2 Separator : Slant
+
+              Status:
+
+5.6.3 Place            Character Format: t    AWB Box:  Data Element No.
+                       [...17]                2         302
+          Status:
+
+5.6.4 Separator : Slant
+
+              Status:  Note: FWB21
+
+5.6.5 State/Province
+                  Status:     Character Format: t   AWB Box:           Data Element No.
+                              [...9]                2                  303
+
+         5.6.6 Separator : CRLF
+
+                  Status:
+
+5.7 Coded Location
+
+         Status:           Note: FWB40
+
+         5.7.1 Separator : Slant
+
+                  Status:
+
+         5.7.2 ISO Country Code
+
+                  Status:     Character Format: aa  AWB Box: 2 Data Element No. 304
+
+         5.7.3 Separator : Slant
+
+                  Status:     Note: FWB22
+
+         5.7.4 Post Code      Character Format: t   AWB Box:           Data Element No.
+                              [...9]                2                  305
+                   Status:
+
+5.8 Contact Detail
+
+         Status:           Note: FWB40
+
+         5.8.1 Separator : Slant
+
+                  Status:
+
+         5.8.2 Contact Identifier
+
+                  Status:     Character Format: m   AWB Box:           Data Element No.
+                              [...3]                2                  122
+
+         5.8.3 Separator : Slant
+
+                   Status:
+
+         5.8.4 Contact Number
+
+                  Status:     Character Format: m   AWB Box:           Data Element No.
+                              [...25]               2                  123
+
+Element 5.8 can be repeated.
+
+   5.9 Separator : CRLF
+
+               Status:
+
+6. Consignee
+
+Status:
+
+6.1 Line Identifier (CNE)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+6.2 Account Detail
+
+         Status:           Note: FWB33
+
+         6.2.1 Separator : Slant
+
+                  Status:
+
+         6.2.2 Account Number
+
+                  Status:     Character Format: t   AWB Box:           Data Element No.
+                              [...14]               5                  108
+
+6.3 Separator : CRLF
+
+         Status:
+6.4 Name
+
+Status:
+
+6.4.1 Information Identifier (NAM)
+
+              Status:  Character Format: aaa  Data Element No. 103
+
+6.4.2 Separator : Slant
+
+              Status:
+
+6.4.3 Name             Character Format: t    AWB Box:  Data Element No.
+                       [...35]                4         300
+          Status:
+
+6.4.4 Separator : CRLF
+
+              Status:
+
+Elements 6.4.2 thru 6.4.4 can be repeated. Can occur a maximum of two times.
+
+6.5 Street Address
+
+Status:
+
+6.5.1 Information Identifier (ADR)
+
+              Status:  Character Format: aaa  Data Element No. 103
+
+6.5.2 Separator : Slant
+
+              Status:
+
+6.5.3 Street Address
+
+              Status:  Character Format: t    AWB Box:  Data Element No.
+                       [...35]                4         301
+
+6.5.4 Separator : CRLF
+
+              Status:
+
+Elements 6.5.2 thru 6.5.4 can be repeated. Can occur a maximum of two times.
+
+6.6 Location
+
+Status:
+
+6.6.1 Information Identifier (LOC)
+
+              Status:  Character Format: aaa  Data Element No. 103
+
+6.6.2 Separator : Slant
+
+          Status:
+
+6.6.3 Place            Character Format: t    AWB Box:  Data Element No.
+                       [...17]                4         302
+          Status:
+
+6.6.4 Separator : Slant
+
+              Status:  Note: FWB23
+
+6.6.5 State/Province
+
+              Status:  Character Format: t    AWB Box:  Data Element No.
+                       [...9]                 4         303
+
+6.6.6 Separator : CRLF
+
+              Status:
+
+6.7 Coded Location
+
+Status:                Note: FWB41
+
+6.7.1 Separator : Slant
+                   Status:
+
+          6.7.2 ISO Country Code
+
+                   Status:      Character Format: aa  AWB Box: 4 Data Element No. 304
+
+          6.7.3 Separator : Slant
+
+                   Status:      Note: FWB24
+
+          6.7.4 Post Code       Character Format: t   AWB Box:          Data Element No.
+                                [...9]                4                 305
+                    Status:
+
+6.8 Contact Detail
+
+          Status:           Note: FWB41
+
+          6.8.1 Separator : Slant
+
+                   Status:
+
+          6.8.2 Contact Identifier
+
+                   Status:      Character Format: m   AWB Box:          Data Element No.
+                                [...3]                4                 122
+
+          6.8.3 Separator : Slant
+
+                   Status:
+
+          6.8.4 Contact Number
+
+                   Status:      Character Format: m   AWB Box:          Data Element No.
+                                [...25]               4                 123
+
+Element 6.8 can be repeated.
+   6.9 Separator : CRLF
+
+               Status:
+
+7. Agent
+
+Status:            Note: FWB25
+
+7.1 Line Identifier (AGT)
+
+          Status:           Character Format: aaa Data Element No. 103
+
+7.2 Account Detail
+
+          Status:
+
+          7.2.1 Separator : Slant
+
+                   Status:
+
+          7.2.2 Account Number
+
+                   Status:      Character             Note:  AWB        Data Element
+                                Format: t[...14]      FWB36  Box: 8     No. 108
+
+          7.2.3 Separator : Slant
+
+                   Status:
+
+          7.2.4 IATA Cargo Agent Numeric Code
+
+                   Status:      Character Format: n   AWB Box:          Data Element No.
+                                [7]                   7                 311
+
+          7.2.5 Separator : Slant
+
+                   Status:      Note: FWB26
+
+          7.2.6 IATA Cargo Agent CASS Address
+
+                   Status:      Character Format: n   AWB Box:          Data Element No.
+                                [4]                   7                 309
+         7.2.7 Separator : Slant
+
+                   Status:      Note: FWB27
+
+         7.2.8 Participant Identifier
+
+                   Status:      Character            Note:   AWB         Data Element
+                                Format: m[...3]      FWB34   Box: 6      No. 319
+
+7.3 Separator : CRLF
+
+          Status:
+
+7.4 Name
+
+          Status:
+
+         7.4.1 Separator : Slant
+
+                   Status:
+
+         7.4.2 Name             Character Format: t          AWB Box:    Data Element No.
+                                [...35]                      6           300
+                   Status:
+
+         7.4.3 Separator : CRLF
+
+                   Status:
+
+7.5 Place
+
+          Status:
+
+         7.5.1 Separator : Slant
+
+                   Status:
+
+         7.5.2 Place            Character Format: t          AWB Box:    Data Element No.
+                                [...17]                      6           302
+                   Status:
+
+         7.5.3 Separator : CRLF
+
+                   Status:
+
+8. Special Service Request
+
+Status:            Note: FWB35
+
+8.1 Line Identifier (SSR)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+8.2 Separator : Slant
+
+          Status:
+
+8.3 Special Service Request
+
+         Status:            Character Format: t    AWB Box:  AWB Box:    Data Element No.
+                            [...65]                21        21          404
+
+8.4 Separator : CRLF
+
+          Status:
+
+Elements 8.2 thru 8.4 can be repeated. Can occur a maximum of three times.
+
+9. Also Notify
+
+Status:            Note: FWB35
+
+9.1 Line Identifier (NFY)
+
+         Status:            Character Format: aaa  Data Element No. 103
+
+9.2 Separator : CRLF
+Status:
+
+9.3 Name
+
+Status:
+
+9.3.1 Information Identifier (NAM)
+
+                   Status:  Character Format: aaa  Data Element No. 103
+
+9.3.2 Separator : Slant
+
+                   Status:
+
+9.3.3 Name                  Character Format: t    AWB Box:  Data Element No.
+                            [...35]                21        300
+          Status:
+
+9.3.4 Separator : CRLF
+
+                   Status:
+
+Elements 9.3.2 thru 9.3.4 can ne repeated. Can occur a maximum of two times.
+
+9.4 Street Address
+
+Status:
+
+9.4.1 Information Identifier (ADR)
+
+                   Status:  Character Format: aaa  Data Element No. 103
+
+9.4.2 Separator : Slant
+
+                   Status:
+
+9.4.3 Street Address
+
+                   Status:  Character Format: t    AWB Box:  Data Element No.
+                            [...35]                21        301
+
+9.4.4 Separator : CRLF
+
+                   Status:
+
+Elements 9.4.2 thru 9.4.4 can be repeated. Can occur a maximum of two times.
+
+9.5 Location
+
+          Status:
+
+9.5.1 Information Identifier (LOC)
+
+                   Status:  Character Format: aaa  Data Element No. 103
+
+9.5.2 Separator : Slant
+
+                   Status:
+
+9.5.3 Place                 Character Format: t    AWB Box:  Data Element No.
+                            [...17]                21        302
+          Status:
+
+9.5.4 Separator : Slant
+
+                   Status:  Note: FWB29
+
+9.5.5 State/Province
+
+                   Status:  Character Format: t    AWB Box:  Data Element No.
+                            [...9]                 21        303
+
+9.5.6 Separator : CRLF
+
+          Status:
+
+9.6 Coded Location
+
+Status:                     Note: FWB42
+         9.6.1 Separator : Slant
+
+                  Status:
+
+         9.6.2 ISO Country Code
+
+                  Status:     Character Format:    AWB Box:            Data Element No.
+                              aa                   21                  304
+
+         9.6.3 Separator : Slant                     AWB Box:           Data Element No.
+                                                     21                 305
+                  Status:     Note: FWB30
+                                                     AWB Box:           Data Element No.
+         9.6.4 Post Code      Character Format: t    21                 122
+                              [...9]
+                   Status:                            AWB Box:           Data Element No.
+                                                      21                 123
+9.7 Contact Detail
+
+         Status:           Note: FWB42
+
+         9.7.1 Separator : Slant
+
+                  Status:
+
+         9.7.2 Contact Identifier
+
+                  Status:     Character Format: m
+                              [...3]
+
+         9.7.3 Separator : Slant
+
+                  Status:
+
+         9.7.4 Contact Number
+
+                  Status:     Character Format: m
+                              [...25]
+
+Element 9.7 can be repeated.
+   9.8 Separator : CRLF
+
+               Status:
+
+10. Accounting Information
+
+Status:
+
+10.1 Line Identifier (ACC)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+10.2 Account Detail
+
+         Status:
+
+         10.2.1 Separator : Slant
+
+                   Status:
+
+         10.2.2 Accounting Information Identifier
+
+                  Status:     Character Format:    AWB Box:            Data Element No.
+                              aaa                  10                  411
+
+         10.2.3 Separator : Slant                                       Data Element No.
+                                                                        410
+                  Status:
+
+         10.2.4 Accounting Information
+
+                  Status:     Character Format: t  AWB Box:
+                              [...34]              10
+
+         10.2.5 Separator : CRLF
+
+                  Status:
+Element 10.2 can be repeated. Can occur a maximum of six times.
+
+11. Charge Declarations
+
+Status:
+
+11.1 Line Identifier (CVD)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+11.2 Separator : Slant
+
+         Status:
+
+11.3 ISO Currency Code
+
+         Status:           Character Format: aaa AWB Box: 12 Data Element No. 606
+
+11.4 Separator : Slant
+
+          Status:
+
+11.5 Charge Code
+
+         Status:           Character Format:  Note:  AWB Box:          Data Element No.
+                           aa                 FWB37  13                503
+
+11.6 Separator : Slant
+
+          Status:
+
+11.7 Prepaid/Collect Charge Declarations
+
+         Status:
+
+         11.7.1 P/C Ind. (Weight/Valuation)
+
+                  Status:   Character Format:        AWB Box:          Data Element No.
+                            a                        14A/B             403
+
+         11.7.2 P/C Ind. (Other Charges)             AWB Box:          Data Element No.
+                                                     15A/B             403
+                  Status:   Character Format:
+                            a
+
+11.8 Value for Carriage Declaration
+
+         Status:
+
+         11.8.1 Separator : Slant
+
+                  Status:
+
+         11.8.2 Declared Value for Carriage
+
+                  Status:   Character Format: n      AWB Box:          Data Element No.
+                            [...12]p                 16                510
+
+                  or
+                  No Value Declared (NVD)
+
+                  Character Format: aaa AWB Box: 16
+
+11.9 Separator : Slant
+
+          Status:
+
+11.10 Value for Customs Declaration
+
+         Status:
+
+         11.10.1 Declared Value for Customs
+
+                  Status:   Character Format: n      AWB Box:          Data Element No.
+                            [...12]p                 17                509
+                  or
+                  No Customs Value (NCV)
+
+                  Character Format: aaa AWB Box: 17
+
+11.11 Value for Insurance Declaration
+
+         Status:
+
+         11.11.1 Separator : Slant
+
+                   Status:
+
+         11.11.2 Amount of Insurance
+
+                  Status:   Character Format: n       AWB Box:         Data Element No.
+                            [...11]p                  20               508
+
+                  or
+                  No Value (XXX)
+
+                       Character Format: aaa
+
+11.12 Separator : CRLF
+
+          Status:
+
+12. Rate Description
+
+Status:
+
+12.1 Line Identifier (RTD)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+12.2 Charge Line Count
+
+         Status:
+
+         12.2.1 Separator : Slant
+
+                   Status:
+
+         12.2.2 AWB Rate Line Number
+
+                  Status:   Character Format: n[...2] Data Element No. 106
+
+Elements 12.2 must be followed by at least one
+of the optional elements 12.3, 12.4, 12.5, 12.6,
+12.7, 12.8, 12.9, 12.11 thru 12.18 or 12.19.
+
+12.3 Number of Pieces/RCP Details
+
+         Status:
+
+         12.3.1 Separator : Slant
+
+                  Status:
+
+         12.3.2 AWB Column Identifier (P)
+
+                  Status:   Character Format: a       Data Element No. 105
+
+         12.3.3 Number of Pieces
+
+                  Status:   Character Format: n       AWB Box:         Data Element No.
+                            [...4]                    22A              701
+
+                  or
+                  Rate Combination Point
+
+                  Character Format: aaa AWB Box: 22A
+12.4 Gross Weight Details
+
+Status:
+
+12.4.1 Separator : Slant
+
+          Status:
+
+12.4.2 Weight Code
+
+         Status:           Character Format:    AWB Box:   Data Element No.
+                           a                    22C        601
+
+12.4.3 Weight              Character Format: n   AWB Box:  Data Element No.
+                           [...7]p               22B       600
+          Status:
+
+12.5 Rate Class Details
+
+Status:
+
+12.5.1 Separator : Slant
+
+         Status:
+
+12.5.2 AWB Column Identifier (C)
+
+         Status:           Character Format: a  Data Element No. 105
+
+12.5.3 Rate Class Code
+
+         Status:           Character Format:    AWB Box:   Data Element No.
+                           a                    22D        507
+
+12.6 Commodity Item Number Details
+
+          Status:
+
+12.6.1 Separator : Slant
+
+         Status:
+
+12.6.2 AWB Column Identifier (S)
+
+         Status:           Character Format: a  Data Element No. 105
+
+12.6.3 Commodity Item Number
+
+         Status:           Character Format: n   AWB Box:  Data Element No.
+                           [4...7]               22E       707
+
+         or
+         ULD Rate Class Type
+
+         Character Format: n(a)(a) AWB Box: 22E
+
+         or
+         Rate Class Code (Basis)
+
+         Character Format: a AWB Box: 22E
+
+         Class Rate Percentage
+
+         Character Format: n[...3] AWB Box: 22E
+
+12.7 Chargeable Weight Details
+
+Status:
+
+12.7.1 Separator : Slant
+
+         Status:
+
+12.7.2 AWB Column Identifier (W)
+
+         Status:           Character Format: a Data Element No. 105
+12.7.3 Weight             Character Format: n      AWB Box:  Data Element No.
+                          [...7]p                  22F       600
+          Status:
+
+12.8 Rate/Charge Details
+
+Status:
+
+12.8.1 Separator : Slant
+
+         Status:
+
+12.8.2 AWB Column Identifier (R)
+
+         Status:          Character Format: a  Data Element No. 105
+
+12.8.3 Rate or Charge
+
+         Status:          Character Format: n     AWB Box:   Data Element No.
+                          [...8]p                 22G        506
+
+         or
+         Discount
+
+         Character Format: n[...8]p AWB Box: 22G
+
+12.9 Total Details
+
+Status:
+
+12.9.1 Separator : Slant
+
+         Status:
+
+12.9.2 AWB Column Identifier (T)
+
+         Status:          Character Format: a Data Element No. 105
+
+12.9.3 Charge Amount
+
+         Status:          Character Format: n      AWB Box:  Data Element No.
+                          [...12]p                 22H       501
+
+         or
+         Discount Amount
+
+         Character Format: n[...12]p AWB Box: 22H
+
+12.10 Separator : CRLF
+
+Status:             Note: FWB31
+
+Ref. 12.10 can be followed by one of Ref. 12.11 thru 12.18 and/or Ref. 12.19.
+
+12.11 Goods Description
+
+Status:             Note: FWB44
+
+12.11.1 Separator : Slant
+
+         Status:
+
+12.11.2 AWB Column Identifier (N)
+
+         Status:          Character Format: a Data Element No. 105
+
+12.11.3 Goods Data Identifier (G)
+
+         Status:          Character  Note:         AWB               Data Element
+                          Format: a  FWB45         Box: 22I          No. 710
+
+12.11.4 Separator : Slant
+
+         Status:
+
+12.11.5 Nature and Quantity of Goods
+         Status:     Character Format: t  AWB Box:         Data Element No.
+                     [...20]              22I              709
+
+12.12 Consolidation
+
+Status:
+
+12.12.1 Separator : Slant
+
+         Status:
+
+12.12.2 AWB Column Identifier (N)
+
+         Status:     Character Format: a Data Element No. 105
+
+12.12.3 Goods Data Identifier (C)
+
+         Status:     Character        Note:      AWB           Data Element
+                     Format: a        FWB46      Box: 22I      No. 710
+
+12.12.4 Separator : Slant
+
+         Status:
+
+12.12.5 Nature and Quantity of Goods
+
+         Status:     Character Format: t  AWB Box:         Data Element No.
+                     [...20]              22I              709
+
+12.13 Dimensions
+
+Status:              Note: FWB47
+
+12.13.1 Separator : Slant
+
+          Status:
+
+12.13.2 AWB Column Identifier (N)
+
+         Status:     Character Format: a Data Element No. 105
+
+12.13.3 Goods Data Identifier (D)
+
+         Status:     Character        Note:      AWB           Data Element
+                     Format: a        FWB48      Box: 22I      No. 710
+
+12.13.4 Separator : Slant
+
+         Status:
+
+12.13.5 Weight Code
+
+         Status:     Character Format: a Note: FWB63 Data Element No. 601
+
+12.13.6 Weight       Character Format: n     Note:            Data Element No.
+                     [...7]p                 FWB64            600
+          Status:
+
+12.13.7 Separator : Slant
+
+          Status:
+
+12.13.8 Measurement Unit Code
+
+         Status:     Character            Note:     AWB        Data Element
+                     Format: m[...3]      FWB79     Box: 22I   No. 611
+
+         or
+         No Dimensions Available (NDA)
+
+12.13.9 Length Dimension
+
+         Status:     Character            Note:     AWB        Data Element
+                     Format: n[...5]      FWB77     Box: 22I   No. 608
+
+12.13.10 Separator : Hyphen
+
+         Status:     Note: FWB77
+12.13.11 Width Dimension
+
+Status:            Character            Note:     AWB        Data Element
+                   Format: n[...5]      FWB77     Box: 22I   No. 609
+
+12.13.12 Separator : Hyphen
+
+Status:            Note: FWB77
+
+12.13.13 Height Dimension
+
+Status:            Character            Note:     AWB        Data Element
+                   Format: n[...5]      FWB77     Box: 22I   No. 610
+
+12.13.14 Separator : Slant
+
+Status:            Note: FWB77
+
+12.13.15 Numbers of Pieces
+
+Status:            Character            Note:     AWB        Data Element
+                   Format: n[...4]      FWB77     Box: 22I   No. 701
+
+12.14 Volume       Note: FWB78
+
+          Status:
+
+12.14.1 Separator : Slant
+
+          Status:
+
+12.14.2 AWB Column Identifier (N)
+
+Status:            Character Format: a Data Element No. 105
+
+12.14.3 Goods Data Identifier (V)
+
+Status:            Character          Note:    AWB           Data Element
+                   Format: a          FWB49    Box: 22I      No. 710
+
+12.14.4 Separator : Slant
+
+Status:
+
+12.14.5 Volume Code
+
+Status:            Character Format:    AWB Box:       Data Element No.
+                   aa                   22I            604
+
+12.14.6 Volume Amount
+
+Status:            Character Format: n       AWB Box:       Data Element No.
+                   [...9]p                   22I            500
+
+12.15 ULD Number
+
+          Status:
+
+12.15.1 Separator : Slant
+
+Status:
+
+12.15.2 AWB Column Identifier (N)
+
+Status:            Character Format: a Data Element No. 105
+
+12.15.3 Goods Data Identifier (U)
+
+Status:            Character          Note:    AWB           Data Element
+                   Format: a          FWB50    Box: 22I      No. 710
+
+12.15.4 Separator : Slant
+
+          Status:
+
+12.15.5 ULD Type
+
+Status:            Character Format:    AWB Box:         Data Element No.
+                   amm                  22I              802
+
+12.15.6 ULD Serial Number
+
+Status:            Character Format:         AWB Box:       Data Element No.
+                   mnnn(n)                   22I            115
+12.15.7 ULD Owner Code
+
+         Status:   Character            Note:  AWB           Data Element
+                   Format: mm           GEN4   Box: 22I      No. 801
+
+12.16 Shipper's Load and Count
+
+Status:           Note: FWB80
+
+12.16.1 Separator : Slant
+
+         Status:
+
+12.16.2 AWB Column Identifier (N)
+
+         Status:   Character Format: a Data Element No. 105
+
+12.16.3 Goods Data Identifier (S)
+
+         Status:   Character          Note:    AWB           Data Element
+                   Format: a          FWB51    Box: 22I      No. 710
+
+12.16.4 Separator : Slant
+
+         Status:
+
+12.16.5 SLAC       Character Format: n  AWB Box:         Data Element No.
+                   [...5]               22I              714
+          Status:
+
+12.17 Harmonised Commodity Code
+
+Status:           Note: FWB81
+
+12.17.1 Separator : Slant
+
+          Status:
+
+12.17.2 AWB Column Identifier (N)
+
+         Status:   Character Format: a Data Element No. 105
+
+12.17.3 Goods Data Identifier (H)
+
+         Status:   Character          Note:    AWB           Data Element
+                   Format: a          FWB52    Box: 22I      No. 710
+
+12.17.4 Separator : Slant
+
+         Status:
+
+12.17.5 Harmonised Commodity Code
+
+         Status:   Character Format: m         AWB Box:  Data Element No.
+                   [6...18]                    22I       900
+
+12.18 Country of Origin of Goods
+
+Status:
+
+12.18.1 Separator : Slant
+
+         Status:
+
+12.18.2 AWB Column Identifier (N)
+
+         Status:   Character Format: a Data Element No. 105
+
+12.18.3 Goods Data Identifier (O)
+
+         Status:   Character          Note:    AWB           Data Element
+                   Format: a          FWB53    Box: 22I      No. 710
+
+12.18.4 Separator : Slant
+
+          Status:
+
+12.18.5 ISO Country Code
+
+         Status:   Character Format:    AWB Box:         Data Element No.
+                   aa                   22I              304
+12.19 Service Code Details
+
+         Status:
+
+         12.19.1 Separator : Slant
+
+                  Status:
+
+         12.19.2 Service Code
+
+                  Status:      Character Format:    AWB Box:           Data Element No.
+                               a                    22Z                505
+
+12.20 Separator : CRLF
+
+         Status:           Note: FWB43
+
+Elements 12.2 thru 12.20 can be repeated. Can occur a maximum of 11 times.
+
+The 11th occurrence of 12.2 thru 12.20 can be followed by a 12th occurrence
+comprising of elements 12.2, one of 12.11 thru 12.18 and 12.20 only.
+
+13. Other Charges
+
+Status:
+
+13.1 Line Identifier (OTH)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+13.2 Charge Line
+
+         Status:
+
+         13.2.1 Separator : Slant
+
+                  Status:
+
+         13.2.2 P/C Ind. (Other Charges)
+
+                  Status:      Character Format: a  Data Element No. 403
+
+         13.2.3 Separator : Slant
+
+                  Status:
+
+13.3 Other Charge Items
+
+         Status:           Note: FWB82
+
+         13.3.1 Other Charge Code
+
+                  Status:      Character Format:    AWB Box:           Data Element No.
+                               aa                   23                 504
+
+         13.3.2 Entitlement Code
+
+                  Status:      Character Format: a  AWB Box: 23 Data Element No. 315
+
+         13.3.3 Charge Amount
+
+                  Status:      Character Format: n  AWB Box:           Data Element No.
+                               [...12]p             23                 501
+
+Element 13.3 can be repeated. Can occur a maximum of three times.
+
+   13.4 Separator : CRLF
+
+               Status:
+
+Elements 13.2 thru 13.4 can be repeated.
+
+14. Prepaid Charge Summary
+
+Status:           Note: FWB76
+
+14.1 Line Identifier (PPD)
+Status:                     Character Format: aaa Data Element No. 103
+
+14.2 Total Weight Charge
+
+          Status:
+
+14.2.1 Separator : Slant
+
+                   Status:
+
+14.2.2 Charge Identifier (WT)
+
+                   Status:  Character Format: aa Data Element No. 502
+
+14.2.3 Charge Amount
+
+                   Status:  Character Format: n  AWB Box: 24A           Data Element
+                            [...12]p             and 22L/H              No. 501
+
+14.3 Valuation Charge
+
+          Status:
+
+14.3.1 Separator : Slant
+
+                   Status:
+
+14.3.2 Charge Identifier (VC)
+
+                   Status:  Character Format: aa Data Element No. 502
+
+14.3.3 Charge Amount
+
+                   Status:  Character Format: n  AWB Box:               Data Element No.
+                            [...12]p             25A                    501
+
+14.4 Taxes
+
+          Status:
+
+14.4.1 Separator : Slant
+
+                   Status:
+
+14.4.2 Charge Identifier (TX)
+
+                   Status:  Character Format: aa Data Element No. 502
+
+14.4.3 Charge Amount
+
+                   Status:  Character Format: n  AWB Box:               Data Element No.
+                            [...12]p             26A                    501
+
+14.5 Separator : CRLF
+
+          Status:
+
+14.6 Total Other Charges Due Agent
+
+Status:
+
+14.6.1 Separator : Slant
+
+          Status:
+
+14.6.2 Charge Identifier (OA)
+
+                   Status:  Character Format: aa Data Element No. 502
+
+14.6.3 Charge Amount
+
+                   Status:  Character Format: n  AWB Box:               Data Element No.
+                            [...12]p             27A                    501
+
+14.7 Total Other Charges Due Carrier
+
+          Status:
+
+14.7.1 Separator : Slant
+
+          Status:
+         14.7.2 Charge Identifier (OC)
+
+                  Status:      Character Format: aa  Data Element No. 502
+
+         14.7.3 Charge Amount
+
+                  Status:      Character Format: n   AWB Box:            Data Element No.
+                               [...12]p              28A                 501
+
+14.8 Charge Summary Total
+
+         Status:
+
+         14.8.1 Separator : Slant
+
+                  Status:
+
+         14.8.2 Charge Identifier (CT)
+
+                  Status:      Character Format: aa  Data Element No. 502
+
+         14.8.3 Charge Amount
+
+                  Status:      Character Format: n   AWB Box:            Data Element No.
+                               [...12]p              30A                 501
+
+14.9 Separator : CRLF
+
+         Status:
+
+15. Collect Charge Summary
+
+Status:           Note: FWB76
+
+15.1 Line Identifier (COL)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+15.2 Collect Charge details as per elements 14.2 to 14.8 above.
+
+         Status:           AWB Box: 24B and to 22L/H 25B to 28B and 30B
+
+15.9 Separator : CRLF
+
+         Status:
+
+16. Shipper's Certification
+
+Status:
+
+16.1 Line Identifier (CER)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+16.2 Separator : Slant
+
+         Status:
+
+16.3 Signature             Character Format: t[...20] AWB Box: 31 Data Element No. 414
+
+          Status:
+
+16.4 Separator : CRLF
+
+         Status:
+
+17. Carrier's Execution
+
+Status:
+
+17.1 Line Identifier (ISU)
+
+         Status:           Character Format: aaa  Data Element No. 103
+
+17.2 AWB Issue Details
+
+         Status:
+         17.2.1 Separator : Slant
+
+                  Status:
+
+         17.2.2 Day            Character            Note:  AWB Box: Data Element
+                               Format: nn           GEN2
+                   Status:                                 32A          No. 202
+
+         17.2.3 Month          Character            Note:  AWB Box: Data Element
+                               Format: aaa          GEN2
+                   Status:                                 32A          No. 201
+
+         17.2.4 Year           Character            Note:  AWB Box: Data Element
+                               Format: nn           GEN2
+                   Status:                                 32A          No. 200
+
+         17.2.5 Separator : Slant
+
+                  Status:
+
+         17.2.6 Place          Character Format: t         AWB Box:     Data Element No.
+                               [...17]                     32B          302
+                   Status:
+
+                  or
+                  Airport/City Code
+
+                  Character Format: aaa AWB Box: 32B
+
+17.3 Authorisation
+
+         Status:
+
+         17.3.1 Separator : Slant
+
+                   Status:
+
+         17.3.2 Signature      Character Format: t         AWB Box:     Data Element No.
+                               [...20]                     32C          414
+                   Status:
+
+17.4 Separator : CRLF
+
+          Status:
+
+18. Other Service Information
+
+Status:           Note: FWB35
+
+18.1 Line Identifier (OSI)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+18.2 Separator : Slant
+
+          Status:
+
+18.3 Other Service Information
+
+         Status:            Character Format: t[...65] AWB Box: 21 Data Element No. 405
+
+18.4 Separator : CRLF
+
+          Status:
+
+Elements 18.2 thru 18.4 can be repeated. Can occur a maximum of three
+times.
+
+19. CC Charges in Destination Currency
+
+Status:           Note: FWB39
+19.1 Line Identifier (CDC)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+19.2 Separator : Slant
+
+          Status:
+
+19.3 Destination Currency
+
+         Status:
+
+         19.3.1 ISO Currency Code
+
+                  Status:   Character Format:     AWB Box:              Data Element No.
+                            aaa                   33A                   606
+
+19.4 Currency Conversion Rate                                            Data Element No.
+                                                                         607
+         Status:
+                                                                         Data Element No.
+         19.4.1 Rate of Exchange                                         501
+
+                  Status:   Character Format: n   AWB Box:               Data Element No.
+                            [...11]p              33A                    501
+
+19.5 Separator : Slant                                                   Data Element No.
+                                                                         501
+         Status:
+
+19.6 CC Charges in Destination Currency
+
+          Status:
+
+         19.6.1 Charge Amount
+
+                  Status:   Character Format: n   AWB Box:
+                            [...12]p              33B
+
+19.7 Separator : Slant
+
+          Status:
+
+19.8 Charges at Destination
+
+         Status:
+
+         19.8.1 Charge Amount
+
+                  Status:   Character Format: n   AWB Box:
+                            [...12]p              33C
+
+19.9 Separator : Slant
+
+         Status:
+
+19.10 Total Collect Charges
+
+          Status:
+
+         19.10.1 Charge Amount
+
+                  Status:   Character Format: n   AWB Box:
+                            [...12]p              33D
+
+19.11 Separator : CRLF
+
+          Status:
+
+20. Sender Reference
+
+Status:
+
+20.1 Line Identifier (REF)
+
+         Status:           Character Format: aaa  Data Element No. 103
+
+20.2 Separator : Slant
+
+          Status:
+20.3 Sender Office Message Address
+
+         Status:           Note: FWB54
+
+         20.3.1 Airport/City Code
+
+                  Status:      Character Format: aaa       Data Element No. 313
+
+         20.3.2 Office Function Designator
+
+                  Status:      Character Format: mm        Data Element No. 107
+
+         20.3.3 Company Designator
+
+                  Status:      Character Format:           Note:       Data Element No.
+                               mm                          GEN4        308
+
+20.4 Separator : Slant
+
+         Status:           Note: FWB55
+
+20.5 Sender Office File Reference
+
+         Status:
+
+         20.5.1 File Reference
+
+                  Status:      Character Format: t[...15]  Data Element No. 117
+
+20.6 Sender Participant Identification
+
+         Status:           Note: FWB56
+
+         20.6.1 Separator : Slant
+
+                  Status:
+
+         20.6.2 Participant Identifier
+
+                  Status:      Character Format: m[...3] Data Element No. 319
+
+         20.6.3 Separator : Slant
+
+                  Status:
+
+         20.6.4 Participant Code
+
+                  Status:      Character Format: m[...17] Data Element No. 320
+
+         20.6.5 Separator : Slant
+
+                  Status:
+
+         20.6.6 Airport/City Code
+
+                  Status:      Character Format: aaa Data Element No. 313
+
+20.7 Separator : CRLF
+
+          Status:
+
+21. Customs Origin
+
+Status:           Note: FWB35
+
+21.1 Line Identifier (COR)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+21.2 Separator : Slant
+
+          Status:
+
+21.3 Customs Origin Code
+
+         Status:           Character Format: m[...2] AWB Box: 21A Data Element No. 906
+
+21.4 Separator : CRLF
+
+          Status:
+22. Commission Information
+
+Status:
+
+22.1 Line Identifier (COI)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+22.2 Separator : Slant
+
+          Status:
+
+22.3 No Commission Indication
+
+         Status:           Note: FWB57
+
+         22.3.1 CASS Indicator (N)
+
+                  Status:        Character Format: a[...2]    Data Element No. 614
+
+22.4 Separator : Slant
+
+         Status:           Note: FWB58
+
+22.5 Commission Amount
+
+         Status:           Note: FWB59
+
+         22.5.1 CASS Settlement Factor
+
+                  Status:        Character Format: n[...12]p  Data Element No. 613
+
+22.6 Separator : Slant
+
+         Status:           Note: FWB60
+
+22.7 Commission Percentage
+
+         Status:           Note: FWB61
+
+         22.7.1 CASS Settlement Factor
+
+                  Status:        Character Format: n[...12]p  Data Element No. 613
+
+22.8 Separator : CRLF
+
+          Status:
+
+23. Sales Incentive Information
+
+Status:
+
+23.1 Line Identifier (SII)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+23.2 Separator : Slant
+
+         Status:
+
+23.3 Sales Incentive Detail
+
+         Status:
+
+         23.3.1 Charge Amount
+
+                  Status:        Character Format: n[...12]p  Data Element No. 501
+
+23.4 Separator : Slant
+
+         Status:           Note: FWB62
+
+23.5 Sales Incentive Indication
+
+         Status:
+
+         23.5.1 CASS Indicator (N)
+
+                  Status:        Character Format: a[...2]    Data Element No. 614
+23.6 Separator : CRLF
+
+          Status:
+
+24. Agent Reference Data
+
+Status:
+
+24.1 Line Identifier (ARD)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+24.2 Separator : Slant
+
+          Status:
+
+24.3 Agent Reference
+
+         Status:
+
+         24.3.1 File Reference
+
+                   Status:      Character Format: t[...15] Data Element No. 117
+
+24.4 Separator : CRLF
+
+          Status:
+
+25. Special Handling Details
+
+Status:
+
+25.1 Line Identifier (SPH)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+25.2 Special Handling Requirements
+
+         Status:
+
+         25.2.1 Separator : Slant
+
+                   Status:
+
+         25.2.2 Special Handling Code
+
+                   Status:      Character Format:  AWB Box:                  Data Element No.
+                                aaa                21                        705
+
+Element 25.2 can be repeated. Can occur a maximum of nine times.
+
+   25.3 Separator : CRLF
+
+               Status:
+
+26. Nominated Handling Party
+
+Status:            Note: FWB65
+
+26.1 Line Identifier (NOM)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+26.2 Separator : Slant
+
+          Status:
+
+26.3 Name                   Character Format: t[...35] Data Element No. 300
+
+          Status:
+
+26.4 Separator : Slant
+
+          Status:
+
+26.5 Place
+         Status:            Character Format: t[...17]  Data Element No. 302
+
+26.6 Separator : CRLF
+
+         Status:
+
+27. Shipment Reference Information
+
+Status:
+
+27.1 Line Identifier (SRI)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+27.2 Separator : Slant
+
+          Status:
+
+27.3 Reference Number
+
+         Status:            Character Format: t  Note:  AWB Box:              Data Element No.
+                            [...14]              FWB68  34A                   132
+
+27.4 Separator : Slant                                                        Data Element No.
+                                                                              133
+         Status:            Note: FWB69
+                                                                              Data Element No.
+27.5 Supplementary Shipment Information                                       133
+
+         Status:            Character Format: t  Note:  AWB Box:
+                            [...12]              FWB70  34B
+
+27.6 Separator : Slant
+
+         Status:            Note: FWB71
+
+27.7 Supplementary Shipment Information
+
+         Status:            Character Format: t  Note:  AWB Box:
+                            [...12]              FWB72  34C
+
+27.8 Separator : CRLF
+
+          Status:
+
+28. Other Participant Information
+
+Status:
+
+28.1 Line Identifier (OPI)
+
+         Status:            Character Format: aaa Data Element No. 103
+
+28.2 Separator : Slant
+
+          Status:
+
+28.3 Name                   Character Format: t[...35] Data Element No. 300
+
+          Status:
+
+28.4 Separator : CRLF
+
+          Status:
+
+28.5 Separator : Slant
+
+          Status:
+
+28.6 Other Participant Office Message Address
+
+         Status:            Note: FWB73
+
+         28.6.1 Airport/City Code
+
+                   Status:  Character Format: aaa Data Element No. 313
+
+         28.6.2 Office Function Designator
+                  Status:     Character Format: mm Data Element No. 107
+
+         28.6.3 Company Designator
+
+                  Status:     Character Format: mm Data Element No. 308
+
+28.7 Separator : Slant
+
+         Status:           Note: FWB74
+
+28.8 Other Participant Office File Reference
+
+          Status:
+
+         28.8.1 File Reference
+
+                  Status:     Character Format: t[...15] Data Element No. 117
+
+28.9 Other Participant Identification
+
+         Status:           Note: FWB75
+
+         28.9.1 Separator : Slant
+
+                   Status:
+
+         28.9.2 Participant Identifier
+
+                  Status:     Character Format: m[...3] Data Element No. 319
+
+         28.9.3 Separator : Slant
+
+                   Status:
+
+         28.9.4 Participant Code
+
+                  Status:     Character Format: m[...17] Data Element No. 320
+
+         28.9.5 Separator : Slant
+
+                   Status:
+
+         28.9.6 Airport/City Code
+
+                  Status:     Character Format: aaa Data Element No. 313
+
+28.10 Separator : CRLF
+
+          Status:
+
+Ref. 28 can be repeated.
+
+29. Other Customs, Security and Regulatory Control Information
+
+Status:           Note: FWB2
+
+29.1 Line Identifier (OCI)
+
+         Status:           Character Format: aaa Data Element No. 103
+
+29.2 Separator : Slant
+
+          Status:
+
+29.3 ISO Country Code
+
+         Status:           Character Format:  Note:  AWB Box:          Data Element No.
+                           aa                 FWB85  21                304
+
+29.4 Separator : Slant
+
+          Status:
+
+29.5 Information Identifier
+
+         Status:           Character Format:  Note:  AWB Box:          Data Element No.
+                           aaa                FWB85  21                103
+
+29.6 Separator : Slant
+                Status:
+
+29.7 Customs, Security and Regulatory Control Information Identifier
+
+                Status:  Character Format: a Note:      AWB Box:  Data Element No.
+                                                        21        941
+                         [...2]            FWB85
+
+29.8 Separator : Slant
+
+          Status:
+
+29.9 Supplementary Customs, Security and Regulatory Control Information
+
+                Status:  Character Format: t[...35] AWB Box: 21 Data Element No. 940
+
+29.10 Separator : CRLF
+
+          Status:
+
+Elements 29.2 to 29.10 can be repeated
+
+8. MESSAGE NOTES
+
+FWB1 Ref.       The corresponding AWB Box Number as shown in Resolution
+           1.1  600a (Extract included as Attachment 1) and Recommended
+                Practice 1600r is shown in the "AWB Box" Column.
+
+FWB2 Ref.       Other Customs, Security and Regulatory Control Information
+           29.
+                The composition of the OCI line depends upon which Customs,
+                Security and Regulatory Control Information Identifier is used and
+                must be in accordance with the OCI composition rules table
+                below.
+
+FWB20 Ref. 3. Flight Bookings (only to be used by agreement with carrier to
+                      whom FWB Message is addressed).
+
+FWB21 Ref. Separator (if 5.6.5 included).
+           5.6.4
+
+FWB22 Ref. Separator (if 5.7.4 and/or 5.8 included).
+           5.7.3
+
+FWB23 Ref. Separator (if 6.6.5 included).
+           6.6.4
+
+FWB24 Ref. Separator (if 6.7.4 and/or 6.8 included).
+           6.7.3
+
+FWB25 Ref. 7. Agent (if Agent entitled to Commission).
+
+FWB26 Ref. Separator (if 7.2.6 and/or 7.2.8 included).
+           7.2.5
+
+FWB27 Ref. Separator (if 7.2.8 included).
+           7.2.7
+
+FWB29 Ref. Separator (if 9.5.5 included).
+           9.5.4
+
+FWB30 Ref. Separator (if 9.6.4 and/or 9.7 included).
+           9.6.3
+
+FWB31 Ref. Separator (if any of 12.3 thru 12.9 included).
+           12.10
+
+FWB32 Ref. Account Detail (only to be used by agreement with Carrier to
+           5.2 whom FWB is addressed).
+
+FWB33 Ref. Account Detail (only to be used by Carrier at delivery time).
+           6.2
+
+FWB34 Ref. Participant Identifier (only code "CAG" to be used).
+           7.2.8
+
+FWB35 Ref. 8. Special Service Request.
+
+           Ref. 9. Also Notify.
+
+           Ref. Other Service Information.
+           18.
+
+           Ref. Customs Origin (total characters of Ref. 8., Ref. 9., Ref. 18. and
+           21. Ref. 21. cannot exceed 216).
+
+FWB36 Ref. Account Number (only to be used by agreement with carrier to
+           7.2.2 whom FWB Message is addressed).
+
+FWB37 Ref. Charge Code (if transmitted by a carrier).
+           11.5
+
+FWB39 Ref. CC Charges in Destination Currency (only to be used at delivery
+           19. time).
+
+FWB40 Ref. Coded Location.
+           5.7
+
+           Ref. Contact Detail (total characters of 5.7 thru 5.8 cannot exceed 69).
+           5.8
+
+FWB41 Ref. Coded Location.
+           6.7
+
+           Ref. Contact Detail (total characters of 6.7 thru 6.8 cannot exceed 69).
+           6.8
+
+FWB42 Ref. Coded Location
+           9.6
+
+           Ref. Contact Detail (total characters of 9.6 thru 9.7 cannot exceed 69).
+           9.7
+
+FWB43 Ref. Separator (if either any of Ref. 12.11 thru 12.18 or 12.19
+           12.20 included).
+
+FWB44 Ref. Description (to be used for Nature and Quantity of Goods
+           12.11 information not covered by Ref. 12.12 thru 12.18).
+FWB45 Ref. Goods Data Identifier (G).
+           12.11.3
+
+FWB46 Ref. Goods Data Identifier (C).
+           12.12.3
+
+FWB47 Ref.        Dimensions (comprising the greatest length, greatest width and
+           12.13  greatest height) (total number of characters of elements 12.13.8
+                  thru 12.13.15 cannot exceed 20). Not required if ULD number
+                  (Ref. 12.15) is included, otherwise must be included if Volume
+                  (Ref. 12.14) not included.
+
+FWB48 Ref. Goods Data Identifier (D).
+           12.13.3
+
+FWB49 Ref. Goods Data Identifier (V).
+           12.14.3
+
+FWB50 Ref. Goods Data Identifier (U).
+           12.15.3
+
+FWB51 Ref. Goods Data Identifier (S).
+           12.16.3
+
+FWB52 Ref. Goods Data Identifier (H).
+           12.17.3
+
+FWB53 Ref. Goods Data Identifier (O).
+           12.18.3
+
+FWB54 Ref. Sender Office Message Address (if 20.6 not included).
+           20.3
+
+FWB55 Ref. Separator (if 20.5 and/or 20.6 included).
+           20.4
+
+FWB56 Ref. Sender Participant Identification (if 20.3 not included).
+           20.6
+
+FWB57 Ref. No Commission Indication (may be included if Ref. 22.5 and 22.7
+           22.3 are not included).
+
+FWB58 Ref. Separator (if Ref. 22.5 or 22.7 included).
+           22.4
+
+FWB59 Ref. Commission Amount (may be included if Ref. 22.3 and 22.7 are
+           22.5 not included).
+
+FWB60 Ref. Separator (if 22.7 included).
+           22.6
+
+FWB61 Ref. Commission Percentage (may be included if Ref. 22.3 and 22.5
+           22.7 are not included).
+
+FWB62 Ref. Separator (if 23.5 included).
+           23.4
+
+FWB63 Ref. Weight Code
+           12.13.5 No AWB Box No. is entered since this information is contained in
+                      the universal AWB label and is optional within FWB for internal
+                      carrier use to further identify pieces with dimensions.
+
+FWB64 Ref. Weight (if 12.13.5 included).
+           12.13.6
+
+FWB65 Ref. Nominated Handling Party (may be included within FWB but shall
+           26. not appear on the air waybill).
+
+FWB66 Ref. Number of Pieces (if AWB Box 22J is empty, where there is not
+           2.3.3 more than one numeric entry in AWB Box 22A, the numeric entry
+                      from AWB Box 22A will be used instead).
+
+FWB67 Ref. Weight (if AWB Box 22K is empty, where there is not more than
+           2.3.5 one entry in AWB Box 22B, the entry from AWB Box 22B will be
+                      used instead).
+
+FWB68 Ref. Reference Number (must be included if 27.5 and 27.7 not
+           27.3 included but may be included with 27.5 and/or 27.7).
+
+FWB69 Ref. Separator (if 27.5 and/or 27.7 included).
+           27.4
+
+FWB70 Ref. Supplementary Shipment Information (must be included if 27.3
+           27.5 and 27.7 not included but may be included with 27.3 and/or 27.7).
+
+FWB71 Ref. Separator (if 27.7 included).
+           27.6
+
+FWB72 Ref. Supplementary Shipment Information (must be included if 27.3
+           27.7 and 27.5 not included but may be included with 27.3 and/or 27.5).
+
+FWB73 Ref. Other Participant Office Message Address (if 28.9 not included).
+           28.6
+
+FWB74 Ref. Separator (if 28.8 or 28.9 included).
+           28.7
+
+FWB75 Ref. Other Participant Identification (if 28.6 not included).
+           28.9
+
+FWB76 Ref. Prepaid Charge Summary
+           14.
+
+           Ref. Collect Charge Summary
+           15. One, or both, of the optional Elements 14 or 15 must be included.
+
+FWB77 Ref. Length Dimension
+           12.13.9
+
+           Ref. Separator
+12.13.10
+
+Ref. Width Dimension
+12.13.11
+
+Ref. Separator
+12.13.12
+
+Ref. Height Dimension
+12.13.13
+
+Ref. Separator
+12.13.14
+
+Ref. Numbers of Pieces must be included if Ref. 12.13.8 not = NDA
+12.13.15
+
+FWB78 Ref. Volume
+           12.14 No required if ULD number (Ref. 12.15) is included, otherwise
+                      must be included if Dimension (Ref. 12.13) not included.
+
+FWB79 Ref. Measurement Unit Code
+           12.13.8 or
+
+                      No Dimensions Available (NDA) must be NDA if ULD (Ref. 12.15)
+                      and Volume (Ref. 12.14) are not included and no meaningful (>
+                      zero) dimensions are available.
+
+FWB80 Ref. Shipper's Load and Count
+           12.16 May be included for any unitised piece, not only ULDs.
+
+FWB81 Ref. Harmonised Commodity Code
+           12.17 May only be included as additional information to the textual
+                      cargo description.
+
+FWB82 Ref.       Other Charge Items
+           13.3
+                 The combination of Other Charge Code and Entitlement Code
+                 cannot be duplicated (another combination of the same Other
+                 Charge Code and the same Entitlement Code is not allowed).
+
+FWB84 Ref. Density Group
+           2.5 If no Volume Detail included).
+
+FWB85 Ref. ISO Country Code
+           29.3
+
+Ref. Information Identifier
+29.5
+
+Ref. Customs Information Identifier
+29.7 (At least one of Ref. 29.3., Ref. 29.5. or Ref. 29.7. must be
+
+           included).
+
+8.8.1 OCI composition rules table
+ISO Information Customs, Explanatory notes on allowed values for
+
+Country Identifier Security the Information Identifier and completion
+
+Code     and examples. Any Screening Method,
+
+         Regulatory Screening Exemption or Security Status
+
+         Control codes are to be included in the
+
+         Information Supplementary Customs, Security and
+
+         Identifier Regulatory Control Information and not
+
+            in the Information Identifier.
+
+         AC If following an RA entry:
+
+              OCI/GB/ISS/RA/001-011
+              ///ED/0213
+              ///AC/12345ABCDE
+            If only the AC entry:
+
+            OCI///AC/12345ABCDE
+
+M        E  OCI/GB//E/12345ABCDE
+
+M     M  A  AGT - agent submitting house details to
+
+            USA
+
+            OCI/US/AGT/A/12345678
+
+      M  C  DOC - certificate identifier
+
+            OCI//DOC/C/12345678
+
+      M  D  DNR ­ UNID (the FDD message also
+
+            contains this information and more)
+
+              OCI//DNR/D/UN1234 UN2345 UN3456
+              UN4567 UN6789
+
+              //DNR/D/UN8901 ID8000
+            DOC - shippers declaration identifier
+
+            OCI//DOC/D/12345678
+
+         L  Screening Exemption Codes are to be
+
+            included in the Supplementary Customs &
+
+            Security Control Information
+
+            SMUS - small undersized shipments
+
+            MAIL - mail
+
+            BIOM - bio-medical samples
+
+            DIPL - diplomatic bags or diplomatic mail
+
+            LFSM - life-saving materials
+
+            NUCL - nuclear materials
+
+            TRNS - transfer or transhipment
+
+            OCI/GB/ISS/RA/001-011
+            ///ED/0213
+          ///L/DIPL
+
+   M  V   DOC - invoice identifier
+   M
+          OCI//DOC/V/12345678
+
+      I   HWB ­ house waybill number
+
+          MAL ­ mail receptacle number
+
+          ULD ­ unit load device identifier
+
+          If indicating an MRN for a HWB level
+
+          OCI/IT/IMP/M/07IT9876AB88901235
+
+            //HWB/I/XXX12345678
+          If indicating an MRN for a HWB within a
+          ULD
+
+          OCI/IT/IMP/M/07IT9876AB88901235
+          //HWB/I/XXX12345678
+          //ULD/I/A1A12345XX
+
+M  M  F   AGT - agent submitting house details to the
+
+          USA
+
+          TID - local transfer as destination in the
+
+          USA
+
+          OCI/US/TID/F/12345678
+
+M     KC  OCI/GB//KC/001-011
+
+          ///ED/0213
+
+M  M  M   IMP ­ Customs import
+
+          EXP ­ Customs export
+
+          TRA ­ Customs transit
+
+          OCI/IT/IMP/M/07IT9876AB88901235
+
+   M  P   DOC ­ packing list identifier
+
+          OCI//DOC/P/12345678
+
+      RC OCI/FR//RC/Dest Country Dest Airport-
+                 Regulated Carrier Name
+                 Example
+
+          OCI/FR//RC/NGLOS-AF
+
+M  M  RA ISS - the regulated agent issuing the
+                 security status
+
+            OCI/GB/ISS/RA/001-011
+
+            ///ED/0213
+          OSS - the regulated agent accepting the
+          security status given by another regulated
+         agent
+
+         OCI/GB/ISS/RA/001-011
+         ///ED/0213
+         /GB/OSS/RA/002-022
+         ///ED/0213
+
+      N  Can only follow an entry identifying a ULD
+
+         ULD ­ number of a seal affixed to a unit
+
+         load device
+
+         OCI//ULD/I/A1A12345XX
+         ///N/1234567890
+
+M     S  OCI/US//S/SYSTEM DOWN 0000-0030
+
+         05MAR10
+
+M  M  T  AGT - Agent's valid trader identification
+
+         number can be indicated
+
+         If in Canada and a third party lodges the
+
+         declaration to Canada:
+
+           OCI/CA/AGT/T/8000
+
+         DCL - Declarant's (Legal person/entity
+         lodging the declaration) valid trader
+         identification number can be indicated
+         If in the EU the EORI of the declaring
+         lodging the ENS shall be indicated:
+
+M                  OCI/GB/DCL/T/GB123456789012
+
+                SHP - Consignor's valid trader identification
+                number can be indicated
+                CNE - Consignee's valid trader
+                identification number can be indicated
+                BRK - Broker's valid trader identification
+                number can be indicated
+                AIR - Airline's valid trader identification
+                number can be indicated
+                NFY - Notify party's valid trader
+                identification number can be indicated
+
+      U
+                   OCI/KE//U/KE1234567890
+
+      ED Must follow RA or KC entry as
+
+         OCI/GB//KC/001-011
+         ///ED/0213
+
+      SM Can only follow RA entry Screening Method
+                 Codes are to be included in the
+           Supplementary Customs & Security Control
+           Information
+           PHS ­ Physical Inspection and/or hand
+           search
+           VCK - Visual check
+           XRY - X-ray equipment
+           EDS - Explosive detection system
+           RES - Remote explosive scent tracing
+           explosive detection dogs
+           FRD - Free running explosive detection
+           dogs
+           VPT - Vapor trace
+           PRT - Particle trace
+           MDE - Metal Detection Equipment
+           SIM - Subjected to flight simulation
+           AOM - Subjected to any other means
+
+              OCI/GB/ISS/RA/001-011
+
+              ///ED/0213
+
+              ///SM/RES
+
+              ///SM/AOM-SPECIFY ANY OTHER
+              MEANS
+
+SD Can only follow RA entry and screening
+           method or exemption
+
+              OCI/GB/ISS/RA/001-011
+
+              ///ED/0213
+
+              ///SM/RES
+
+              ///SD/05MAR122359
+
+SN Can only follow RA entry and screening
+           method or exemption
+
+              OCI/GB/ISS/RA/001-011
+
+              ///ED/0213
+
+              ///SM/RES
+
+              ///SN/JOHNNY WALKER
+
+              ///SD/05MAR122359
+
+SS Only applicable for the FSA/FSU message.
+           All other messages shall capture this as a
+           SPH code.
+           Only one SS code can be entered
+           SCO *can only follow RA entry
+           SPX *can only follow RA entry
+           NSC
+                            OCI/GB/ISS/RA/001-011
+                            ///ED/0213
+                            ///SS/SPX
+
+              ST To capture any ad hoc security statement
+                         required by regulators
+
+                            OCI/GB/ISS/RA/001-011
+                            ///ED/0213
+                            ///ST/THIS MASTER AIR WAYBILL
+                            CONTAINS NO
+                            ///ST/1. FREIGHT FROM THAT
+                            COUNTRY
+                            ///ST/2. TONER CARTRIDGE
+                            GREATER THAN 550
+                            ///ST/ GRAMS TRANSFERRING THIS
+                            COUNTRY
+
+ATTACHMENT 1
+
