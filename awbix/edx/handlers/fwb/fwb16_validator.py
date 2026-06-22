@@ -538,8 +538,20 @@ class FWBABNFValidator:
 
 	def _v_rtd(self, seg: dict) -> None:
 		lines = list(seg["lines"])
-		if lines and lines[0].startswith("RTD"):
-			lines[0] = lines[0][3:]
+		if not lines:
+			self._record(
+				"RTD_Structure", "", False, "RTD segment has no lines",
+				field="RTD", code="RTD_EMPTY"
+			)
+			return
+		if not lines[0].startswith("RTD/"):
+			self._record(
+				"RTD_Structure", lines[0], False,
+				"RTD line must start with 'RTD/' (ABNF: RTD identifier + first ChargeLineCount)",
+				field="RTD", code="RTD_FORMAT"
+			)
+			return
+		lines[0] = lines[0][3:]
 
 		self._rtd_goods_desc = False
 		for raw in lines:
@@ -707,12 +719,12 @@ class FWBABNFValidator:
 				f"Other-charge prepaid/collect indicator (DE403) must be a single letter, got '{pc}'",
 				field="DE403_PCInd",
 			)
-			body = "".join(parts[1:])
+			body = "".join(parts[1:]) if len(parts) > 1 else ""
 			items = re.findall(r"([A-Z]{2})([A-Z])([0-9.]+)", body)
 			if not 1 <= len(items) <= 3:
 				self._record(
 					"OTH_OtherChargeItems", body, False,
-					"Each OTH line must carry 1-3 other-charge items", field="OTH",
+					"Each OTH line must carry 1-3 other-charge items (ABNF: 1*3OTH_OtherChargeItems)", field="OTH",
 				)
 			consumed = "".join(c + e + a for c, e, a in items)
 			if consumed != body:

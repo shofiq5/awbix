@@ -1,0 +1,706 @@
+"""
+FWB CIMP Parser
+Parses IATA Cargo-IMP FWB (Air Waybill Data) messages into
+structured fields numbered per the CIMP specification (1.1, 1.2 … 29.10).
+"""
+
+import re
+import sys
+from typing import Optional
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _strip_line_numbers(text: str) -> list[str]:
+    """Remove leading 'N<TAB>' line numbers produced by some editors."""
+    result = []
+    for line in text.splitlines():
+        line = line.rstrip()
+        if re.match(r'^\d+\t', line):
+            line = line.split('\t', 1)[1]
+        result.append(line)
+    return result
+
+
+def _segment_blocks(lines: list[str]) -> list[tuple[str, list[str]]]:
+    """
+    Split cleaned lines into (qualifier, [continuation lines]) blocks.
+    A new block starts when a line does NOT begin with '/'.
+    Blank lines are ignored.
+    """
+    blocks: list[tuple[str, list[str]]] = []
+    current_qual: Optional[str] = None
+    current_conts: list[str] = []
+
+    for line in lines:
+        if not line.strip():
+            continue
+        if line.startswith('/'):
+            if current_qual is not None:
+                current_conts.append(line)
+        else:
+            if current_qual is not None:
+                blocks.append((current_qual, current_conts))
+            current_qual = line
+            current_conts = []
+
+    if current_qual is not None:
+        blocks.append((current_qual, current_conts))
+
+    return blocks
+
+
+# ---------------------------------------------------------------------------
+# Individual segment parsers
+# ---------------------------------------------------------------------------
+
+def _parse_segment_1(first_line: str) -> dict:
+    """1. Standard Message Identification  →  FWB/16"""
+    parts = first_line.split('/')
+    out = {}
+    out['1.1'] = {'field': 'Standard Message Identifier', 'value': parts[0] if len(parts) > 0 else ''}
+    out['1.3'] = {'field': 'Message Type Version Number',  'value': parts[1] if len(parts) > 1 else ''}
+    return out
+
+
+def _parse_segment_2(first_line: str) -> dict:
+    """2. AWB Consignment Details  →  157-67568642BSLRUH/T3K866MC3.322"""
+    out = {}
+    # Split on first '/' to separate AWB ID from quantity detail
+    if '/' in first_line:
+        awb_part, qty_part = first_line.split('/', 1)
+    else:
+        awb_part, qty_part = first_line, ''
+
+    # 2.1 AWB Identification: nnn-nnnnnnnnORIGDEST
+    m = re.match(r'^(\d{3})-(\d+)([A-Z]{3})([A-Z]{3})$', awb_part)
+    if m:
+        out['2.1.1'] = {'field': 'Airline Prefix',                 'value': m.group(1)}
+        out['2.1.3'] = {'field': 'AWB Serial Number',              'value': m.group(2)}
+        out['2.2.1'] = {'field': 'Airport/City Code (Origin)',      'value': m.group(3)}
+        out['2.2.2'] = {'field': 'Airport/City Code (Destination)', 'value': m.group(4)}
+    else:
+        out['2.1']   = {'field': 'AWB Identification', 'value': awb_part}
+
+    # 2.3 Quantity Detail: T<pieces>  K/L<weight>  M<volume>
+    if qty_part:
+        # Shipment description code + pieces: T<n>
+        mp = re.search(r'T(\d+)', qty_part)
+        if mp:
+            out['2.3.2'] = {'field': 'Shipment Description Code (T)', 'value': 'T'}
+            out['2.3.3'] = {'field': 'Number of Pieces',               'value': mp.group(1)}
+
+        # Weight: K<n> or L<n>
+        mw = re.search(r'([KL])([\d.]+)', qty_part)
+        if mw:
+            out['2.3.4'] = {'field': 'Weight Code',   'value': mw.group(1)}
+            out['2.3.5'] = {'field': 'Weight',         'value': mw.group(2)}
+
+        # Volume: MC<n>
+        mv = re.search(r'MC([\d.]+)', qty_part)
+        if mv:
+            out['2.4.1'] = {'field': 'Volume Code',   'value': 'MC'}
+            out['2.4.2'] = {'field': 'Volume Amount',  'value': mv.group(1)}
+
+    return out
+
+
+def _parse_segment_3(first_line: str, conts: list[str]) -> dict:
+    """3. Flight Bookings  →  FLT/QR9202/17"""
+    out = {}
+    parts = first_line.split('/')
+    # parts[0] = 'FLT'
+    flights = []
+    i = 1
+    while i < len(parts):
+        carrier   = parts[i][:2]   if len(parts[i]) >= 2 else parts[i]
+        flight_no = parts[i][2:]   if len(parts[i]) > 2  else ''
+        day       = parts[i + 1]   if i + 1 < len(parts) else ''
+        flights.append({
+            '3.2.2': {'field': 'Carrier Code',   'value': carrier},
+            '3.2.3': {'field': 'Flight Number',  'value': flight_no},
+            '3.2.5': {'field': 'Day',             'value': day},
+        })
+        i += 2
+    out['3.2'] = {'field': 'Flight Identification', 'value': flights}
+    return out
+
+
+def _parse_segment_4(first_line: str) -> dict:
+    """4. Routing  →  RTG/LGGQR/DOHQR/RUHQR"""
+    out = {}
+    parts = first_line.split('/')
+    # parts[0] = 'RTG', then alternating airport+carrier 3+2 char groups
+    routes = []
+    for part in parts[1:]:
+        if len(part) >= 3:
+            routes.append({
+                'airport': part[:3],
+                'carrier': part[3:] if len(part) > 3 else ''
+            })
+    if routes:
+        first = routes[0]
+        out['4.2.2'] = {'field': 'Airport/City Code (1st)',  'value': first['airport']}
+        out['4.2.3'] = {'field': 'Carrier Code (1st)',        'value': first['carrier']}
+        for idx, r in enumerate(routes[1:], start=1):
+            out[f'4.3.{idx}.2'] = {'field': f'Airport/City Code (onward {idx})', 'value': r['airport']}
+            out[f'4.3.{idx}.3'] = {'field': f'Carrier Code (onward {idx})',       'value': r['carrier']}
+    return out
+
+
+def _parse_address_block(qualifier: str, sec: int, conts: list[str]) -> dict:
+    """
+    Shared parser for SHP (5), CNE (6), NFY (9) address blocks (FWB/16 style).
+    Continuation lines:  /Name / Street / City / CountryCode/PostCode/ContactType/Value ...
+    """
+    out = {}
+    if len(conts) >= 1:
+        out[f'{sec}.4.3'] = {'field': 'Name',           'value': conts[0].lstrip('/')}
+    if len(conts) >= 2:
+        out[f'{sec}.5.3'] = {'field': 'Street Address', 'value': conts[1].lstrip('/')}
+    if len(conts) >= 3:
+        out[f'{sec}.6.3'] = {'field': 'Place',          'value': conts[2].lstrip('/')}
+    if len(conts) >= 4:
+        # /CH/4051/TE/0612722372/FX/0612722388
+        coded = conts[3].lstrip('/')
+        coded_parts = coded.split('/')
+        if coded_parts:
+            out[f'{sec}.7.2'] = {'field': 'ISO Country Code', 'value': coded_parts[0]}
+        if len(coded_parts) >= 2 and coded_parts[1] and coded_parts[1] not in ('TE','FX','EM','TX'):
+            out[f'{sec}.7.4'] = {'field': 'Post Code', 'value': coded_parts[1]}
+            start = 2
+        elif len(coded_parts) >= 2 and coded_parts[1] == '':
+            start = 2  # empty postcode slot — skip it
+        else:
+            start = 1
+        contacts = []
+        idx = start
+        while idx + 1 < len(coded_parts):
+            contacts.append({
+                f'{sec}.8.2': {'field': 'Contact Identifier', 'value': coded_parts[idx]},
+                f'{sec}.8.4': {'field': 'Contact Number',     'value': coded_parts[idx+1]},
+            })
+            idx += 2
+        if contacts:
+            out[f'{sec}.8'] = {'field': 'Contact Details', 'value': contacts}
+    return out
+
+
+def _parse_segment_7(first_line: str, conts: list[str]) -> dict:
+    """7. Agent  →  AGT//8147007/4000  /Name  /Place"""
+    out = {}
+    parts = first_line.split('/')
+    # parts[0]=AGT, parts[1]=account(empty), parts[2]=IATA numeric, parts[3]=CASS
+    if len(parts) > 2:
+        out['7.2.4'] = {'field': 'IATA Cargo Agent Numeric Code', 'value': parts[2]}
+    if len(parts) > 3:
+        out['7.2.6'] = {'field': 'IATA Cargo Agent CASS Address', 'value': parts[3]}
+    if len(conts) >= 1:
+        out['7.4.2'] = {'field': 'Name',  'value': conts[0].lstrip('/')}
+    if len(conts) >= 2:
+        out['7.5.2'] = {'field': 'Place', 'value': conts[1].lstrip('/')}
+    return out
+
+
+def _parse_segment_8(first_line: str, conts: list[str]) -> dict:
+    """8. Special Service Request  →  SSR/RAR-RA22745"""
+    out = {}
+    requests = []
+    all_lines = [first_line] + conts
+    for line in all_lines:
+        val = line.split('/', 1)[1] if '/' in line else line
+        requests.append({'8.3': {'field': 'Special Service Request', 'value': val}})
+    out['8'] = {'field': 'Special Service Requests', 'value': requests}
+    return out
+
+
+def _parse_segment_10(first_line: str, conts: list[str]) -> dict:
+    """10. Accounting Information  →  ACC/GEN/text  /GEN/text"""
+    out = {}
+    items = []
+    all_lines = [first_line] + conts
+    for line in all_lines:
+        parts = line.split('/')
+        # parts: ACC/GEN/value or /GEN/value
+        offset = 1 if parts[0] in ('', ) else 0
+        if parts[0] in ('ACC',):
+            offset = 1
+        ident = parts[offset] if len(parts) > offset else ''
+        val   = parts[offset+1] if len(parts) > offset+1 else ''
+        items.append({
+            '10.2.2': {'field': 'Accounting Information Identifier', 'value': ident},
+            '10.2.4': {'field': 'Accounting Information',            'value': val},
+        })
+    out['10.2'] = {'field': 'Account Detail', 'value': items}
+    return out
+
+
+def _parse_segment_11(first_line: str) -> dict:
+    """11. Charge Declarations  →  CVD/CHF//PP/NVD/NCV/XXX"""
+    out = {}
+    parts = first_line.split('/')
+    # CVD / currency / charge_code / PC_wt / PC_oth / val_carriage / val_customs / val_ins
+    if len(parts) > 1:
+        out['11.3']   = {'field': 'ISO Currency Code',              'value': parts[1]}
+    if len(parts) > 2:
+        out['11.5']   = {'field': 'Charge Code',                    'value': parts[2]}
+    if len(parts) > 3:
+        out['11.7.1'] = {'field': 'P/C Ind (Weight/Valuation)',     'value': parts[3][0] if parts[3] else ''}
+        out['11.7.2'] = {'field': 'P/C Ind (Other Charges)',        'value': parts[3][1] if len(parts[3]) > 1 else ''}
+    if len(parts) > 4:
+        out['11.8.2'] = {'field': 'Declared Value for Carriage',    'value': parts[4]}
+    if len(parts) > 5:
+        out['11.10.1']= {'field': 'Declared Value for Customs',     'value': parts[5]}
+    if len(parts) > 6:
+        out['11.11.2']= {'field': 'Amount of Insurance',            'value': parts[6]}
+    return out
+
+
+_RTD_GOODS_CODES = {
+    'G': 'Goods Description',
+    'C': 'Consolidation',
+    'D': 'Dimensions',
+    'V': 'Volume',
+    'U': 'ULD Number',
+    'S': 'SLAC',
+    'H': 'Harmonised Commodity Code',
+    'O': 'Country of Origin',
+}
+
+def _parse_rtd_rate_line(parts: list[str]) -> dict:
+    """Parse the fields within a single RTD charge line (12.3 onward)."""
+    out = {}
+    i = 0
+    col_map = {
+        'P': ('12.3.2', '12.3.3', 'AWB Column Identifier P', 'Number of Pieces'),
+        'K': ('12.4.2', '12.4.3', 'Weight Code K',           'Weight'),
+        'L': ('12.4.2', '12.4.3', 'Weight Code L',           'Weight'),
+        'C': ('12.5.2', '12.5.3', 'AWB Column Identifier C', 'Rate Class Code'),
+        'S': ('12.6.2', '12.6.3', 'AWB Column Identifier S', 'Commodity Item Number'),
+        'W': ('12.7.2', '12.7.3', 'AWB Column Identifier W', 'Chargeable Weight'),
+        'R': ('12.8.2', '12.8.3', 'AWB Column Identifier R', 'Rate or Charge'),
+        'T': ('12.9.2', '12.9.3', 'AWB Column Identifier T', 'Charge Amount'),
+    }
+    while i < len(parts):
+        token = parts[i]
+        if not token:
+            i += 1
+            continue
+        first_char = token[0]
+        if first_char in col_map:
+            k_id, k_val, f_id, f_val = col_map[first_char]
+            out[k_id] = {'field': f_id,  'value': first_char}
+            out[k_val]= {'field': f_val, 'value': token[1:]}
+        i += 1
+    return out
+
+
+def _parse_segment_12(first_line: str, conts: list[str]) -> dict:
+    """12. Rate Description  →  RTD/1/P3/K866/CQ/W866/R4.2/T3637.2  /NG/..."""
+    out = {}
+    charge_lines = []
+
+    def _handle_first(line: str):
+        parts = line.split('/')
+        # parts[0]=RTD or '' , parts[1]=line_number, rest = rate tokens
+        offset = 1 if parts[0] == 'RTD' else 0
+        line_no = parts[offset]
+        rate_fields = _parse_rtd_rate_line(parts[offset+1:])
+        return line_no, rate_fields, []
+
+    def _handle_goods(line: str):
+        parts = line.split('/')
+        # /NG/text  or  /2/NG/text
+        offset = 1 if parts[0] == '' else 0
+        line_no = ''
+        code    = ''
+        value   = ''
+        if parts[offset].isdigit():
+            line_no = parts[offset]
+            offset += 1
+        if offset < len(parts):
+            nc = parts[offset]  # e.g. 'NG', 'ND', 'NH', 'NV', 'NS'
+            if nc.startswith('N') and len(nc) == 2:
+                code  = nc[1]
+                value = '/'.join(parts[offset+1:])
+        return line_no, code, value
+
+    # parse first line
+    line_no, rate_fields, goods = _handle_first(first_line)
+    current_cl = {'12.2.2': {'field': 'AWB Rate Line Number', 'value': line_no}}
+    current_cl.update(rate_fields)
+    goods_list = []
+
+    for cont in conts:
+        if cont.startswith('/'):
+            parts = cont.split('/')
+            # Check if this is a new rate line: /digit/P or /digit/K etc.
+            inner = parts[1] if len(parts) > 1 else ''
+            if inner.isdigit() and len(parts) > 2 and not parts[2].startswith('N'):
+                # New rate line
+                current_cl['12.goods'] = goods_list
+                charge_lines.append(current_cl)
+                current_cl = {'12.2.2': {'field': 'AWB Rate Line Number', 'value': inner}}
+                current_cl.update(_parse_rtd_rate_line(parts[2:]))
+                goods_list = []
+            else:
+                ln, code, value = _handle_goods(cont)
+                if code:
+                    g_ref = {'12.x.code': {'field': _RTD_GOODS_CODES.get(code, f'Code {code}'), 'value': value}}
+                    if ln:
+                        g_ref['sub_line'] = ln
+                    goods_list.append(g_ref)
+
+    current_cl['12.goods'] = goods_list
+    charge_lines.append(current_cl)
+    out['12'] = {'field': 'Rate Description Lines', 'value': charge_lines}
+    return out
+
+
+def _parse_segment_13(first_line: str, conts: list[str]) -> dict:
+    """13. Other Charges  →  OTH/P/BFC26CGC5"""
+    out = {}
+    charge_lines = []
+
+    def _parse_oth_line(line: str):
+        parts = line.split('/')
+        offset = 1 if parts[0] in ('OTH', '') else 0
+        pc_ind = parts[offset] if len(parts) > offset else ''
+        # remaining: series of 2-char code + 1-char entitlement + amount
+        # e.g. BFC26CGC5  =>  BF=code, C=entitlement, 26=amount, CG=code, C=entitlement, 5=amount
+        items_raw = '/'.join(parts[offset+1:])
+        items = []
+        m_iter = re.finditer(r'([A-Z]{2})([A-Z])([\d.]+)', items_raw)
+        for m in m_iter:
+            items.append({
+                '13.3.1': {'field': 'Other Charge Code',   'value': m.group(1)},
+                '13.3.2': {'field': 'Entitlement Code',    'value': m.group(2)},
+                '13.3.3': {'field': 'Charge Amount',       'value': m.group(3)},
+            })
+        return pc_ind, items
+
+    pc_ind, items = _parse_oth_line(first_line)
+    charge_lines.append({
+        '13.2.2': {'field': 'P/C Ind (Other Charges)', 'value': pc_ind},
+        '13.3':   {'field': 'Other Charge Items',       'value': items},
+    })
+    for cont in conts:
+        pc_ind, items = _parse_oth_line(cont)
+        charge_lines.append({
+            '13.2.2': {'field': 'P/C Ind (Other Charges)', 'value': pc_ind},
+            '13.3':   {'field': 'Other Charge Items',       'value': items},
+        })
+    out['13'] = {'field': 'Other Charges', 'value': charge_lines}
+    return out
+
+
+def _parse_charge_summary(first_line: str, conts: list[str], sec: int, label: str) -> dict:
+    """14/15. Prepaid / Collect Charge Summary  →  PPD/WT3637.2  /OA0/OC31/CT3637.2"""
+    out = {}
+    _ids = {
+        'WT': (f'{sec}.2.2', f'{sec}.2.3', 'Charge Identifier WT', 'Total Weight Charge'),
+        'VC': (f'{sec}.3.2', f'{sec}.3.3', 'Charge Identifier VC', 'Valuation Charge'),
+        'TX': (f'{sec}.4.2', f'{sec}.4.3', 'Charge Identifier TX', 'Taxes'),
+        'OA': (f'{sec}.6.2', f'{sec}.6.3', 'Charge Identifier OA', 'Total Other Charges Due Agent'),
+        'OC': (f'{sec}.7.2', f'{sec}.7.3', 'Charge Identifier OC', 'Total Other Charges Due Carrier'),
+        'CT': (f'{sec}.8.2', f'{sec}.8.3', 'Charge Identifier CT', 'Charge Summary Total'),
+    }
+    all_lines = [first_line] + conts
+    for line in all_lines:
+        parts = line.split('/')
+        for part in parts:
+            m = re.match(r'^([A-Z]{2})([\d.]+)$', part)
+            if m:
+                code, amount = m.group(1), m.group(2)
+                if code in _ids:
+                    k_id, k_val, f_id, f_val = _ids[code]
+                    out[k_id] = {'field': f_id,  'value': code}
+                    out[k_val]= {'field': f_val, 'value': amount}
+    return out
+
+
+def _parse_segment_16(first_line: str) -> dict:
+    """16. Shipper's Certification  →  CER/ALINA HAJDARI"""
+    out = {}
+    parts = first_line.split('/', 1)
+    out['16.3'] = {'field': 'Signature', 'value': parts[1] if len(parts) > 1 else ''}
+    return out
+
+
+def _parse_segment_17(first_line: str) -> dict:
+    """17. Carrier's Execution  →  ISU/14APR26/BASEL/ALINA HAJDARI"""
+    out = {}
+    parts = first_line.split('/')
+    if len(parts) > 1:
+        date_str = parts[1]
+        m = re.match(r'^(\d{1,2})([A-Z]{3})(\d{2,4})$', date_str)
+        if m:
+            out['17.2.2'] = {'field': 'Day',   'value': m.group(1)}
+            out['17.2.3'] = {'field': 'Month', 'value': m.group(2)}
+            out['17.2.4'] = {'field': 'Year',  'value': m.group(3)}
+        else:
+            out['17.2'] = {'field': 'AWB Issue Date', 'value': date_str}
+    if len(parts) > 2:
+        out['17.2.6'] = {'field': 'Place',     'value': parts[2]}
+    if len(parts) > 3:
+        out['17.3.2'] = {'field': 'Signature', 'value': '/'.join(parts[3:])}
+    return out
+
+
+def _parse_segment_18(first_line: str, conts: list[str]) -> dict:
+    """18. Other Service Information  →  OSI/text"""
+    out = {}
+    items = []
+    all_lines = [first_line] + conts
+    for line in all_lines:
+        val = line.split('/', 1)[1] if '/' in line else line
+        items.append({'18.3': {'field': 'Other Service Information', 'value': val}})
+    out['18'] = {'field': 'Other Service Information', 'value': items}
+    return out
+
+
+def _parse_segment_20(first_line: str) -> dict:
+    """20. Sender Reference  →  REF//BSL2612292568/AGT/FRACHTAG/BSL"""
+    out = {}
+    parts = first_line.split('/')
+    # REF / / file_ref / participant_code / company / airport
+    file_ref = parts[2] if len(parts) > 2 else ''
+    if file_ref:
+        out['20.5.1'] = {'field': 'File Reference', 'value': file_ref}
+    part_code = parts[3] if len(parts) > 3 else ''
+    company   = parts[4] if len(parts) > 4 else ''
+    airport   = parts[5] if len(parts) > 5 else ''
+    if part_code:
+        out['20.6.4'] = {'field': 'Participant Code',      'value': part_code}
+    if company:
+        out['20.6.2'] = {'field': 'Participant Identifier','value': company}
+    if airport:
+        out['20.6.6'] = {'field': 'Airport/City Code',     'value': airport}
+    return out
+
+
+def _parse_segment_21(first_line: str) -> dict:
+    """21. Customs Origin  →  COR/T1"""
+    out = {}
+    parts = first_line.split('/')
+    out['21.3'] = {'field': 'Customs Origin Code', 'value': parts[1] if len(parts) > 1 else ''}
+    return out
+
+
+def _parse_segment_25(first_line: str) -> dict:
+    """25. Special Handling Details  →  SPH/HEA/GCR/NSC/EAP/ECC"""
+    out = {}
+    parts = first_line.split('/')
+    codes = [p for p in parts[1:] if p]
+    out['25.2'] = {'field': 'Special Handling Codes', 'value': codes}
+    return out
+
+
+def _parse_segment_29(first_line: str, conts: list[str]) -> dict:
+    """
+    29. Other Customs, Security and Regulatory Control Information
+    OCI/CH/SHP/T/DE838963233430367
+    /CH/SHP/CT/0612722372
+    ///ED/-
+    ///SM/EDD
+    ///SN/ALINA HAJDARI
+    ///SD/16APR1115
+    ///SS/SPX
+    """
+    out = {}
+    entries = []
+    current: Optional[dict] = None
+
+    def _parse_oci_line(line: str) -> Optional[dict]:
+        parts = line.split('/')
+        # OCI/country/info_id/cust_id/value  or  /country/info_id/cust_id/value  or  ///cust_id/value
+        if parts[0] in ('OCI', ''):
+            parts = parts[1:]
+        country  = parts[0] if len(parts) > 0 else ''
+        info_id  = parts[1] if len(parts) > 1 else ''
+        cust_id  = parts[2] if len(parts) > 2 else ''
+        value    = '/'.join(parts[3:]) if len(parts) > 3 else ''
+        return {
+            '29.3': {'field': 'ISO Country Code',          'value': country},
+            '29.5': {'field': 'Information Identifier',    'value': info_id},
+            '29.7': {'field': 'Customs/Security Info ID',  'value': cust_id},
+            '29.9': {'field': 'Supplementary Information', 'value': value},
+        }
+
+    current = _parse_oci_line(first_line)
+    for cont in conts:
+        if cont.startswith('///'):
+            # continuation sub-field of the current OCI entry
+            parts = cont.lstrip('/').split('/')
+            if len(parts) >= 2:
+                if current is None:
+                    current = {}
+                current[f'29.sub.{parts[0]}'] = {'field': parts[0], 'value': '/'.join(parts[1:])}
+        else:
+            if current:
+                entries.append(current)
+            current = _parse_oci_line(cont)
+
+    if current:
+        entries.append(current)
+
+    out['29'] = {'field': 'OCI Entries', 'value': entries}
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Master dispatcher
+# ---------------------------------------------------------------------------
+
+_QUALIFIER_MAP = {
+    'FWB': (1,  'Standard Message Identification'),
+    'FLT': (3,  'Flight Bookings'),
+    'RTG': (4,  'Routing'),
+    'SHP': (5,  'Shipper'),
+    'CNE': (6,  'Consignee'),
+    'AGT': (7,  'Agent'),
+    'SSR': (8,  'Special Service Request'),
+    'NFY': (9,  'Also Notify'),
+    'ACC': (10, 'Accounting Information'),
+    'CVD': (11, 'Charge Declarations'),
+    'RTD': (12, 'Rate Description'),
+    'OTH': (13, 'Other Charges'),
+    'PPD': (14, 'Prepaid Charge Summary'),
+    'COL': (15, 'Collect Charge Summary'),
+    'CER': (16, "Shipper's Certification"),
+    'ISU': (17, "Carrier's Execution"),
+    'OSI': (18, 'Other Service Information'),
+    'CDC': (19, 'CC Charges in Destination Currency'),
+    'REF': (20, 'Sender Reference'),
+    'COR': (21, 'Customs Origin'),
+    'COI': (22, 'Commission Information'),
+    'SII': (23, 'Sales Incentive Information'),
+    'ARD': (24, 'Agent Reference Data'),
+    'SPH': (25, 'Special Handling Details'),
+    'NOM': (26, 'Nominated Handling Party'),
+    'SRI': (27, 'Shipment Reference Information'),
+    'OPI': (28, 'Other Participant Information'),
+    'OCI': (29, 'Other Customs/Security/Regulatory Control Information'),
+}
+
+
+def parse_fwb(text: str) -> dict:
+    """
+    Parse a raw FWB message text and return a dict where every key is a
+    CIMP field reference number (e.g. '2.1.1', '11.3') and every value
+    is {'field': <description>, 'value': <parsed value>}.
+    Repeatable segments (RTD, OCI …) have list values under their section key.
+    """
+    lines   = _strip_line_numbers(text)
+    blocks  = _segment_blocks(lines)
+    result  = {}
+
+    awb_line_index = 0  # second non-blank line is AWB detail
+
+    for block_idx, (qualifier, conts) in enumerate(blocks):
+        qual = qualifier.split('/')[0].strip().upper()
+
+        if block_idx == 0 and qual == 'FWB':
+            result.update(_parse_segment_1(qualifier))
+            continue
+
+        if block_idx == 1 and qual not in _QUALIFIER_MAP:
+            # AWB Consignment Details line (no qualifier)
+            result.update(_parse_segment_2(qualifier))
+            continue
+
+        sec_num, sec_label = _QUALIFIER_MAP.get(qual, (0, qual))
+
+        if qual == 'FLT':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_segment_3(qualifier, conts)}
+        elif qual == 'RTG':
+            result.update(_parse_segment_4(qualifier))
+        elif qual == 'SHP':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_address_block(qual, 5, conts)}
+        elif qual == 'CNE':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_address_block(qual, 6, conts)}
+        elif qual == 'NFY':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_address_block(qual, 9, conts)}
+        elif qual == 'AGT':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_segment_7(qualifier, conts)}
+        elif qual == 'SSR':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_segment_8(qualifier, conts)}
+        elif qual == 'ACC':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_segment_10(qualifier, conts)}
+        elif qual == 'CVD':
+            result.update(_parse_segment_11(qualifier))
+        elif qual == 'RTD':
+            result.update(_parse_segment_12(qualifier, conts))
+        elif qual == 'OTH':
+            result.update(_parse_segment_13(qualifier, conts))
+        elif qual == 'PPD':
+            result.update(_parse_charge_summary(qualifier, conts, 14, 'Prepaid'))
+        elif qual == 'COL':
+            result.update(_parse_charge_summary(qualifier, conts, 15, 'Collect'))
+        elif qual == 'CER':
+            result.update(_parse_segment_16(qualifier))
+        elif qual == 'ISU':
+            result.update(_parse_segment_17(qualifier))
+        elif qual == 'OSI':
+            result[f'section_{sec_num}'] = {'field': sec_label, 'value': _parse_segment_18(qualifier, conts)}
+        elif qual == 'REF':
+            result.update(_parse_segment_20(qualifier))
+        elif qual == 'COR':
+            result.update(_parse_segment_21(qualifier))
+        elif qual == 'SPH':
+            result.update(_parse_segment_25(qualifier))
+        elif qual == 'OCI':
+            result.update(_parse_segment_29(qualifier, conts))
+        else:
+            result[f'section_{sec_num}_{qual}'] = {'field': sec_label, 'value': qualifier + ' ' + ' '.join(conts)}
+
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Pretty printer
+# ---------------------------------------------------------------------------
+
+def _print_result(result: dict, indent: int = 0):
+    pad = '  ' * indent
+    for key, val in sorted(result.items(), key=lambda x: x[0]):
+        if isinstance(val, dict) and 'field' in val:
+            v = val['value']
+            if isinstance(v, list):
+                print(f"{pad}[{key}] {val['field']}:")
+                for item in v:
+                    if isinstance(item, dict):
+                        _print_result(item, indent + 1)
+                    else:
+                        print(f"{pad}  {item}")
+            elif isinstance(v, dict):
+                print(f"{pad}[{key}] {val['field']}:")
+                _print_result(v, indent + 1)
+            else:
+                print(f"{pad}[{key}] {val['field']}: {v}")
+        elif isinstance(val, dict):
+            print(f"{pad}[{key}]:")
+            _print_result(val, indent + 1)
+        else:
+            print(f"{pad}[{key}]: {val}")
+
+
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2:
+        print("Usage: python fwb_parser.py <fwb_message_file.txt>")
+        sys.exit(1)
+
+    with open(sys.argv[1], encoding='utf-8') as f:
+        raw = f.read()
+
+    parsed = parse_fwb(raw)
+    print("=" * 60)
+    print("FWB CIMP PARSED FIELDS")
+    print("=" * 60)
+    _print_result(parsed)

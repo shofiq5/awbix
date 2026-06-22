@@ -211,7 +211,7 @@ class FWB16Composer(BaseComposer):
 			day = row.get("flight_day")
 			if code and number:
 				tokens.append(f"{code}{number}")
-				tokens.append(str(int(day)) if day else "")
+				tokens.append(f"{int(day):02d}" if day else "")
 		return "FLT/" + "/".join(tokens) if tokens else ""
 
 	def _routing_line(self, doc) -> str:
@@ -389,27 +389,39 @@ class FWB16Composer(BaseComposer):
 		for g in goods:
 			goods_by_line.setdefault(g.get("rate_line_number") or 0, []).append(g)
 
-		lines = ["RTD"]
-		for r in rate_lines:
+		lines = []
+		for i, r in enumerate(rate_lines):
 			ln = r.get("line_number") or 0
-			lines.append(self._rate_line(ln, r))
+			rate_line_str = self._rate_line(ln, r)
+			if i == 0:
+				# First rate line: concatenate with RTD identifier (ABNF: RTD and first ChargeLineCount on same line)
+				lines.append("RTD" + rate_line_str)
+			else:
+				# Subsequent rate lines: add as separate lines
+				lines.append(rate_line_str)
 			# Emit NG/NC line from the rate line row itself (goods_data_identifier + description).
 			inline = self._goods_line_from_rate(ln, r)
 			if inline:
 				lines.append(inline)
-			lines += _opt_many(self._goods_line(ln, g) for g in goods_by_line.pop(ln, []))
+				# If rate_line has goods description, skip goods_by_line for this line to avoid duplicates
+				goods_by_line.pop(ln, None)
+			else:
+				lines += _opt_many(self._goods_line(ln, g) for g in goods_by_line.pop(ln, []))
 		# goods whose rate line wasn't emitted (orphans) still get included
 		for ln, rows in goods_by_line.items():
 			lines += _opt_many(self._goods_line(ln, g) for g in rows)
 		return lines
 
 	def _goods_line_from_rate(self, ln, r) -> str:
-		"""Emit the /ln/NC or /ln/NG line stored directly on a Shipment Rate Line row."""
+		"""Emit the /NG or /NC line stored directly on a Shipment Rate Line row.
+
+		This is a SecondLine for a rate line, so per ABNF it does not include the line number.
+		"""
 		ident = (r.get("goods_data_identifier") or "").strip()
 		if ident not in ("G", "C"):
 			return ""
 		desc = (r.get("description") or "").strip()
-		return f"/{ln}/N{ident}/{desc}"
+		return f"/N{ident}/{desc}"
 
 	def _rate_line(self, ln, r) -> str:
 		out = f"/{ln}"
@@ -478,14 +490,33 @@ class FWB16Composer(BaseComposer):
 
 	def _other_charge_lines(self, doc) -> list[str]:
 		rows = doc.get("other_charges") or []
-		out = []
+		if not rows:
+			return []
+		lines = []
+		current_pc = None
+		current_charges = []
 		for r in rows:
 			code = (r.get("other_charge_code") or "").strip()
 			if len(code) < 3:
 				continue
 			pc = (r.get("prepaid_collect") or "P").strip()
-			out.append(f"/{pc}/{code}{_num(r.get('amount') or 0)}")
-		return ["OTH"] + out if out else []
+			amount = _num(r.get("amount") or 0)
+			# If PC changed or we have 3 charges, finalize current line
+			if (pc != current_pc or len(current_charges) >= 3) and current_charges:
+				line = f"/{current_pc}/" + "".join(current_charges)
+				if not lines:
+					line = "OTH" + line
+				lines.append(line)
+				current_charges = []
+			current_pc = pc
+			current_charges.append(f"{code}{amount}")
+		# Add final line
+		if current_charges:
+			line = f"/{current_pc}/" + "".join(current_charges)
+			if not lines:
+				line = "OTH" + line
+			lines.append(line)
+		return lines
 
 	def _charge_summary_lines(self, doc) -> list[str]:
 		rows = doc.get("charge_summary") or []
@@ -551,12 +582,20 @@ class FWB16Composer(BaseComposer):
 		file_ref = (doc.get("sender_file_reference") or "").strip()
 		pid = (doc.get("sender_participant_id") or "").strip()
 		pcode = (doc.get("sender_participant_code") or "").strip()
+		airport = (doc.get("sender_airport") or "").strip()
 		if office:
 			return f"REF/{office}" + (f"/{file_ref}" if file_ref else "")
 		if pid or pcode or file_ref:
 			line = f"REF//{file_ref}"
 			if pid or pcode:
 				line += f"/{pid}/{pcode}"
+				# ABNF: airport is mandatory in participant form; fallback to origin if not set
+				if not airport:
+					airport = (doc.get("origin") or "").strip()
+				if airport:
+					line += f"/{airport}"
+			elif airport:
+				line += f"/{airport}"
 			return line
 		return ""
 

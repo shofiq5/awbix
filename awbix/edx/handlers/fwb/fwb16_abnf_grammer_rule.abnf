@@ -1,0 +1,1181 @@
+#------------------------------------------------------------------------
+# FWB/16
+#------------------------------------------------------------------------
+
+FWB16 =    
+    StandardMessageIdentification
+    AWBConsignmentDetail
+    [FlightBookings]
+    Routing
+    Shipper
+    Consignee
+    [Agent]
+    [SpecialServiceRequest]
+    [AlsoNotify]
+    [AccountingInformation]
+    ChargeDeclarations
+    RateDescription
+    [OtherCharges]
+    (
+        (PrepaidChargeSummary
+         CollectChargeSummary)
+        /
+        PrepaidChargeSummary
+        /
+        CollectChargeSummary
+    )
+    [ShippersCertification]
+    CarriersExecution
+    [OtherServiceInformation]
+    [CCChargesInDestinationCurrency]
+    SenderReference
+    [CustomsOrigin]
+    [CommissionInformation]
+    [SalesIncentiveInformation]
+    [AgentReferenceData]
+    [SpecialHandlingDetails]
+    [NominatedHandlingParty]
+    [ShipmentReferenceInformation]
+    *OtherParticipantInformation
+    [OtherCustomsInformation];
+
+# Standard Message Identification
+# -------------------------------
+StandardMessageIdentification =
+    "FWB/16" 
+    CRLF;
+
+# AWB Consignment Details
+# -----------------------
+AWBConsignmentDetail =    
+    AWBIdentification 
+    AWBOriginAndDestination
+    QuantityDetail
+    [DensityGroup / VolumeDetail]
+    CRLF;
+
+AWBIdentification =    
+    DE112_AirlinePrefix 
+    Hyphen
+    DE113_AWBSerialNumber;
+
+AWBOriginAndDestination =
+    2DE313_AirportCityCode;
+
+QuantityDetail =
+    Slant
+    DE703_ShipmentDescriptionCode_T 
+    DE701_NumberOfPieces 
+    DE601_WeightCode 
+    DE600_Weight;
+
+VolumeDetail = 
+    DE604_VolumeCode
+    DE500_VolumeAmount;
+    
+DensityGroup =
+    DE603_DensityIndicator_DG
+    DE602_DensityGroup;
+
+# FLT - Flight Bookings
+# ---------------------
+FlightBookings =
+    DE103_LineIdentifier_FLT
+    1*2FLT_FlightIdentification
+    CRLF;
+    
+FLT_FlightIdentification =
+    Slant
+    DE312_CarrierCode
+    DE800_FlightNumber
+    Slant
+    DE202_Day;
+    
+# RTG - Routing
+# -------------
+Routing =
+    DE103_LineIdentifier_RTG
+    RTG_FirstDestinationCarrier
+    *2RTG_OnwardDestinationCarrier
+    CRLF;
+    
+RTG_FirstDestinationCarrier =
+    Slant
+    [DE313_AirportCityCode]
+    DE312_CarrierCode;
+    
+RTG_OnwardDestinationCarrier =
+    Slant
+    DE313_AirportCode
+    [DE312_CarrierCode];
+
+# SHP - Shipper
+# -------------
+Shipper =
+    DE103_LineIdentifier_SHP
+    [SHP_AccountDetail]
+    CRLF
+    SHP_Name
+    SHP_StreetAddress
+    SHP_Location
+    (
+        (SHP_CodedLocation_B
+         1*SHP_ContactDetail)
+        /
+        (SHP_CodedLocation_C
+         *SHP_ContactDetail)
+        /
+        SHP_CodedLocation_A
+    )
+    CRLF;
+
+SHP_AccountDetail =
+    Slant
+    DE108_AccountNumber;
+    
+SHP_Name =
+    Slant
+    DE300_Name
+    CRLF;
+    
+SHP_StreetAddress =
+    Slant
+    DE301_StreetAddress
+    CRLF;
+    
+SHP_Location =
+    Slant
+    DE302_Place
+    [Slant DE303_StateProvince]
+    CRLF;
+
+SHP_CodedLocation_A =
+    Slant
+    DE304_ISOCountryCode;
+SHP_CodedLocation_B =
+    Slant
+    DE304_ISOCountryCode
+    Slant;
+SHP_CodedLocation_C =
+    Slant
+    DE304_ISOCountryCode
+    Slant 
+    DE305_PostCode;
+
+SHP_ContactDetail =
+    Slant
+    DE122_ContactIdentifier
+    Slant
+    DE123_ContactNumber;
+
+# CNE - Consignee
+# ---------------
+Consignee =
+    DE103_LineIdentifier_CNE
+    [CNE_AccountDetail]
+    CRLF
+    CNE_Name
+    CNE_StreetAddress
+    CNE_Location
+    (
+        (CNE_CodedLocation_B
+         1*CNE_ContactDetail)
+        /
+        (CNE_CodedLocation_C
+         *CNE_ContactDetail)
+        /
+        CNE_CodedLocation_A
+    )
+    CRLF;
+
+CNE_AccountDetail =
+    Slant
+    DE108_AccountNumber;
+    
+CNE_Name =
+    Slant
+    DE300_Name
+    CRLF;
+    
+CNE_StreetAddress =
+    Slant
+    DE301_StreetAddress
+    CRLF;
+    
+CNE_Location =
+    Slant
+    DE302_Place
+    [Slant DE303_StateProvince]
+    CRLF;
+
+CNE_CodedLocation_A =
+    Slant
+    DE304_ISOCountryCode;
+CNE_CodedLocation_B =
+    Slant
+    DE304_ISOCountryCode
+    Slant;
+CNE_CodedLocation_C =
+    Slant
+    DE304_ISOCountryCode
+    Slant 
+    DE305_PostCode;
+
+CNE_ContactDetail =
+    Slant
+    DE122_ContactIdentifier
+    Slant
+    DE123_ContactNumber;
+
+# AGT - Agent
+# -----------
+Agent =
+    DE103_LineIdentifier_AGT
+    AGT_AccountDetail
+    CRLF
+    AGT_Name
+    AGT_Place;
+
+AGT_AccountDetail =
+    Slant
+    [DE108_AccountNumber]
+    Slant 
+    (
+        (DE311_IATACargoAgentNumericCode
+         Slant
+         DE309_IATACargoAgentCASSAddress
+         Slant
+         DE319_ParticipantIdentifier)
+        /
+        (DE311_IATACargoAgentNumericCode
+         Slant
+         Slant
+         DE319_ParticipantIdentifier)
+        /
+        (DE311_IATACargoAgentNumericCode
+         Slant
+         DE309_IATACargoAgentCASSAddress)
+        /
+        DE311_IATACargoAgentNumericCode
+    );
+
+AGT_Name =
+    Slant
+    DE300_Name
+    CRLF;
+    
+AGT_Place =
+    Slant
+    DE302_Place
+    CRLF;
+
+# SSR - Special Service Request
+# -----------------------------
+SpecialServiceRequest =
+    DE103_LineIdentifier_SSR
+    1*3(Slant DE404_SpecialServiceRequest CRLF);
+
+# NFY - Also Notify
+# -----------------
+AlsoNotify =
+    DE103_LineIdentifier_NFY
+    NFY_Name
+    NFY_StreetAddress
+    NFY_Location
+    (
+        (NFY_CodedLocation_B
+         1*NFY_ContactDetail)
+        /
+        (NFY_CodedLocation_C
+         *NFY_ContactDetail)
+        /
+        NFY_CodedLocation_A
+    )
+    CRLF;
+
+NFY_Name =
+    Slant
+    DE300_Name
+    CRLF;
+    
+NFY_StreetAddress =
+    Slant
+    DE301_StreetAddress
+    CRLF;
+    
+NFY_Location =
+    Slant
+    DE302_Place
+    [Slant DE303_StateProvince]
+    CRLF;
+
+NFY_CodedLocation_A =
+    Slant
+    DE304_ISOCountryCode;
+NFY_CodedLocation_B =
+    Slant
+    DE304_ISOCountryCode
+    Slant;
+NFY_CodedLocation_C =
+    Slant
+    DE304_ISOCountryCode
+    Slant 
+    DE305_PostCode;
+
+NFY_ContactDetail =
+    Slant
+    DE122_ContactIdentifier
+    Slant
+    DE123_ContactNumber;
+
+# ACC - Accounting Information
+# ----------------------------
+AccountingInformation =
+    DE103_LineIdentifier_ACC
+    1*6ACC_AccountDetail;
+
+ACC_AccountDetail =
+    Slant
+    DE411_AccountingInformationIdentifier
+    Slant
+    DE410_AccountingInformation
+    CRLF;
+
+# CVD - Charge Declarations
+# -------------------------
+ChargeDeclarations =
+    DE103_LineIdentifier_CVD
+    Slant
+    DE606_ISOCurrencyCode
+    Slant
+    [DE503_ChargeCode]
+    Slant
+    [CVD_PrepaidCollectChargeDeclarations]
+    CVD_ValueOfCarriageDeclaration
+    Slant
+    CVD_ValueOfCustomsDeclaration
+    CVD_ValueOfInsuranceDeclaration
+    CRLF;
+    
+CVD_PrepaidCollectChargeDeclarations =
+    2DE403_PCInd;
+    
+CVD_ValueOfCarriageDeclaration =
+    Slant
+    (DE510_DeclaredValueOfCarriage /
+     DE510_NoValueDeclared);
+
+CVD_ValueOfCustomsDeclaration =
+    (DE509_DeclaredValueOfCustoms /
+     DE509_NoCustomsValue);
+
+CVD_ValueOfInsuranceDeclaration =
+    Slant
+    (DE508_AmountOfInsurance /
+     DE508_Novalue);
+
+# RTD - Rate Description
+# ----------------------
+RateDescription =
+    DE103_LineIdentifier_RTD
+    1*11(
+        RTD_ChargeLineCount
+        (
+            RTD_FirstLine RTD_SecondLine /
+            RTD_FirstLine /
+            RTD_SecondLine
+        )
+    )
+    [    
+        RTD_ChargeLineCount
+        (
+            RTD_GoodsDescription /
+             RTD_Consolidation /
+             RTD_Dimensions /
+             RTD_Volume /
+             RTD_ULDNumber /
+             RTD_ShippersLoadAndCount /
+             RTD_HarmonisedCommodityCode /
+             RTD_CountryOfOriginOfGoods /
+        )
+        CRLF
+    ];
+
+RTD_ChargeLineCount =
+    Slant
+    DE106_AWBRateLineNumber;
+
+RTD_FirstLine =
+    (
+        (
+            RTD_NumberOfPiecesRCPDetails
+            [RTD_GrossWeightDetails]
+            [RTD_RateClassDetails]
+            [RTD_CommodityItemNumberDetails]
+            [RTD_ChargeableWeightDetails]
+            [RTD_RateChargeDetails]
+            [RTD_TotalDetails]
+        )
+        /
+        (
+            [RTD_NumberOfPiecesRCPDetails]
+            RTD_GrossWeightDetails
+            [RTD_RateClassDetails]
+            [RTD_CommodityItemNumberDetails]
+            [RTD_ChargeableWeightDetails]
+            [RTD_RateChargeDetails]
+            [RTD_TotalDetails]
+        )
+        /
+        (
+            [RTD_NumberOfPiecesRCPDetails]
+            [RTD_GrossWeightDetails]
+            RTD_RateClassDetails
+            [RTD_CommodityItemNumberDetails]
+            [RTD_ChargeableWeightDetails]
+            [RTD_RateChargeDetails]
+            [RTD_TotalDetails]
+        )
+        /
+        (
+            [RTD_NumberOfPiecesRCPDetails]
+            [RTD_GrossWeightDetails]
+            [RTD_RateClassDetails]
+            RTD_CommodityItemNumberDetails
+            [RTD_ChargeableWeightDetails]
+            [RTD_RateChargeDetails]
+            [RTD_TotalDetails]
+        )
+        /
+        (
+            [RTD_NumberOfPiecesRCPDetails]
+            [RTD_GrossWeightDetails]
+            [RTD_RateClassDetails]
+            [RTD_CommodityItemNumberDetails]
+            RTD_ChargeableWeightDetails
+            [RTD_RateChargeDetails]
+            [RTD_TotalDetails]
+        )
+        /
+        (
+            [RTD_NumberOfPiecesRCPDetails]
+            [RTD_GrossWeightDetails]
+            [RTD_RateClassDetails]
+            [RTD_CommodityItemNumberDetails]
+            [RTD_ChargeableWeightDetails]
+            RTD_RateChargeDetails
+            [RTD_TotalDetails]
+        )
+        /
+        (
+            [RTD_NumberOfPiecesRCPDetails]
+            [RTD_GrossWeightDetails]
+            [RTD_RateClassDetails]
+            [RTD_CommodityItemNumberDetails]
+            [RTD_ChargeableWeightDetails]
+            [RTD_RateChargeDetails]
+            RTD_TotalDetails
+        )
+    )
+    CRLF;
+
+RTD_SecondLine =
+    (
+        (
+            (RTD_GoodsDescription /
+             RTD_Consolidation /
+             RTD_Dimensions /
+             RTD_Volume /
+             RTD_ULDNumber /
+             RTD_ShippersLoadAndCount /
+             RTD_HarmonisedCommodityCode /
+             RTD_CountryOfOriginOfGoods)
+            RTD_ServiceCodeDetails
+        )
+        /
+        (
+            RTD_GoodsDescription /
+             RTD_Consolidation /
+             RTD_Dimensions /
+             RTD_Volume /
+             RTD_ULDNumber /
+             RTD_ShippersLoadAndCount /
+             RTD_HarmonisedCommodityCode /
+             RTD_CountryOfOriginOfGoods /
+             RTD_ServiceCodeDetails
+        )
+    )
+    CRLF;
+    
+RTD_NumberOfPiecesRCPDetails =
+    slant
+    DE105_AWBColumnIdentifier_P
+    (DE701_NumberOfPieces / DE316_RateCombinationPoint);
+
+RTD_GrossWeightDetails =
+    Slant
+    DE601_WeightCode
+    DE600_Weight;
+    
+RTD_RateClassDetails =
+    Slant
+    DE105_AWBColumnIdentifier_C
+    DE507_RateClassCode;
+    
+RTD_CommodityItemNumberDetails =
+    Slant
+    DE105_AWBColumnIdentifier_S
+    (DE707_CommodityItemNumber /
+     DE513_ULDRateClassType /
+     (DE507_RateClassCode
+      DE511_RateClassPercentage));
+
+RTD_ChargeableWeightDetails =
+    Slant
+    DE105_AWBColumnIdentifier_W
+    DE600_Weight;
+
+RTD_RateChargeDetails =
+    Slant
+    DE105_AWBColumnIdentifier_R
+    DE506_RateChargeDiscount;
+
+RTD_TotalDetails =
+    Slant
+    DE105_AWBColumnIdentifier_T
+    DE501_ChargeDiscountAmount;
+    
+RTD_GoodsDescription =
+    slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_G
+    Slant
+    DE709_NatureAndQuantityOfGoods;
+
+RTD_Consolidation =
+    slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_C
+    Slant
+    DE709_NatureAndQuantityOfGoods;
+
+RTD_Dimensions =
+    Slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_D
+    Slant
+    [DE601_WeightCode DE600_Weight]
+    Slant
+    (
+         DE611_NoDimensionsAvailable
+         /
+        (DE611_MeasurementUnitCode
+         DE608_LengthDimension
+         Hyphen
+         DE609_WidthDimension
+         Hyphen
+         DE610_HeightDimension
+         Slant
+         DE701_NumberOfPieces)
+    );
+
+RTD_Volume =
+    Slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_V
+    Slant
+    DE604_VolumeCode
+    DE500_VolumeAmount;
+
+RTD_ULDNumber =
+    Slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_U
+    Slant
+    DE802_ULDType
+    DE115_ULDSerialNumber
+    DE801_ULDOwnerCode;
+
+RTD_ShippersLoadAndCount =
+    Slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_S
+    Slant
+    DE714_SLAC;
+
+RTD_HarmonisedCommodityCode =
+    Slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_H
+    Slant
+    DE900_HarmonisedCommodityCode;
+
+RTD_CountryOfOriginOfGoods =
+    Slant
+    DE105_AWBColumnIdentifier_N
+    DE710_GoodsDataIdentifier_O
+    Slant
+    DE304_ISOCountryCode;
+
+RTD_ServiceCodeDetails =
+    Slant
+    DE505_ServiceCode;
+
+# OTH - Other Charges
+# -------------------
+OtherCharges =
+    DE103_LineIdentifier_OTH
+    *(OTH_ChargeLine
+      1*3OTH_OtherChargeItems
+      CRLF);
+
+OTH_ChargeLine =
+    Slant
+    DE403_PCInd
+    Slant;
+
+OTH_OtherChargeItems =
+    DE504_OtherChargeCode
+    DE315_EntitlementCode
+    DE501_ChargeAmount;
+
+# PPD - Prepaid Charge Summary
+# ----------------------------
+PrepaidChargeSummary =
+    DE103_LineIdentifier_PPD
+    [PPD_TotalWeightCharge]
+    [PPD_ValuationCharge]
+    [PPD_Taxes]
+    CRLF
+    [PPD_TotalOtherChargesDueAgent]
+    [PPD_TotalOtherChargesDueCarrier]
+    PPD_ChargeSummaryTotal
+    CRLF;
+
+PPD_TotalWeightCharge = 
+    Slant
+    DE502_ChargeIdentifier_WT
+    DE501_ChargeAmount;
+
+PPD_ValuationCharge = 
+    Slant
+    DE502_ChargeIdentifier_VC
+    DE501_ChargeAmount;
+
+PPD_Taxes = 
+    Slant
+    DE502_ChargeIdentifier_TX
+    DE501_ChargeAmount;
+
+PPD_TotalOtherChargesDueAgent = 
+    Slant
+    DE502_ChargeIdentifier_OA
+    DE501_ChargeAmount;
+
+PPD_TotalOtherChargesDueCarrier = 
+    Slant
+    DE502_ChargeIdentifier_OC
+    DE501_ChargeAmount;
+
+PPD_ChargeSummaryTotal = 
+    Slant
+    DE502_ChargeIdentifier_CT
+    DE501_ChargeAmount;
+
+# COL - Collect Charge Summary
+# ----------------------------
+CollectChargeSummary =
+    DE103_LineIdentifier_COL
+    [COL_TotalWeightCharge]
+    [COL_ValuationCharge]
+    [COL_Taxes]
+    CRLF
+    [COL_TotalOtherChargesDueAgent]
+    [COL_TotalOtherChargesDueCarrier]
+    COL_ChargeSummaryTotal
+    CRLF;
+
+COL_TotalWeightCharge = 
+    Slant
+    DE502_ChargeIdentifier_WT
+    DE501_ChargeAmount;
+
+COL_ValuationCharge = 
+    Slant
+    DE502_ChargeIdentifier_VC
+    DE501_ChargeAmount;
+
+COL_Taxes = 
+    Slant
+    DE502_ChargeIdentifier_TX
+    DE501_ChargeAmount;
+
+COL_TotalOtherChargesDueAgent = 
+    Slant
+    DE502_ChargeIdentifier_OA
+    DE501_ChargeAmount;
+
+COL_TotalOtherChargesDueCarrier = 
+    Slant
+    DE502_ChargeIdentifier_OC
+    DE501_ChargeAmount;
+
+COL_ChargeSummaryTotal = 
+    Slant
+    DE502_ChargeIdentifier_CT
+    DE501_ChargeAmount;
+
+# CER - Shipper's Certification
+# -----------------------------
+ShippersCertification =
+    DE103_LineIdentifier_CER
+    Slant
+    DE414_Signature
+    CRLF;
+
+# ISU - Carrier's Execution
+# -------------------------
+CarriersExecution =
+    DE103_LineIdentifier_ISU
+    ISU_AWBIssueDetails
+    [ISU_Authorisation]
+    CRLF;
+
+ISU_AWBIssueDetails =
+    Slant
+    DE202_Day
+    DE201_Month
+    DE200_Year
+    Slant
+    (DE302_Place / 
+     DE313_AirportCityCode);
+
+ISU_Authorisation =
+    Slant
+    DE414_Signature;
+
+# OSI - Other Service Information
+# -------------------------------
+OtherServiceInformation =
+    DE103_LineIdentifier_OSI
+    1*3(Slant
+        DE405_OtherServiceInformation
+        CRLF);
+
+# CDC - CC Charges in Destination Currency
+# ----------------------------------------
+CCChargesInDestinationCurrency =
+    DE103_LineIdentifier_CDC
+    Slant
+    CDC_DestinationCurrency
+    CDC_CurrencyConversionRate
+    Slant
+    CDC_CCChargesInDestinationCurrency
+    Slant
+    CDC_ChargesAtDestination
+    Slant
+    CDC_TotalCollectCharges
+    CRLF;
+
+CDC_DestinationCurrency =
+    DE606_ISOCurrencyCode;
+
+CDC_CurrencyConversionRate =
+    DE607_RateOfExchange;    
+    
+CDC_CCChargesInDestinationCurrency =
+    DE501_ChargeAmount;
+    
+CDC_ChargesAtDestination =
+    DE501_ChargeAmount;
+    
+CDC_TotalCollectCharges =
+    DE501_ChargeAmount;
+
+# REF - Sender Reference
+# ----------------------
+SenderReference =
+    DE103_LineIdentifier_REF
+    Slant
+    (
+        (Slant
+         [REF_SenderOfficeFileReference]
+         REF_SenderParticipantIdentification)
+        /
+        (REF_SenderOfficeMessageAddress
+         [Slant REF_SenderOfficeFileReference])
+    )
+    CRLF;
+
+REF_SenderOfficeMessageAddress =
+    DE313_AirportCityCode
+    DE107_OfficeFunctionDesignator
+    DE308_CompanyDesignator;
+    
+REF_SenderOfficeFileReference =
+    DE117_FileReference;
+    
+REF_SenderParticipantIdentification =
+    Slant
+    DE319_ParticipantIdentifier
+    Slant
+    DE320_ParticipantCode
+    Slant
+    DE313_AirportCityCode;
+
+# COR - Customs Origin
+# --------------------
+CustomsOrigin =
+    DE103_LineIdentifier_COR
+    Slant
+    DE906_CustomsOriginCode
+    CRLF;
+
+# COI - Commission Information
+# ----------------------------
+CommissionInformation =
+    DE103_LineIdentifier_COI
+    Slant
+    (
+        (Slant
+         Slant
+         COI_CommissionPercentage)
+        /
+        (Slant
+         COI_CommissionAmount)
+        /
+        COI_NoCommissionIndication
+    )
+    CRLF;
+    
+COI_NoCommissionIndication =
+    DE614_CASSIndicator;
+    
+COI_CommissionAmount =
+    DE613_CASSSettlementFactor;
+    
+COI_CommissionPercentage =
+    DE613_CASSSettlementFactor;
+
+# SII - Sales Incentive Information
+# ---------------------------------
+SalesIncentiveInformation =
+    DE103_LineIdentifier_SII
+    Slant
+    SII_SalesIncentiveDetail
+    [Slant SII_SalesIncentiveIndication]
+    CRLF;
+
+SII_SalesIncentiveDetail =
+    DE501_ChargeAmount;
+    
+SII_SalesIncentiveIndication =
+    DE614_CASSIndicator;
+
+# ARD - Agent Reference Data
+# --------------------------
+AgentReferenceData =
+    DE103_LineIdentifier_ARD
+    Slant
+    ARD_AgentReference
+    CRLF;
+    
+ARD_AgentReference =
+    DE117_FileReference;
+
+# SPH - Special Handling Details
+# ------------------------------
+SpecialHandlingDetails =
+    DE103_LineIdentifier_SPH
+    1*9SPH_SpecialHandlingRequirements
+    CRLF;
+    
+SPH_SpecialHandlingRequirements =
+    Slant
+    DE705_SpecialHandlingCode;
+
+# NOM - Nominated Handling Party
+# ------------------------------
+NominatedHandlingParty =
+    DE103_LineIdentifier_NOM
+    Slant
+    DE300_Name
+    Slant
+    DE302_Place
+    CRLF;
+
+# SRI - Shipment Reference Information
+# ------------------------------------
+ShipmentReferenceInformation =
+    DE103_LineIdentifier_SRI
+    Slant
+    (
+        (DE132_ReferenceNumber
+         Slant
+         DE133_SupplementaryShipmentInformation
+         Slant
+         DE133_SupplementaryShipmentInformation)
+        /
+        (Slant
+         DE133_SupplementaryShipmentInformation
+         Slant
+         DE133_SupplementaryShipmentInformation)
+        /
+        (DE132_ReferenceNumber
+         Slant
+         Slant
+         DE133_SupplementaryShipmentInformation)
+        /
+        (DE132_ReferenceNumber
+         Slant
+         DE133_SupplementaryShipmentInformation)
+        /
+        (Slant
+         Slant
+         DE133_SupplementaryShipmentInformation)
+        /
+        (Slant
+         DE133_SupplementaryShipmentInformation)
+        /
+        DE132_ReferenceNumber
+    )    
+    CRLF;    
+
+# OPI - Other Participant Information
+# -----------------------------------
+OtherParticipantInformation =
+    DE103_LineIdentifier_OPI
+    Slant
+    DE300_Name
+    CRLF
+    Slant
+    (
+        (Slant
+         [OPI_OtherParticipantOfficeFileReference]
+         OPI_OtherParticipantIdentification)
+        /
+        (OPI_OtherParticipantOfficeMessageAddress
+         [Slant OPI_OtherParticipantOfficeFileReference])
+    )
+    CRLF;
+    
+OPI_OtherParticipantOfficeMessageAddress =
+    DE313_AirportCityCode
+    DE107_OfficeFunctionDesignator
+    DE308_CompanyDesignator;
+    
+OPI_OtherParticipantOfficeFileReference =
+    DE117_FileReference;
+    
+OPI_OtherParticipantIdentification =
+    Slant
+    DE319_ParticipantIdentifier
+    Slant
+    DE320_ParticipantCode
+    Slant
+    DE313_AirportCityCode;
+
+# OCI - Other Customs Information
+# -------------------------------
+OtherCustomsInformation =
+    DE103_LineIdentifier_OCI
+    *((
+        (Slant
+         DE304_ISOCountryCode
+         Slant
+         DE103_InformationIdentifier
+         Slant
+         DE941_CustomsInformationIdentifier)
+        /
+        (Slant
+         DE304_ISOCountryCode
+         Slant
+         DE103_InformationIdentifier
+         Slant)
+        /
+        (Slant
+         DE304_ISOCountryCode
+         Slant
+         Slant
+         DE941_CustomsInformationIdentifier)
+        /
+        (Slant
+         Slant
+         DE103_InformationIdentifier
+         Slant
+         DE941_CustomsInformationIdentifier)
+        /
+        (Slant
+         DE304_ISOCountryCode
+         Slant
+         Slant)
+        /
+        (Slant
+         Slant
+         DE103_InformationIdentifier
+         Slant)
+        /
+        (Slant
+         Slant
+         Slant
+         DE941_CustomsInformationIdentifier)
+      )
+      Slant
+      DE940_SupplementaryCustomsInformation
+      CRLF);
+
+# Data Elements
+# -------------
+
+DE101_StandardMessageIdentifier         = 3Alpha;
+DE103_LineIdentifier                    = 3Alpha;
+DE103_LineIdentifier_ACC                = "ACC";
+DE103_LineIdentifier_AGT                = "AGT";
+DE103_LineIdentifier_ARD                = "ARD";
+DE103_LineIdentifier_CDC                = "CDC";
+DE103_LineIdentifier_CER                = "CER";
+DE103_LineIdentifier_CNE                = "CNE";
+DE103_LineIdentifier_COI                = "COI";
+DE103_LineIdentifier_COL                = "COL";
+DE103_LineIdentifier_COR                = "COR";
+DE103_LineIdentifier_CVD                = "CVD";
+DE103_LineIdentifier_FLT                = "FLT";
+DE103_LineIdentifier_ISU                = "ISU";
+DE103_LineIdentifier_NFY                = "NFY";
+DE103_LineIdentifier_NOM                = "NOM";
+DE103_LineIdentifier_OCI                = "OCI";
+DE103_LineIdentifier_OPI                = "OPI";
+DE103_LineIdentifier_OSI                = "OSI";
+DE103_LineIdentifier_OTH                = "OTH";
+DE103_LineIdentifier_PPD                = "PPD";
+DE103_LineIdentifier_REF                = "REF";
+DE103_LineIdentifier_RTD                = "RTD";
+DE103_LineIdentifier_RTG                = "RTG";
+DE103_LineIdentifier_SHP                = "SHP";
+DE103_LineIdentifier_SII                = "SII";
+DE103_LineIdentifier_SPH                = "SPH";
+DE103_LineIdentifier_SRI                = "SRI";
+DE103_LineIdentifier_SSR                = "SSR";
+DE103_InformationIdentifier             = 3Alpha;
+DE105_AWBColumnIdentifier_C             = "C";
+DE105_AWBColumnIdentifier_N             = "N";
+DE105_AWBColumnIdentifier_P             = "P";
+DE105_AWBColumnIdentifier_R             = "R";
+DE105_AWBColumnIdentifier_S             = "S";
+DE105_AWBColumnIdentifier_T             = "T";
+DE105_AWBColumnIdentifier_W             = "W";
+DE106_AWBRateLineNumber                 = 1*2Numeric;
+DE107_OfficeFunctionDesignator          = 2Mixed;
+DE108_AccountNumber                     = 1*14Text;
+DE112_AirlinePrefix                     = 3Numeric;
+DE113_AWBSerialNumber                   = 8Numeric;
+DE115_ULDSerialNumber                   = Mixed 3*4Numeric;
+DE117_FileReference                     = 1*15Text;
+DE122_ContactIdentifier                 = 1*3Mixed;
+DE123_ContactNumber                     = 1*25Mixed;
+DE124_MessageTypeVersionNumber          = 1*3Numeric;
+DE132_ReferenceNumber                   = 1*14Text;
+DE133_SupplementaryShipmentInformation  = 1*12Text;
+DE200_Year                              = 2Numeric;
+DE201_Month                             = 3Alpha;
+DE202_Day                               = 2Numeric;
+DE300_Name                              = 1*35Text;
+DE301_StreetAddress                     = 1*35Text;
+DE302_Place                             = 1*17Text;
+DE303_StateProvince                     = 1*9Text;
+DE304_ISOCountryCode                    = 2Alpha;
+DE305_PostCode                          = 1*9Text;
+DE308_CompanyDesignator                 = 2Mixed;
+DE309_IATACargoAgentCASSAddress         = 4Numeric;
+DE311_IATACargoAgentNumericCode         = 7Numeric;
+DE312_CarrierCode                       = 2Mixed;
+DE313_AirportCode                       = 3Alpha;
+DE313_AirportCityCode                   = 3Alpha;
+DE315_EntitlementCode                   = Alpha;
+DE316_RateCombinationPoint              = 3Alpha;
+DE319_ParticipantIdentifier             = 1*3Mixed;
+DE320_ParticipantCode                   = 1*17Mixed;
+DE403_PCInd                             = Alpha;
+DE404_SpecialServiceRequest             = 1*65Text;
+DE405_OtherServiceInformation           = 1*65Text;
+DE410_AccountingInformation             = 1*34Text;
+DE411_AccountingInformationIdentifier   = 3Alpha;
+DE414_Signature                         = 1*20Text;
+DE500_VolumeAmount                      = 1*9Decimal;
+DE501_ChargeAmount                      = 1*12Decimal;
+DE501_ChargeDiscountAmount              = 1*12Decimal;
+DE502_ChargeIdentifier_WT               = "WT";
+DE502_ChargeIdentifier_VC               = "VC";
+DE502_ChargeIdentifier_TX               = "TX";
+DE502_ChargeIdentifier_OA               = "OA";
+DE502_ChargeIdentifier_OC               = "OC";
+DE502_ChargeIdentifier_CT               = "CT";
+DE503_ChargeCode                        = 2Alpha;
+DE504_OtherChargeCode                   = 2Alpha;
+DE505_ServiceCode                       = Alpha;
+DE506_RateChargeDiscount                = 1*8Decimal;
+DE507_RateClassCode                     = Alpha;
+DE508_AmountOfInsurance                 = 1*11Decimal;
+DE508_NoValue                           = "XXX";
+DE509_DeclaredValueOfCustoms            = 1*12Decimal;
+DE509_NoCustomsValue                    = "NCV";
+DE510_DeclaredValueOfCarriage           = 1*12Decimal;
+DE510_NoValueDeclared                   = "NVD";
+DE511_RateClassPercentage               = 1*3Numeric;
+DE513_ULDRateClassType                  = Numeric *2Alpha;
+DE600_Weight                            = 1*7Decimal;
+DE601_WeightCode                        = DE601_WeightCode_K / DE601_WeightCode_L;
+DE601_WeightCode_K                      = "K";
+DE601_WeightCode_L                      = "L";
+DE602_DensityGroup                      = 1*2Numeric;
+DE603_DensityIndicator                  = 2Alpha;
+DE603_DensityIndicator_DG               = "DG";
+DE604_VolumeCode                        = 2Alpha;
+DE606_ISOCurrencyCode                   = 3Alpha;
+DE607_RateOfExchange                    = 1*11Decimal;
+DE608_LengthDimension                   = 1*5Numeric;
+DE609_WidthDimension                    = 1*5Numeric;
+DE610_HeightDimension                   = 1*5Numeric;
+DE611_MeasurementUnitCode               = 1*3Mixed;
+DE611_NoDimensionsAvailable             = "NDA";
+DE613_CASSSettlementFactor              = 1*12Decimal;
+DE614_CASSIndicator                     = 1*2Alpha;
+DE701_NumberOfPieces                    = 1*4Numeric;
+DE703_ShipmentDescriptionCode_T         = "T";
+DE703_ShipmentDescriptionCode_P         = "P";
+DE705_SpecialHandlingCode               = 3Alpha;
+DE707_CommodityItemNumber               = 4*7Numeric;
+DE709_NatureAndQuantityOfGoods          = 1*20Text;
+DE710_GoodsDataIdentifier_C             = "C";
+DE710_GoodsDataIdentifier_D             = "D";
+DE710_GoodsDataIdentifier_G             = "G";
+DE710_GoodsDataIdentifier_H             = "H";
+DE710_GoodsDataIdentifier_O             = "O";
+DE710_GoodsDataIdentifier_S             = "S";
+DE710_GoodsDataIdentifier_U             = "U";
+DE710_GoodsDataIdentifier_V             = "V";
+DE714_SLAC                              = 1*5Numeric;
+DE800_FlightNumber                      = 3*4Numeric [Alpha];
+DE801_ULDOwnerCode                      = 2Mixed;
+DE802_ULDType                           = Alpha 2Mixed;
+DE900_HarmonisedCommodityCode           = 6*18Mixed;
+DE906_CustomsOriginCode                 = 1*2Mixed;
+DE940_SupplementaryCustomsInformation   = 1*35Text;
+DE941_CustomsInformationIdentifier      = 1*2Alpha;
+
+# Types
+# -----
+CRLF    = (CR LF) / LF; 
+CR      = %x0D;
+LF      = %x0A;
+Slant   = "/";
+Hyphen  = "-";
+Alpha   = %x41-5A;
+Numeric = %x30-39;
+Decimal = %x30-39 / ".";
+Mixed   = Alpha / Numeric;
+Text    = %x41-5A / %x30-39 / "." / "-" / " ";
+
+#------------------------------------------------------------------------
+# eof
+#------------------------------------------------------------------------

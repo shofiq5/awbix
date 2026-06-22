@@ -1,0 +1,30 @@
+Key segments from the CIMP rules:
+FWB/version (1.1=identifier, 1.2=separator, 1.3=version)
+AWB Consignment Details (2.1=AWB number, 2.2=origin/dest, 2.3=quantity, 2.4=volume, 2.5=density)
+FLT - Flight Bookings (3.1=FLT, 3.2=carrier+flight, 3.2.5=day)
+RTG - Routing (4.1=RTG, 4.2=first destination and carrier, 4.3=onward routing)
+SHP - Shipper details (5.1=SHP, 5.4=name, 5.5=address, 5.6=location, 5.7=coded location, 5.8=contact)
+CNE - Consignee information (structured similarly to shipper)
+AGT - Agent (7.1=AGT, 7.2=account, 7.4=name, 7.5=place)
+SSR - Special service requests with text descriptions
+NFY - Also notify parties
+ACC - Accounting information (10.1=ACC, 10.2=accounting details)
+CVD - Charge declarations including currency, charge codes, prepaid/collect indicators, carriage value, customs value, and insurance
+RTD - Rate description with charge line counts, pieces, weight, rate class, commodity, chargeable weight, rate per charge, and totals
+OTH - Other miscellaneous information
+PPD - Prepaid charge summary covering weight charges, valuation, taxes, and charges due to agent or carrier
+COL - Collect charge summary
+CER - Shipper's certification with signature
+ISU - Carrier's execution with date, place, and authorization
+OSI - Other service information
+CDC - Credit card charges in destination country
+REF - Sender reference including office address, file reference, and participant details
+COR - Customs origin with code
+COM - Commission information
+SII - Sales incentive information
+ARD - Agent reference data
+SPH - Special handling details with codes
+NOM - Nominated handling party
+SRI - Shipment reference information
+OPI - Other participant information
+OCI - Other customs, security and regulatory control information with country, info identifier, customs identifier, and supplement details
