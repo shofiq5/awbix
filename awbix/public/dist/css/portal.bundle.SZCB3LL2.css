@@ -1,4 +1,4 @@
-/* ../../../../../tmp/tmp-1310-r8DnNfHadpfc/awbix/awbix/public/scss/portal.bundle.css */
+/* ../../../../../tmp/tmp-1634-PInGC8glpdPC/awbix/awbix/public/scss/portal.bundle.css */
 [data-portal-theme=ocean],
 html:not([data-portal-theme]) {
   --pt-sidebar-bg: #16324f;
@@ -126,18 +126,18 @@ body {
   background: var(--pt-sidebar-bg);
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   z-index: 200;
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  border-left: 1px solid var(--pt-sidebar-border);
+  border-right: 1px solid var(--pt-sidebar-border);
 }
 @media (max-width: 900px) {
   .pt-sidebar {
-    transform: translateX(100%);
+    transform: translateX(-100%);
     box-shadow: var(--pt-shadow-xl);
   }
   .pt-sidebar.open {
@@ -173,7 +173,7 @@ body {
   background: rgba(255, 255, 255, 0.08);
   padding: 0.1rem 0.4rem;
   border-radius: 4px;
-  margin-right: auto;
+  margin-left: auto;
 }
 .pt-sidebar__nav {
   flex: 1;
@@ -201,7 +201,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.55rem 1rem 0.55rem 1.25rem;
+  padding: 0.55rem 1.25rem 0.55rem 1rem;
   color: var(--pt-sidebar-text);
   text-decoration: none;
   font-size: 0.875rem;
@@ -211,9 +211,9 @@ body {
   border: none;
   background: none;
   width: 100%;
-  text-align: right;
+  text-align: left;
   position: relative;
-  border-right: 3px solid transparent;
+  border-left: 3px solid transparent;
 }
 .pt-sidebar__link svg.icon {
   width: 16px;
@@ -224,7 +224,7 @@ body {
 .pt-sidebar__link .chevron {
   width: 13px;
   height: 13px;
-  margin-right: auto;
+  margin-left: auto;
   opacity: 0.5;
   transition: transform 0.2s;
 }
@@ -238,14 +238,14 @@ body {
 .pt-sidebar__link.active {
   background: var(--pt-sidebar-active-bg);
   color: var(--pt-sidebar-text-strong);
-  border-right-color: var(--pt-sidebar-active-bar);
+  border-left-color: var(--pt-sidebar-active-bar);
 }
 .pt-sidebar__link.active svg.icon {
   opacity: 1;
   color: var(--pt-sidebar-active-bar);
 }
 .pt-sidebar__link[aria-expanded=true] .chevron {
-  transform: rotate(-90deg);
+  transform: rotate(90deg);
 }
 .pt-sidebar__sub {
   display: none;
@@ -258,12 +258,12 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.45rem 2.85rem 0.45rem 1.25rem;
+  padding: 0.45rem 1.25rem 0.45rem 2.85rem;
   color: var(--pt-sidebar-text);
   text-decoration: none;
   font-size: 0.83rem;
   transition: background 0.1s;
-  border-right: 3px solid transparent;
+  border-left: 3px solid transparent;
 }
 .pt-sidebar__sub a::before {
   content: "";
@@ -280,7 +280,7 @@ body {
 }
 .pt-sidebar__sub a.active {
   color: var(--pt-sidebar-text-strong);
-  border-right-color: var(--pt-sidebar-active-bar);
+  border-left-color: var(--pt-sidebar-active-bar);
 }
 .pt-sidebar__sub a.active::before {
   opacity: 1;
@@ -339,7 +339,7 @@ body {
   text-decoration: none;
   border: none;
   width: 100%;
-  text-align: right;
+  text-align: left;
   transition: background 0.12s;
   position: relative;
 }
@@ -376,7 +376,7 @@ body {
   color: var(--pt-sidebar-group);
 }
 .pt-sidebar__user .logout-link {
-  margin-right: auto;
+  margin-left: auto;
   opacity: 0.4;
   flex-shrink: 0;
 }
@@ -402,14 +402,14 @@ body {
 }
 .pt-content {
   flex: 1;
-  margin-right: 240px;
+  margin-left: 240px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 @media (max-width: 900px) {
   .pt-content {
-    margin-right: 0;
+    margin-left: 0;
   }
 }
 .pt-topbar {
@@ -444,13 +444,13 @@ body {
   transition: transform 0.22s, opacity 0.22s;
 }
 .pt-topbar__hamburger.open span:nth-child(1) {
-  transform: translateY(6px) rotate(-45deg);
+  transform: translateY(6px) rotate(45deg);
 }
 .pt-topbar__hamburger.open span:nth-child(2) {
   opacity: 0;
 }
 .pt-topbar__hamburger.open span:nth-child(3) {
-  transform: translateY(-6px) rotate(45deg);
+  transform: translateY(-6px) rotate(-45deg);
 }
 @media (max-width: 900px) {
   .pt-topbar__hamburger {
@@ -479,7 +479,7 @@ body {
   font-weight: 500;
 }
 .pt-topbar__right {
-  margin-right: auto;
+  margin-left: auto;
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -559,7 +559,7 @@ body {
   flex-wrap: wrap;
 }
 .pt-hero {
-  background: linear-gradient(-135deg, var(--pt-sidebar-bg) 0%, var(--pt-primary) 100%);
+  background: linear-gradient(135deg, var(--pt-sidebar-bg) 0%, var(--pt-primary) 100%);
   border-radius: 14px;
   padding: 1.75rem 2rem;
   color: #fff;
@@ -940,8 +940,8 @@ textarea.pt-input {
   padding: 0 0.75rem;
   background: var(--pt-surface-alt);
   border: 1.5px solid var(--pt-border);
-  border-left: none;
-  border-radius: 0 8px 8px 0;
+  border-right: none;
+  border-radius: 8px 0 0 8px;
   color: var(--pt-text-muted);
   font-size: 0.82rem;
   font-weight: 600;
@@ -949,7 +949,7 @@ textarea.pt-input {
   flex-shrink: 0;
 }
 .pt-input-group .pt-input {
-  border-radius: 8px 0 0 8px;
+  border-radius: 0 8px 8px 0;
   flex: 1;
 }
 .pt-route-input {
@@ -1059,7 +1059,7 @@ textarea.pt-input {
   border-bottom: 2px solid var(--pt-border);
 }
 .pt-table th {
-  text-align: right;
+  text-align: left;
   padding: 0.7rem 1rem;
   font-size: 0.72rem;
   font-weight: 600;
@@ -1203,12 +1203,12 @@ textarea.pt-input {
 }
 .pt-timeline {
   position: relative;
-  padding-right: 1.35rem;
+  padding-left: 1.35rem;
 }
 .pt-timeline::before {
   content: "";
   position: absolute;
-  right: 0.3rem;
+  left: 0.3rem;
   top: 8px;
   bottom: 8px;
   width: 2px;
@@ -1224,7 +1224,7 @@ textarea.pt-input {
 .pt-timeline__item::before {
   content: "";
   position: absolute;
-  right: -1.05rem;
+  left: -1.05rem;
   top: 0.3rem;
   width: 10px;
   height: 10px;
@@ -1279,7 +1279,7 @@ textarea.pt-input {
 }
 @keyframes pt-spin {
   to {
-    transform: rotate(-360deg);
+    transform: rotate(360deg);
   }
 }
 .pt-info-grid {
@@ -1303,7 +1303,7 @@ textarea.pt-input {
 .pt-toast-wrap {
   position: fixed;
   bottom: 1.5rem;
-  left: 1.5rem;
+  right: 1.5rem;
   z-index: 9999;
   display: flex;
   flex-direction: column;
@@ -1396,4 +1396,4 @@ textarea.pt-input {
     padding: 0.9rem 1rem;
   }
 }
-/*# sourceMappingURL=portal.bundle.UFQX4IP2.css.map */
+/*# sourceMappingURL=portal.bundle.SZCB3LL2.css.map */
