@@ -93,6 +93,30 @@ _DEFINITIONS = [
 		"auto_promote": 1,
 		"auto_process": 1,
 	},
+	{
+		"message_type": "FSR",
+		"version": "1",
+		"title": "FSR — Flight Status Request (Cargo-IMP)",
+		"standard": "Cargo-IMP",
+		"composer_class": "awbix.edx.handlers.fsr.fsr_composer.FSRComposer",
+		"target_doctype": "Shipment",
+		"is_parser_enabled": 0,
+		"is_composer_enabled": 1,
+		"detection_pattern": "^FSR",
+		"bypass_amendment": 1,
+	},
+	{
+		"message_type": "FFR",
+		"version": "6",
+		"title": "FFR/6 — AWB Space Allocation Request (Cargo-IMP)",
+		"standard": "Cargo-IMP",
+		"composer_class": "awbix.edx.handlers.ffr.ffr_composer.FFRComposer",
+		"target_doctype": "Shipment",
+		"is_parser_enabled": 0,
+		"is_composer_enabled": 1,
+		"detection_pattern": "^FFR/6",
+		"bypass_amendment": 1,
+	},
 ]
 
 # Fields backfilled onto an already-seeded definition so a re-migrate activates new

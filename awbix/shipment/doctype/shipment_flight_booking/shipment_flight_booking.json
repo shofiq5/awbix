@@ -9,7 +9,12 @@
   "carrier",
   "carrier_code",
   "flight_number",
-  "flight_day"
+  "flight_day",
+  "flight_month",
+  "departure_airport",
+  "arrival_airport",
+  "space_allocation_code",
+  "allotment_id"
  ],
  "fields": [
   {
@@ -44,13 +49,52 @@
    "in_list_view": 1,
    "label": "Day",
    "length": 2
+  },
+  {
+   "description": "DE201",
+   "fieldname": "flight_month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "\nJAN\nFEB\nMAR\nAPR\nMAY\nJUN\nJUL\nAUG\nSEP\nOCT\nNOV\nDEC"
+  },
+  {
+   "description": "DE313 — flight departure airport (FFR/FFA)",
+   "fieldname": "departure_airport",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "From",
+   "options": "Airport"
+  },
+  {
+   "description": "DE313 — flight arrival airport (FFR/FFA)",
+   "fieldname": "arrival_airport",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "To",
+   "options": "Airport"
+  },
+  {
+   "description": "DE409 — space allocation code",
+   "fieldname": "space_allocation_code",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Alloc",
+   "options": "\nNN\nNA\nSS\nCA\nXX\nHK\nHL\nHN\nKK\nUU\nUN\nLL"
+  },
+  {
+   "description": "DE417 — allotment identification (FFR section 3.6, required when code is CA)",
+   "fieldname": "allotment_id",
+   "fieldtype": "Data",
+   "label": "Allotment ID",
+   "length": 14
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-21 23:05:51.919425",
+ "modified": "2026-06-23 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment Flight Booking",
