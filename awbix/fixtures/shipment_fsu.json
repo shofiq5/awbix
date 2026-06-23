@@ -1,0 +1,110 @@
+[
+ {
+  "awb_number": "157-52640523",
+  "destination": "AMM",
+  "docstatus": 0,
+  "doctype": "Shipment FSU",
+  "fsu_status_records": [
+   {
+    "carrier_code": null,
+    "description": null,
+    "flight_number": null,
+    "location": null,
+    "parent": "hppav0blqu",
+    "parentfield": "fsu_status_records",
+    "parenttype": "Shipment FSU",
+    "status_code": "BKD",
+    "status_timestamp": "2026-05-02 00:00:00"
+   }
+  ],
+  "handling_information": null,
+  "last_updated": null,
+  "modified": "2026-06-20 17:32:34.492007",
+  "name": "hppav0blqu",
+  "origin": "AMS",
+  "raw_message": "QD SPLSP8X\r\n.HDQFMQR 291125\r\nFSU/14\r\n157-52640523AMSAMM/T3K518.70\r\nBKD/QR0274/02MAY/AMSDOH/T3K518.70/S1640/S0045-N/MC3.600",
+  "shipment": "157-52640523",
+  "status_code": "BKD"
+ },
+ {
+  "awb_number": "157-51340726",
+  "destination": "MLE",
+  "docstatus": 0,
+  "doctype": "Shipment FSU",
+  "fsu_status_records": [
+   {
+    "carrier_code": null,
+    "description": null,
+    "flight_number": null,
+    "location": "LHR",
+    "parent": "lgcgm8ke5v",
+    "parentfield": "fsu_status_records",
+    "parenttype": "Shipment FSU",
+    "status_code": "FOH",
+    "status_timestamp": "2026-05-02 17:46:00"
+   }
+  ],
+  "handling_information": null,
+  "last_updated": null,
+  "modified": "2026-06-20 17:38:54.022781",
+  "name": "lgcgm8ke5v",
+  "origin": "LHR",
+  "raw_message": "QD HDQFMQR\r\n.HDQMA7X 021647\r\nFSU/14\r\n157-51340726LHRMLE/T6K60.0\r\nFOH/02MAY1746/LHR/T6K60.0/WOODLAND GLOBAL",
+  "shipment": "157-51340726",
+  "status_code": "FOH"
+ },
+ {
+  "awb_number": "157-52640523",
+  "destination": "AMM",
+  "docstatus": 0,
+  "doctype": "Shipment FSU",
+  "fsu_status_records": [
+   {
+    "carrier_code": null,
+    "description": null,
+    "flight_number": null,
+    "location": null,
+    "parent": "43mmasia21",
+    "parentfield": "fsu_status_records",
+    "parenttype": "Shipment FSU",
+    "status_code": "BKD",
+    "status_timestamp": "2026-05-02 00:00:00"
+   }
+  ],
+  "handling_information": null,
+  "last_updated": null,
+  "modified": "2026-06-20 18:03:49.398661",
+  "name": "43mmasia21",
+  "origin": "AMS",
+  "raw_message": "QD SPLSP8X\r\n.HDQFMQR 291125\r\nFSU/14\r\n157-52640523AMSAMM/T3K518.70\r\nBKD/QR0274/02MAY/AMSDOH/T3K518.70/S1640/S0045-N/MC3.600",
+  "shipment": "157-52640523",
+  "status_code": "BKD"
+ },
+ {
+  "awb_number": "157-51340726",
+  "destination": "MLE",
+  "docstatus": 0,
+  "doctype": "Shipment FSU",
+  "fsu_status_records": [
+   {
+    "carrier_code": null,
+    "description": null,
+    "flight_number": null,
+    "location": null,
+    "parent": "491c3of7eb",
+    "parentfield": "fsu_status_records",
+    "parenttype": "Shipment FSU",
+    "status_code": "MAN",
+    "status_timestamp": "2026-05-03 00:00:00"
+   }
+  ],
+  "handling_information": null,
+  "last_updated": null,
+  "modified": "2026-06-20 18:04:06.579346",
+  "name": "491c3of7eb",
+  "origin": "LHR",
+  "raw_message": "QD HDQFMQR\r\n.HDQMA7X 030449\r\nFSU/14\r\n157-51340726LHRMLE/T6K60.0\r\nMAN/QR006/03MAY/LHRDOH/T6K60.0/E0805",
+  "shipment": "157-51340726",
+  "status_code": "MAN"
+ }
+]

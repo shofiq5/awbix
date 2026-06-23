@@ -1,1 +1,82 @@
-[]
+[
+ {
+  "code": "CP",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 12:20:38.808261",
+  "name": "CP"
+ },
+ {
+  "code": "CT",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 12:20:38.817308",
+  "name": "CT"
+ },
+ {
+  "code": "RC",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 19:48:22.309359",
+  "name": "RC"
+ },
+ {
+  "code": "RA",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 20:20:14.252729",
+  "name": "RA"
+ },
+ {
+  "code": "T",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 21:50:52.577215",
+  "name": "T"
+ },
+ {
+  "code": "ED",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 19:48:22.320304",
+  "name": "ED"
+ },
+ {
+  "code": "SS",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 19:48:22.324031",
+  "name": "SS"
+ },
+ {
+  "code": "SM",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 19:48:22.327109",
+  "name": "SM"
+ },
+ {
+  "code": "SD",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 19:48:22.333384",
+  "name": "SD"
+ },
+ {
+  "code": "SN",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Customs Information Identifier",
+  "modified": "2026-06-20 19:48:22.330117",
+  "name": "SN"
+ }
+]

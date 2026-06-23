@@ -1,1 +1,101 @@
-[]
+[
+ {
+  "code": "AW",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 19:48:22.232878",
+  "name": "AW"
+ },
+ {
+  "code": "AH",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 20:20:14.134443",
+  "name": "AH"
+ },
+ {
+  "code": "AHC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 21:50:52.501503",
+  "name": "AHC"
+ },
+ {
+  "code": "FEC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 21:50:52.510333",
+  "name": "FEC"
+ },
+ {
+  "code": "SCC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 21:50:52.512804",
+  "name": "SCC"
+ },
+ {
+  "code": "AWC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 21:50:52.515672",
+  "name": "AWC"
+ },
+ {
+  "code": "BFC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 23:21:15.427064",
+  "name": "BFC"
+ },
+ {
+  "code": "CG",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 19:48:22.219893",
+  "name": "CG"
+ },
+ {
+  "code": "SC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 19:48:22.230064",
+  "name": "SC"
+ },
+ {
+  "code": "FE",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 19:48:22.235430",
+  "name": "FE"
+ },
+ {
+  "code": "CGC",
+  "default_entitlement": "",
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Other Charge Code",
+  "modified": "2026-06-20 21:50:52.518376",
+  "name": "CGC"
+ }
+]

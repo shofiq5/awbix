@@ -2,11 +2,21 @@
  {
   "airline_name": "Qatar Airways",
   "airline_prefix": "157",
-  "carrier_code": "QR",
+  "carrier_code": "157",
   "docstatus": 0,
   "doctype": "Airline",
   "icao_code": null,
   "modified": "2026-06-16 03:10:35.953882",
   "name": "157"
+ },
+ {
+  "airline_name": null,
+  "airline_prefix": "QR",
+  "carrier_code": "QR",
+  "docstatus": 0,
+  "doctype": "Airline",
+  "icao_code": null,
+  "modified": "2026-06-20 18:27:15.601835",
+  "name": "QR"
  }
 ]

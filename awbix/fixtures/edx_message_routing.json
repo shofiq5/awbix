@@ -1,1 +1,32 @@
-[]
+[
+ {
+  "address": "qrcargocroamis@qatarairways.com.qa",
+  "address_type": "Email",
+  "carrier_code": "QR",
+  "connection": "Email",
+  "destination": null,
+  "docstatus": 0,
+  "doctype": "EDX Message Routing",
+  "enabled": 1,
+  "message_type": "FSR",
+  "modified": "2026-06-20 18:15:57.024053",
+  "name": "8gpkldi69t",
+  "origin": "",
+  "priority": 0
+ },
+ {
+  "address": "shofiq5@gmail.com",
+  "address_type": "Email",
+  "carrier_code": null,
+  "connection": null,
+  "destination": null,
+  "docstatus": 0,
+  "doctype": "EDX Message Routing",
+  "enabled": 1,
+  "message_type": "FWB",
+  "modified": "2026-06-20 18:17:31.634110",
+  "name": "bd6rbgnkjq",
+  "origin": "AMS",
+  "priority": 0
+ }
+]

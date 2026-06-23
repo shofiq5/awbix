@@ -1,5 +1,126 @@
 [
  {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "AMM",
+  "is_city_code": 0,
+  "modified": "2026-06-20 11:55:39.210855",
+  "name": "AMM"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "MST",
+  "is_city_code": 0,
+  "modified": "2026-06-20 11:55:39.213748",
+  "name": "MST"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "AMD",
+  "is_city_code": 0,
+  "modified": "2026-06-20 12:15:58.373996",
+  "name": "AMD"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "ORD",
+  "is_city_code": 0,
+  "modified": "2026-06-20 12:15:58.392593",
+  "name": "ORD"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "CDG",
+  "is_city_code": 0,
+  "modified": "2026-06-20 12:20:38.741161",
+  "name": "CDG"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "SIN",
+  "is_city_code": 0,
+  "modified": "2026-06-20 12:28:42.663764",
+  "name": "SIN"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "ECC",
+  "is_city_code": 0,
+  "modified": "2026-06-20 18:04:44.511087",
+  "name": "ECC"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "JFK",
+  "is_city_code": 0,
+  "modified": "2026-06-20 18:34:36.095405",
+  "name": "JFK"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "GRU",
+  "is_city_code": 0,
+  "modified": "2026-06-20 19:48:22.054307",
+  "name": "GRU"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "WAW",
+  "is_city_code": 0,
+  "modified": "2026-06-20 20:20:14.073855",
+  "name": "WAW"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "HAM",
+  "is_city_code": 0,
+  "modified": "2026-06-20 23:21:15.366468",
+  "name": "HAM"
+ },
+ {
   "airport_name": "Dhaka",
   "city": null,
   "country": "Bangladesh",
@@ -75,5 +196,16 @@
   "is_city_code": 0,
   "modified": "2026-06-17 06:08:08.843925",
   "name": "MLE"
+ },
+ {
+  "airport_name": null,
+  "city": null,
+  "country": "Bangladesh",
+  "docstatus": 0,
+  "doctype": "Airport",
+  "iata_code": "AMS",
+  "is_city_code": 0,
+  "modified": "2026-06-20 11:55:39.190036",
+  "name": "AMS"
  }
 ]
