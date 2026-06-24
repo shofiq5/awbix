@@ -30,6 +30,7 @@ def resolve_route(
 		"origin": origin,
 		"destination": destination,
 	}
+	frappe.logger().info(f"resolve_route inputs: {inputs}")
 
 	rules = frappe.get_all(
 		"EDX Message Routing",
@@ -46,6 +47,9 @@ def resolve_route(
 			"priority",
 		],
 	)
+	frappe.logger().info(f"Found {len(rules)} enabled routing rules")
+	for rule in rules:
+		frappe.logger().info(f"Rule: {rule.get('name')} - msg_type={rule.get('message_type')}, carrier={rule.get('carrier_code')}, conn={rule.get('connection')}")
 
 	best = None
 	best_rank = None
@@ -56,15 +60,19 @@ def resolve_route(
 			rule_val = (rule.get(field) or "").strip()
 			if not rule_val:
 				continue  # wildcard
-			if rule_val != (inputs.get(field) or "").strip():
+			input_val = (inputs.get(field) or "").strip()
+			if rule_val != input_val:
 				matched = False
+				frappe.logger().info(f"Rule {rule.get('name')} mismatch on {field}: '{rule_val}' != '{input_val}'")
 				break
 			specificity += 1
 		if not matched:
 			continue
 
 		rank = (specificity, rule.get("priority") or 0)
+		frappe.logger().info(f"Rule {rule.get('name')} matched with specificity {specificity}")
 		if best_rank is None or rank > best_rank:
 			best, best_rank = rule, rank
 
+	frappe.logger().info(f"Selected rule: {best.get('name') if best else 'NONE'}")
 	return best
