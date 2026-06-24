@@ -473,60 +473,75 @@ def queue_outbound(source_doctype, source_name, message_type, version):
 	return mo.name
 
 
-@frappe.whitelist()
 def dispatch_message_out(name):
 	"""Run one outbound message through compose → verify → route → send.
 
+	Runs in a background worker (never the web request) so transport I/O can't freeze the
+	Desk and so the row lock taken here can't collide with ``run_doc_method``'s own lock.
+
 	Never raises: every failure is recorded on the row (status + issue + retry schedule)
-	so a bad message can't crash the dispatch worker (strategy R1 style).
+	so a bad message can't crash the dispatch worker (strategy R1 style). The whole body
+	runs in one transaction; the in-memory ``mo`` is the single source of truth and is
+	persisted exactly once via the helpers below.
 	"""
 	from awbix.edx.engine.registry import get_composer, get_transport
 	from awbix.edx.engine.routing import resolve_route
 
-	# Quick pre-check without a lock: skip if already dispatched or in progress.
+	frappe.logger().info(f"[EDX DISPATCH] Starting dispatch for {name}")
+
 	# A missing row means the job outran its insert commit (shouldn't happen with
 	# enqueue_after_commit, but guard so the worker never crashes — strategy R1).
 	if not frappe.db.exists("EDX Message Out", name):
 		log_event("EDX Message Out", name, "Failed", "Warning", "Row not found at dispatch time")
 		return {"ok": False, "status": "Missing", "skipped": True}
 
-	current_status = frappe.db.get_value("EDX Message Out", name, "delivery_status")
-	if current_status in ("Sent", "Failed"):
-		return {"ok": False, "status": current_status, "skipped": True}
+	frappe.logger().info(f"[EDX DISPATCH] Row exists for {name}, loading doc...")
 
+	# Load the message without a lock to avoid deadlocks in the worker.
+	# The row was already locked by the trigger (via db_set), so concurrent access is unlikely.
 	try:
-		mo = frappe.get_doc("EDX Message Out", name, for_update=True)
-	except frappe.QueryTimeoutError:
-		# Another worker already holds the lock — this message is being dispatched concurrently.
-		return {"ok": False, "status": "Locked", "skipped": True}
+		mo = frappe.get_doc("EDX Message Out", name)
+		frappe.logger().info(f"[EDX DISPATCH] Doc loaded, status={mo.delivery_status}")
+	except Exception as e:
+		frappe.logger().error(f"[EDX DISPATCH] Failed to load doc: {str(e)}")
+		return {"ok": False, "status": "Error", "error": str(e)}
 
-	# Re-check status under lock to avoid double-dispatch.
-	if mo.delivery_status in ("Sent", "Failed"):
+	# Terminal states are never re-dispatched. ("Sending" is the in-flight marker set by the
+	# trigger; "Queued" covers scheduler retries — both proceed.)
+	if mo.delivery_status in ("Sent", "Delivered", "Failed"):
 		return {"ok": False, "status": mo.delivery_status, "skipped": True}
 
 	source = frappe.get_doc(mo.source_doctype, mo.source_name)
 
 	# --- compose ---
+	frappe.logger().info(f"[EDX DISPATCH] Starting compose for {name}")
 	try:
 		composer = get_composer(mo.message_type, mo.message_version)
+		frappe.logger().info(f"[EDX DISPATCH] Composer ready, composing...")
 		raw = composer.compose(source)
+		frappe.logger().info(f"[EDX DISPATCH] Compose complete, raw len={len(raw)}")
 		mo.composed_raw = raw
 		mo.compose_status = "Composed"
 	except Exception as e:
+		frappe.logger().error(f"[EDX DISPATCH] Compose failed: {str(e)}")
 		return _fail_out(mo, "COMPOSE", e, retry=False, compose=True)
 
 	# --- verify (self-check; a data error must not be sent) ---
+	frappe.logger().info(f"[EDX DISPATCH] Starting verify for {name}")
 	issues = composer.verify(raw) or []
+	frappe.logger().info(f"[EDX DISPATCH] Verify complete, {len(issues)} issue(s)")
 	mo.set("issues", issues)
 	if any(i.get("level") == "Error" for i in issues):
+		frappe.logger().warning(f"[EDX DISPATCH] Verify found errors, failing")
 		mo.verify_status = "Verification Failed"
 		mo.delivery_status = "Failed"
-		mo.save(ignore_permissions=True)
+		_save_out(mo)
 		log_event("EDX Message Out", name, "Verified", "Error", f"{len(issues)} issue(s); not sent")
 		return {"ok": False, "status": "Verification Failed"}
 	mo.verify_status = "Verified"
 
 	# --- route ---
+	frappe.logger().info(f"[EDX DISPATCH] Starting route resolution for {name}")
 	route = resolve_route(
 		mo.message_type,
 		carrier_code=source.get("by_carrier1"),
@@ -534,17 +549,27 @@ def dispatch_message_out(name):
 		origin=source.get("origin"),
 		destination=source.get("destination"),
 	)
+	frappe.logger().info(f"[EDX DISPATCH] Route resolved: {route.get('name') if route else 'NONE'}")
 	if not route:
+		frappe.logger().error(f"[EDX DISPATCH] No route matched")
 		return _fail_out(mo, "ROUTE", _("No routing rule matched this message"), retry=False)
 	if not route.get("connection"):
-		return _fail_out(mo, "ROUTE", _("Routing rule {0} matched but has no Connection configured").format(route.get("name", "")), retry=False)
+		frappe.logger().error(f"[EDX DISPATCH] Route has no connection")
+		return _fail_out(
+			mo, "ROUTE",
+			_("Routing rule {0} matched but has no Connection configured").format(route.get("name", "")),
+			retry=False,
+		)
 	mo.connection = route["connection"]
 	mo.address_type = route.get("address_type")
 	mo.address = route.get("address")
+	frappe.logger().info(f"[EDX DISPATCH] Routing complete, conn={mo.connection}")
 
 	# --- send ---
+	frappe.logger().info(f"[EDX DISPATCH] Starting send for {name}, connection={mo.connection}")
 	try:
 		transport = get_transport(mo.connection)
+		frappe.logger().info(f"[EDX DISPATCH] Transport ready, sending to {mo.address}...")
 		meta = {
 			"to": mo.address,
 			"subject": f"{mo.message_type}/{mo.message_version} {mo.business_key or ''}".strip(),
@@ -552,19 +577,37 @@ def dispatch_message_out(name):
 			"external_id": mo.business_key,
 		}
 		result = transport.send(raw, meta) or {}
+		frappe.logger().info(f"[EDX DISPATCH] Send complete, ok={result.get('ok')}")
 	except Exception as e:
+		frappe.logger().error(f"[EDX DISPATCH] Send failed: {str(e)}")
 		return _fail_out(mo, "SEND", e, retry=True)
 
 	if not result.get("ok"):
+		frappe.logger().error(f"[EDX DISPATCH] Transport returned not ok: {result.get('response')}")
 		return _fail_out(mo, "SEND", result.get("response") or "Transport reported failure", retry=True)
 
+	frappe.logger().info(f"[EDX DISPATCH] Setting status to Sent and saving...")
 	mo.delivery_status = "Sent"
 	mo.sent_at = now_datetime()
 	mo.external_id = result.get("external_id")
 	mo.response = (result.get("response") or "")[:140]
-	mo.save(ignore_permissions=True)
+	mo.retry_count = 0
+	mo.next_retry_at = None
+	_save_out(mo)
+	frappe.logger().info(f"[EDX DISPATCH] Dispatch complete for {name}, status=Sent")
 	log_event("EDX Message Out", name, "Sent", "Info", f"Sent via {mo.connection}")
 	return {"ok": True, "status": "Sent", "connection": mo.connection}
+
+
+def _save_out(mo):
+	"""Persist the worker's in-memory EDX Message Out.
+
+	The row is already row-locked for this transaction and only the worker writes it, so
+	skip the optimistic-concurrency reload (``check_if_latest``) that would otherwise take a
+	*second* lock on the same row and could time out.
+	"""
+	mo.flags.ignore_version = True
+	mo.save(ignore_permissions=True)
 
 
 @frappe.whitelist()
@@ -609,25 +652,52 @@ def _fail_out(mo, code, error, retry=True, compose=False):
 		mo.delivery_status = "Queued"
 	else:
 		mo.delivery_status = "Failed"
-	mo.save(ignore_permissions=True)
+	_save_out(mo)
 	log_event("EDX Message Out", mo.name, "Failed", "Error", f"{code}: {message}", frappe.get_traceback())
 	return {"ok": False, "status": mo.delivery_status, "error": message}
 
 
+# A row "Sending" for longer than this is treated as orphaned (worker died before it could
+# write a terminal status) and re-enqueued by the scheduler.
+_SENDING_STALE_MIN = 15
+
+
 def dispatch_outbound_queue():
-	"""Scheduler tick: enqueue dispatch for all Queued outbound messages that are due."""
+	"""Scheduler tick: enqueue dispatch for due Queued rows and recover stale Sending rows."""
 	if not frappe.db.exists("DocType", "EDX Message Out"):
 		return
 	now = now_datetime()
+
+	# Due Queued rows (first-time sends + scheduled retries).
 	for name in frappe.get_all(
 		"EDX Message Out",
 		filters={"delivery_status": "Queued"},
 		pluck="name",
 	):
-		row = frappe.db.get_value("EDX Message Out", name, "next_retry_at")
-		if row and get_datetime(row) > get_datetime(now):
+		next_retry = frappe.db.get_value("EDX Message Out", name, "next_retry_at")
+		if next_retry and get_datetime(next_retry) > get_datetime(now):
 			continue  # a retry that isn't due yet
-		frappe.enqueue("awbix.edx.engine.pipeline.dispatch_message_out", queue="long", name=name)
+		_enqueue_dispatch(name)
+
+	# Recover orphaned Sending rows whose worker never finished.
+	stale_before = add_to_date(now, minutes=-_SENDING_STALE_MIN)
+	for name in frappe.get_all(
+		"EDX Message Out",
+		filters={"delivery_status": "Sending", "modified": ["<", stale_before]},
+		pluck="name",
+	):
+		log_event("EDX Message Out", name, "Failed", "Warning", "Recovering stale Sending row")
+		_enqueue_dispatch(name)
+
+
+def _enqueue_dispatch(name):
+	"""Enqueue the dispatch worker, deduped per row so concurrent ticks can't double-send."""
+	frappe.enqueue(
+		"awbix.edx.engine.pipeline.dispatch_message_out",
+		queue="long",
+		job_id=f"edx-dispatch-{name}",
+		name=name,
+	)
 
 
 def retry_failed():

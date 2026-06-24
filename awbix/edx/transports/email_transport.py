@@ -61,7 +61,8 @@ class EmailTransport(BaseTransport):
 	def _connect_pop3(self):
 		c = self.connection
 		port = int(c.email_port or (995 if c.use_ssl else 110))
-		box = poplib.POP3_SSL(c.email_host, port) if c.use_ssl else poplib.POP3(c.email_host, port)
+		timeout = 10  # seconds; prevents hanging on unreachable servers
+		box = poplib.POP3_SSL(c.email_host, port, timeout=timeout) if c.use_ssl else poplib.POP3(c.email_host, port, timeout=timeout)
 		box.user(c.email_user)
 		box.pass_(self._incoming_password())
 		return box
@@ -69,7 +70,8 @@ class EmailTransport(BaseTransport):
 	def _connect_imap(self):
 		c = self.connection
 		port = int(c.email_port or (993 if c.use_ssl else 143))
-		box = imaplib.IMAP4_SSL(c.email_host, port) if c.use_ssl else imaplib.IMAP4(c.email_host, port)
+		timeout = 10  # seconds; prevents hanging on unreachable servers
+		box = imaplib.IMAP4_SSL(c.email_host, port, timeout=timeout) if c.use_ssl else imaplib.IMAP4(c.email_host, port, timeout=timeout)
 		box.login(c.email_user, self._incoming_password())
 		return box
 
@@ -130,11 +132,12 @@ class EmailTransport(BaseTransport):
 		msg.set_content(raw or "")
 
 		port = int(c.smtp_port or (465 if not c.smtp_tls else 587))
+		timeout = 10  # seconds; prevents hanging on unreachable servers
 		if c.smtp_tls:
-			server = smtplib.SMTP(c.smtp_host, port)
+			server = smtplib.SMTP(c.smtp_host, port, timeout=timeout)
 			server.starttls()
 		else:
-			server = smtplib.SMTP_SSL(c.smtp_host, port)
+			server = smtplib.SMTP_SSL(c.smtp_host, port, timeout=timeout)
 		try:
 			if c.smtp_user:
 				server.login(c.smtp_user, self._smtp_password())
@@ -148,11 +151,12 @@ class EmailTransport(BaseTransport):
 		try:
 			if direction == "Outbound":
 				port = int(self.connection.smtp_port or (587 if self.connection.smtp_tls else 465))
+				timeout = 10  # seconds
 				if self.connection.smtp_tls:
-					server = smtplib.SMTP(self.connection.smtp_host, port)
+					server = smtplib.SMTP(self.connection.smtp_host, port, timeout=timeout)
 					server.starttls()
 				else:
-					server = smtplib.SMTP_SSL(self.connection.smtp_host, port)
+					server = smtplib.SMTP_SSL(self.connection.smtp_host, port, timeout=timeout)
 				try:
 					if self.connection.smtp_user:
 						server.login(self.connection.smtp_user, self._smtp_password())

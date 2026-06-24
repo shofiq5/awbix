@@ -13,17 +13,28 @@ frappe.ui.form.on("EDX Message Out", {
 					doc: frm.doc,
 					method: "dispatch",
 					freeze: true,
-					freeze_message: __("Dispatching…"),
+					freeze_message: __("Queuing for dispatch…"),
 					callback(r) {
 						const res = r.message || {};
 						frappe.show_alert({
-							message: res.ok ? __("Sent") : __("Failed: {0}", [res.error || res.status || ""]),
-							indicator: res.ok ? "green" : "red",
+							message: res.queued
+								? __("Queued for dispatch — refresh to see the result")
+								: __("Failed: {0}", [res.error || res.status || ""]),
+							indicator: res.queued ? "blue" : "red",
 						});
 						frm.reload_doc();
 					},
 				});
 			});
+		}
+
+		// In-flight: the worker is sending; offer a manual refresh, no dispatch button.
+		if (frm.doc.delivery_status === "Sending") {
+			frm.dashboard.set_headline_alert(
+				__("Dispatch in progress — this page refreshes when the worker finishes."),
+				"blue"
+			);
+			frm.add_custom_button(__("Refresh Status"), () => frm.reload_doc());
 		}
 
 		// Verify Message button (when already composed)
