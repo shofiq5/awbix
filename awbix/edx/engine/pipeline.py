@@ -384,7 +384,7 @@ def sync_email_messages():
 def poll_connection(connection):
 	from awbix.edx.engine.registry import get_transport
 
-	conn = frappe.get_doc("EDX Connection", connection)
+	conn = frappe.get_cached_doc("EDX Connection", connection)
 	transport = get_transport(conn)
 	for msg in transport.poll():
 		ingest_raw(
@@ -459,6 +459,7 @@ def queue_outbound(source_doctype, source_name, message_type, version):
 	return mo.name
 
 
+@frappe.whitelist()
 def dispatch_message_out(name):
 	"""Run one outbound message through compose → verify → route → send.
 
@@ -468,7 +469,23 @@ def dispatch_message_out(name):
 	from awbix.edx.engine.registry import get_composer, get_transport
 	from awbix.edx.engine.routing import resolve_route
 
+	# Quick pre-check without a lock: skip if already dispatched or in progress.
+	current_status = frappe.db.get_value("EDX Message Out", name, "delivery_status")
+	if current_status in ("Sent", "Failed"):
+		return {"ok": False, "status": current_status, "skipped": True}
+
+	try:
+		frappe.db.get_value("EDX Message Out", name, "name", for_update=True)
+	except frappe.QueryTimeoutError:
+		# Another worker already holds the lock — this message is being dispatched concurrently.
+		return {"ok": False, "status": "Locked", "skipped": True}
+
 	mo = frappe.get_doc("EDX Message Out", name)
+
+	# Re-check status under lock to avoid double-dispatch.
+	if mo.delivery_status in ("Sent", "Failed"):
+		return {"ok": False, "status": mo.delivery_status, "skipped": True}
+
 	source = frappe.get_doc(mo.source_doctype, mo.source_name)
 
 	# --- compose ---
