@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:airline_prefix",
+ "autoname": "field:carrier_code",
  "creation": "2026-06-12 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -28,7 +28,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Carrier Code",
-   "length": 2,
+   "length": 3,
    "unique": 1
   },
   {
@@ -48,7 +48,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-24 03:10:43.269017",
+ "modified": "2026-06-24 21:46:39.638087",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Airline",

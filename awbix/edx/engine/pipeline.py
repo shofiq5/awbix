@@ -147,7 +147,14 @@ def promote_stage(stage_name):
 	log_event("EDX Message In", mi.name, "Promoted", "Info", f"from {stage.name}")
 
 	if get_definition(stage.detected_type, stage.detected_version).auto_process:
-		frappe.enqueue("awbix.edx.engine.pipeline.process_message_in", queue="long", name=mi.name)
+		# enqueue_after_commit: the worker must not start before this insert commits,
+		# or it can't see the new EDX Message In row.
+		frappe.enqueue(
+			"awbix.edx.engine.pipeline.process_message_in",
+			queue="long",
+			name=mi.name,
+			enqueue_after_commit=True,
+		)
 	return mi.name
 
 
@@ -455,7 +462,14 @@ def queue_outbound(source_doctype, source_name, message_type, version):
 	).insert(ignore_permissions=True)
 	log_event("EDX Message Out", mo.name, "Ingested", "Info", f"Queued from {source_doctype} {source_name}")
 
-	frappe.enqueue("awbix.edx.engine.pipeline.dispatch_message_out", queue="long", name=mo.name)
+	# enqueue_after_commit: the dispatch worker must not start before this insert is
+	# committed, otherwise it can't see the row and the message is silently never sent.
+	frappe.enqueue(
+		"awbix.edx.engine.pipeline.dispatch_message_out",
+		queue="long",
+		name=mo.name,
+		enqueue_after_commit=True,
+	)
 	return mo.name
 
 
@@ -470,6 +484,12 @@ def dispatch_message_out(name):
 	from awbix.edx.engine.routing import resolve_route
 
 	# Quick pre-check without a lock: skip if already dispatched or in progress.
+	# A missing row means the job outran its insert commit (shouldn't happen with
+	# enqueue_after_commit, but guard so the worker never crashes — strategy R1).
+	if not frappe.db.exists("EDX Message Out", name):
+		log_event("EDX Message Out", name, "Failed", "Warning", "Row not found at dispatch time")
+		return {"ok": False, "status": "Missing", "skipped": True}
+
 	current_status = frappe.db.get_value("EDX Message Out", name, "delivery_status")
 	if current_status in ("Sent", "Failed"):
 		return {"ok": False, "status": current_status, "skipped": True}
@@ -515,9 +535,10 @@ def dispatch_message_out(name):
 		source.get("origin"),
 		source.get("destination"),
 	)
-	if not route or not route.get("connection"):
-		mo.save(ignore_permissions=True)
+	if not route:
 		return _fail_out(mo, "ROUTE", _("No routing rule matched this message"), retry=False)
+	if not route.get("connection"):
+		return _fail_out(mo, "ROUTE", _("Routing rule {0} matched but has no Connection configured").format(route.get("name", "")), retry=False)
 	mo.connection = route["connection"]
 	mo.address_type = route.get("address_type")
 	mo.address = route.get("address")
@@ -533,11 +554,9 @@ def dispatch_message_out(name):
 		}
 		result = transport.send(raw, meta) or {}
 	except Exception as e:
-		mo.save(ignore_permissions=True)
 		return _fail_out(mo, "SEND", e, retry=True)
 
 	if not result.get("ok"):
-		mo.save(ignore_permissions=True)
 		return _fail_out(mo, "SEND", result.get("response") or "Transport reported failure", retry=True)
 
 	mo.delivery_status = "Sent"

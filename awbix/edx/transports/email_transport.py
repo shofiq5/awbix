@@ -124,7 +124,7 @@ class EmailTransport(BaseTransport):
 		c = self.connection
 		meta = meta or {}
 		msg = EmailMessage()
-		msg["From"] = meta.get("from") or c.smtp_user
+		msg["From"] = meta.get("from") or c.smtp_user or f"edx@{c.smtp_host or 'localhost'}"
 		msg["To"] = meta.get("to")
 		msg["Subject"] = meta.get("subject") or ""
 		msg.set_content(raw or "")

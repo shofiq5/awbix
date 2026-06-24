@@ -12,8 +12,7 @@ from frappe.model.document import Document
 
 class EDXMessageRouting(Document):
 	def validate(self):
-		# An MQ/SITA route addresses a queue/teletype endpoint and needs a connection to
-		# carry it; Email may deliver via a dedicated SMTP connection too, so require one
-		# for the non-Email transports where the address alone is not deliverable.
-		if self.address_type in ("MQ", "SITA") and not self.connection:
+		# Every address type requires a Connection so the dispatcher knows which
+		# transport adapter (SMTP, SFTP, MQ) to use for delivery.
+		if not self.connection:
 			frappe.throw(_("{0} routes require a Connection.").format(self.address_type))
