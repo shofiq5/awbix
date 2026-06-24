@@ -196,7 +196,6 @@
   frappe.is_guest = {{ "true" if _is_guest else "false" }};
   frappe.is_admin = {{ "true" if _is_admin else "false" }};
 </script>
-{{ include_script('portal.bundle.js') }}
 {% block scripts %}{% endblock %}
 </body>
 </html>
