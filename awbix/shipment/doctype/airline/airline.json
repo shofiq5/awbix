@@ -28,7 +28,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Carrier Code",
-   "length": 3,
+   "length": 2,
    "unique": 1
   },
   {
@@ -48,7 +48,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-24 21:46:39.638087",
+ "modified": "2026-06-25 04:38:26.675962",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Airline",

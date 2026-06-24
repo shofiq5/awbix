@@ -20,10 +20,8 @@
   {
    "fieldname": "party",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Party",
-   "options": "Party",
-   "reqd": 1
+   "options": "Party"
   },
   {
    "fetch_from": "party.party_name",
@@ -32,15 +30,14 @@
    "in_list_view": 1,
    "label": "Name",
    "length": 35,
-   "read_only": 1
+   "reqd": 1
   },
   {
    "fetch_from": "party.street_address",
    "fieldname": "street_address",
    "fieldtype": "Small Text",
    "label": "Street Address",
-   "length": 35,
-   "read_only": 1
+   "length": 35
   },
   {
    "fetch_from": "party.place",
@@ -48,32 +45,28 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Place",
-   "length": 17,
-   "read_only": 1
+   "length": 17
   },
   {
    "fetch_from": "party.state_province",
    "fieldname": "state_province",
    "fieldtype": "Data",
    "label": "State / Province",
-   "length": 9,
-   "read_only": 1
+   "length": 9
   },
   {
    "fetch_from": "party.country",
    "fieldname": "country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country",
-   "read_only": 1
+   "options": "Country"
   },
   {
    "fetch_from": "party.post_code",
    "fieldname": "post_code",
    "fieldtype": "Data",
    "label": "Post Code",
-   "length": 9,
-   "read_only": 1
+   "length": 9
   },
   {
    "fieldname": "telephone",
@@ -92,7 +85,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-12 12:00:00.000000",
+ "modified": "2026-06-25 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment Notify Party",

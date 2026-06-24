@@ -37,12 +37,12 @@
   "shipper",
   "shipper_name",
   "shipper_account",
+  "cb_18",
   "shipper_address",
   "shipper_place",
   "shipper_state",
   "shipper_country",
   "shipper_post_code",
-  "cb_18",
   "consignee",
   "consignee_name",
   "consignee_account",
@@ -141,10 +141,10 @@
   },
   {
    "fieldname": "airline_prefix",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Airline Prefix",
-   "options": "Airline",
+   "length": 3,
    "reqd": 1
   },
   {
@@ -316,25 +316,23 @@
   {
    "fieldname": "shipper",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Shipper",
+   "label": "Shipper (Party)",
    "options": "Party"
   },
   {
    "fetch_from": "shipper.party_name",
    "fieldname": "shipper_name",
    "fieldtype": "Data",
-   "label": "Name",
-   "length": 35,
-   "read_only": 1
+   "in_list_view": 1,
+   "label": "Shipper",
+   "length": 35
   },
   {
    "fetch_from": "shipper.account_number",
    "fieldname": "shipper_account",
    "fieldtype": "Data",
    "label": "Account Number",
-   "length": 14,
-   "read_only": 1
+   "length": 14
   },
   {
    "fieldname": "cb_18",
@@ -344,102 +342,90 @@
    "fetch_from": "shipper.street_address",
    "fieldname": "shipper_address",
    "fieldtype": "Small Text",
-   "label": "Street Address",
-   "read_only": 1
+   "label": "Street Address"
   },
   {
    "fetch_from": "shipper.place",
    "fieldname": "shipper_place",
    "fieldtype": "Data",
    "label": "Place",
-   "length": 17,
-   "read_only": 1
+   "length": 17
   },
   {
    "fetch_from": "shipper.state_province",
    "fieldname": "shipper_state",
    "fieldtype": "Data",
    "label": "State / Province",
-   "length": 9,
-   "read_only": 1
+   "length": 9
   },
   {
    "fetch_from": "shipper.country",
    "fieldname": "shipper_country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country",
-   "read_only": 1
+   "options": "Country"
   },
   {
    "fetch_from": "shipper.post_code",
    "fieldname": "shipper_post_code",
    "fieldtype": "Data",
    "label": "Post Code",
-   "length": 9,
-   "read_only": 1
+   "length": 9
   },
   {
    "fieldname": "consignee",
    "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Consignee",
+   "label": "Consignee (Party)",
    "options": "Party"
   },
   {
    "fetch_from": "consignee.party_name",
    "fieldname": "consignee_name",
    "fieldtype": "Data",
-   "label": "Name",
-   "length": 35,
-   "read_only": 1
+   "in_list_view": 1,
+   "label": "Consignee",
+   "length": 35
   },
   {
    "fetch_from": "consignee.account_number",
    "fieldname": "consignee_account",
    "fieldtype": "Data",
    "label": "Account Number",
-   "length": 14,
-   "read_only": 1
+   "length": 14
   },
   {
    "fetch_from": "consignee.street_address",
    "fieldname": "consignee_address",
    "fieldtype": "Small Text",
-   "label": "Street Address",
-   "read_only": 1
+   "label": "Street Address"
   },
   {
    "fetch_from": "consignee.place",
    "fieldname": "consignee_place",
    "fieldtype": "Data",
    "label": "Place",
-   "length": 17,
-   "read_only": 1
+   "length": 17
   },
   {
    "fetch_from": "consignee.state_province",
    "fieldname": "consignee_state",
    "fieldtype": "Data",
    "label": "State / Province",
-   "length": 9,
-   "read_only": 1
+   "length": 9
   },
   {
    "fetch_from": "consignee.country",
    "fieldname": "consignee_country",
    "fieldtype": "Link",
    "label": "Country",
-   "options": "Country",
-   "read_only": 1
+   "options": "Country"
   },
   {
    "fetch_from": "consignee.post_code",
    "fieldname": "consignee_post_code",
    "fieldtype": "Data",
    "label": "Post Code",
-   "length": 9,
-   "read_only": 1
+   "length": 9
   },
   {
    "fieldname": "sb_21",

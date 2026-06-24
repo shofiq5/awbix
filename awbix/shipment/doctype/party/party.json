@@ -1,12 +1,10 @@
 {
  "actions": [],
- "allow_rename": 1,
- "autoname": "naming_series:",
+ "autoname": "YY.MM.DD.-.###",
  "creation": "2026-06-12 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "naming_series",
   "party_name",
   "account_number",
   "sb_1",
@@ -33,13 +31,6 @@
   "participant_code"
  ],
  "fields": [
-  {
-   "default": "PARTY-.#######",
-   "fieldname": "naming_series",
-   "fieldtype": "Select",
-   "label": "Series",
-   "options": "PARTY-.#######"
-  },
   {
    "description": "DE300",
    "fieldname": "party_name",
@@ -197,11 +188,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-20 18:58:37.411811",
+ "modified": "2026-06-25 05:23:38.459969",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Party",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

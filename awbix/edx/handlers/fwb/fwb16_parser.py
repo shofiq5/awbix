@@ -796,7 +796,6 @@ class FWB16Parser(BaseParser):
 		awb = data["awb"]
 		name = awb["awb_number"]
 
-		self._ensure("Airline", {"airline_prefix": awb["airline_prefix"]}, awb["airline_prefix"])
 		self._ensure("Airport", {"iata_code": awb["origin"]}, awb["origin"])
 		self._ensure("Airport", {"iata_code": awb["destination"]}, awb["destination"])
 		currency = (data.get("charge_declarations") or {}).get("currency") or "USD"
@@ -877,20 +876,28 @@ class FWB16Parser(BaseParser):
 	def _apply_parties(self, doc, data):
 		shp = data.get("shipper") or {}
 		if shp.get("name"):
-			doc.shipper = self._ensure_party(shp, "is_shipper")
+			self._write_party_inline(doc, "shipper", shp)
+
 		cne = data.get("consignee") or {}
 		if cne.get("name"):
-			doc.consignee = self._ensure_party(cne, "is_consignee")
+			self._write_party_inline(doc, "consignee", cne)
+
 		agt = data.get("agent") or {}
 		if agt.get("name"):
-			doc.agent = self._ensure_party(agt, "is_agent")
+			doc.agent = self._ensure_agent(agt)
 
 		doc.set("also_notify", [])
 		for nfy in data.get("also_notify") or []:
-			party = self._ensure_party(nfy, "is_notify")
-			if not party:
+			if not (nfy.get("name") or "").strip():
 				continue
-			row = {"party": party}
+			row = {
+				"notify_name": (nfy.get("name") or "")[:35],
+				"street_address": nfy.get("address") or "",
+				"place": (nfy.get("place") or "")[:17],
+				"state_province": (nfy.get("state") or "")[:9],
+				"post_code": (nfy.get("post_code") or "")[:9],
+				"country": cargoimp.resolve_country_name(nfy.get("country")) or None,
+			}
 			for c in nfy.get("contacts") or []:
 				ident = (c.get("identifier") or "").upper()
 				if ident == "TE":
@@ -899,46 +906,54 @@ class FWB16Parser(BaseParser):
 					row["fax"] = (c.get("number") or "")[:25]
 			doc.append("also_notify", row)
 
-	def _ensure_party(self, info, role_field):
-		pname = (info.get("name") or "").strip()
-		if not pname:
-			return None
-		existing = frappe.db.get_value("Party", {"party_name": pname, role_field: 1}, "name")
-		party = frappe.get_doc("Party", existing) if existing else frappe.new_doc("Party")
-		party.party_name = pname[:35]
-		setattr(party, role_field, 1)
-		if info.get("account"):
-			party.account_number = info["account"][:14]
-		if info.get("address"):
-			party.street_address = info["address"]
-		if info.get("place"):
-			party.place = info["place"][:17]
-		if info.get("state"):
-			party.state_province = info["state"][:9]
-		if info.get("post_code"):
-			party.post_code = info["post_code"][:9]
+	def _write_party_inline(self, doc, prefix, info):
+		"""Write shipper/consignee data directly into Shipment inline fields."""
+		setattr(doc, f"{prefix}_name", (info.get("name") or "")[:35])
+		setattr(doc, f"{prefix}_account", (info.get("account") or "")[:14])
+		setattr(doc, f"{prefix}_address", info.get("address") or "")
+		setattr(doc, f"{prefix}_place", (info.get("place") or "")[:17])
+		setattr(doc, f"{prefix}_state", (info.get("state") or "")[:9])
+		setattr(doc, f"{prefix}_post_code", (info.get("post_code") or "")[:9])
 		country = cargoimp.resolve_country_name(info.get("country"))
-		if country:
-			party.country = country
-		if info.get("iata_code"):
-			party.iata_cargo_agent_code = info["iata_code"][:7]
-		if info.get("cass_address"):
-			party.cass_address = info["cass_address"][:4]
+		setattr(doc, f"{prefix}_country", country or None)
+
+	def _ensure_agent(self, info):
+		"""Find an existing Agent Party by account, IATA code, or IATA+CASS; create if not found."""
+		account = (info.get("account") or "").strip()
+		iata = (info.get("iata_code") or "").strip()
+		cass = (info.get("cass_address") or "").strip()
+
+		existing = None
+		if account:
+			existing = frappe.db.get_value("Party", {"account_number": account, "is_agent": 1}, "name")
+		if not existing and iata and cass:
+			existing = frappe.db.get_value(
+				"Party",
+				{"iata_cargo_agent_code": iata, "cass_address": cass, "is_agent": 1},
+				"name",
+			)
+		if not existing and iata:
+			existing = frappe.db.get_value(
+				"Party", {"iata_cargo_agent_code": iata, "is_agent": 1}, "name"
+			)
+		if existing:
+			return existing
+
+		party = frappe.new_doc("Party")
+		party.party_name = (info.get("name") or "")[:35]
+		party.is_agent = 1
+		if account:
+			party.account_number = account[:14]
+		if iata:
+			party.iata_cargo_agent_code = iata[:7]
+		if cass:
+			party.cass_address = cass[:4]
 		if info.get("participant_id"):
 			party.participant_id = info["participant_id"][:3]
-		contacts = [
-			c for c in (info.get("contacts") or [])
-			if (c.get("identifier") or "").upper() in ("TE", "FX", "TL")
-		]
-		if contacts:
-			party.set("contacts", [])
-			for c in contacts:
-				party.append("contacts", {
-					"contact_identifier": c["identifier"].upper(),
-					"contact_number": (c.get("number") or "")[:25],
-				})
+		if info.get("place"):
+			party.place = info["place"][:17]
 		party.flags.ignore_permissions = True
-		party.save()
+		party.insert()
 		return party.name
 
 	# ---- apply: flights / routing ----
@@ -1220,8 +1235,7 @@ class FWB16Parser(BaseParser):
 	def _ensure_airline_by_code(self, carrier_code):
 		"""Resolve an Airline docname from a 2-char carrier code, creating a stub if needed.
 
-		Returns the Airline name (its ``airline_prefix``) so the caller can set a proper
-		Link; ``carrier_code`` is then populated naturally by the child table's fetch_from.
+		Returns the Airline docname so the caller can set a proper Link.
 		"""
 		code = (carrier_code or "").strip().upper()
 		if not code:
@@ -1238,4 +1252,4 @@ class FWB16Parser(BaseParser):
 		d.carrier_code = code
 		d.flags.ignore_permissions = True
 		d.insert()
-		return code
+		return d.name
