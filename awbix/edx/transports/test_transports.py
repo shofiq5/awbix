@@ -64,24 +64,24 @@ class TestRouting(FrappeTestCase):
 	def test_most_specific_wins(self):
 		self._route(carrier_code="157", address="generic@example.com")
 		self._route(carrier_code="157", origin="DAC", destination="DXB", address="specific@example.com")
-		hit = resolve_route("FWB", "157", "DAC", "DXB")
+		hit = resolve_route("FWB", carrier_code="157", origin="DAC", destination="DXB")
 		self.assertEqual(hit["address"], "specific@example.com")
 
 	def test_wildcard_fallback(self):
 		self._route(address="default@example.com")  # all-wildcard catch-all
-		hit = resolve_route("FWB", "999", "AAA", "BBB")
+		hit = resolve_route("FWB", carrier_code="999", origin="AAA", destination="BBB")
 		self.assertEqual(hit["address"], "default@example.com")
 
 	def test_priority_tiebreak(self):
 		self._route(carrier_code="157", priority=1, address="low@example.com")
 		self._route(carrier_code="157", priority=5, address="high@example.com")
-		hit = resolve_route("FWB", "157", "DAC", "DXB")
+		hit = resolve_route("FWB", carrier_code="157", origin="DAC", destination="DXB")
 		self.assertEqual(hit["address"], "high@example.com")
 
 	def test_no_match_returns_none(self):
 		self._route(carrier_code="157", address="x@example.com")
-		self.assertIsNone(resolve_route("FWB", "176", "DAC", "DXB"))
+		self.assertIsNone(resolve_route("FWB", carrier_code="176", origin="DAC", destination="DXB"))
 
 	def test_disabled_ignored(self):
 		self._route(carrier_code="157", enabled=0, address="off@example.com")
-		self.assertIsNone(resolve_route("FWB", "157", "DAC", "DXB"))
+		self.assertIsNone(resolve_route("FWB", carrier_code="157", origin="DAC", destination="DXB"))

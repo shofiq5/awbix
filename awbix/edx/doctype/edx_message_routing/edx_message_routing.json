@@ -2,13 +2,14 @@
  "actions": [],
  "allow_rename": 1,
  "autoname": "hash",
- "creation": "2026-06-17 12:00:00.000000",
+ "creation": "2026-06-17 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "enabled",
   "message_type",
   "carrier_code",
+  "airline_prefix",
   "cb_match",
   "origin",
   "destination",
@@ -36,12 +37,13 @@
    "label": "Message Type"
   },
   {
-   "description": "Carrier / airline code. Blank = any (wildcard).",
+   "description": "Carrier / airline code (Shipment.by_carrier1). Blank = any (wildcard).",
    "fieldname": "carrier_code",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Carrier Code"
+   "label": "Carrier Code",
+   "options": "Airline"
   },
   {
    "fieldname": "cb_match",
@@ -100,11 +102,16 @@
    "fieldtype": "Link",
    "label": "Connection",
    "options": "EDX Connection"
+  },
+  {
+   "fieldname": "airline_prefix",
+   "fieldtype": "Data",
+   "label": "Airline Prefix",
+   "length": 3
   }
  ],
- "index_web_pages_for_search": 0,
  "links": [],
- "modified": "2026-06-17 12:00:00.000000",
+ "modified": "2026-06-25 01:55:53.092447",
  "modified_by": "Administrator",
  "module": "EDX",
  "name": "EDX Message Routing",
@@ -136,6 +143,7 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": []

@@ -531,9 +531,10 @@ def dispatch_message_out(name):
 	# --- route ---
 	route = resolve_route(
 		mo.message_type,
-		source.get("airline_prefix"),
-		source.get("origin"),
-		source.get("destination"),
+		carrier_code=source.get("by_carrier1"),
+		airline_prefix=source.get("airline_prefix"),
+		origin=source.get("origin"),
+		destination=source.get("destination"),
 	)
 	if not route:
 		return _fail_out(mo, "ROUTE", _("No routing rule matched this message"), retry=False)

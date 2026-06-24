@@ -1,8 +1,9 @@
 """Outbound routing resolution.
 
 Selects the best ``EDX Message Routing`` rule for a message. A rule's match fields
-(``message_type``, ``carrier_code``, ``origin``, ``destination``) are wildcards when blank,
-so a single default rule can catch everything while specific rules override it.
+(``message_type``, ``carrier_code``, ``airline_prefix``, ``origin``, ``destination``) are
+wildcards when blank, so a single default rule can catch everything while specific rules
+override it.
 
 The future M5 outbound dispatcher calls ``resolve_route`` to pick a connection/address;
 it is added now so routing config is usable and testable on its own.
@@ -10,12 +11,13 @@ it is added now so routing config is usable and testable on its own.
 
 import frappe
 
-_MATCH_FIELDS = ("message_type", "carrier_code", "origin", "destination")
+_MATCH_FIELDS = ("message_type", "carrier_code", "airline_prefix", "origin", "destination")
 
 
 def resolve_route(
 	message_type: str = None,
 	carrier_code: str = None,
+	airline_prefix: str = None,
 	origin: str = None,
 	destination: str = None,
 ) -> dict | None:
@@ -23,10 +25,13 @@ def resolve_route(
 
 	Specificity = number of non-blank rule fields that matched; ties broken by ``priority``
 	(higher first). A rule is rejected if any of its non-blank fields differs from the input.
+
+	carrier_code matches Shipment.by_carrier1; airline_prefix matches Shipment.airline_prefix.
 	"""
 	inputs = {
 		"message_type": message_type,
 		"carrier_code": carrier_code,
+		"airline_prefix": airline_prefix,
 		"origin": origin,
 		"destination": destination,
 	}
@@ -39,6 +44,7 @@ def resolve_route(
 			"name",
 			"message_type",
 			"carrier_code",
+			"airline_prefix",
 			"origin",
 			"destination",
 			"address_type",
