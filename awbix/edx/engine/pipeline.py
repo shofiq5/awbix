@@ -444,8 +444,19 @@ def queue_outbound(source_doctype, source_name, message_type, version):
 	Trigger surface for the Desk button / API. Composition and sending happen
 	asynchronously in ``dispatch_message_out`` so the caller returns immediately.
 	"""
+	from awbix.edx.engine.routing import resolve_route
+
 	get_definition(message_type, version)  # fail fast if the type/version is unknown
 	source = frappe.get_doc(source_doctype, source_name)
+
+	# Resolve routing upfront to populate connection, address_type, address
+	route = resolve_route(
+		message_type,
+		carrier_code=source.get("by_carrier1"),
+		airline_prefix=source.get("airline_prefix"),
+		origin=source.get("origin"),
+		destination=source.get("destination"),
+	)
 
 	mo = frappe.get_doc(
 		{
@@ -458,6 +469,9 @@ def queue_outbound(source_doctype, source_name, message_type, version):
 			"compose_status": "Pending",
 			"verify_status": "Pending",
 			"delivery_status": "Queued",
+			"connection": route.get("connection") if route else None,
+			"address_type": route.get("address_type") if route else None,
+			"address": route.get("address") if route else None,
 		}
 	).insert(ignore_permissions=True)
 	log_event("EDX Message Out", mo.name, "Ingested", "Info", f"Queued from {source_doctype} {source_name}")
@@ -528,21 +542,22 @@ def dispatch_message_out(name):
 		return {"ok": False, "status": "Verification Failed"}
 	mo.verify_status = "Verified"
 
-	# --- route ---
-	route = resolve_route(
-		mo.message_type,
-		carrier_code=source.get("by_carrier1"),
-		airline_prefix=source.get("airline_prefix"),
-		origin=source.get("origin"),
-		destination=source.get("destination"),
-	)
-	if not route:
-		return _fail_out(mo, "ROUTE", _("No routing rule matched this message"), retry=False)
-	if not route.get("connection"):
-		return _fail_out(mo, "ROUTE", _("Routing rule {0} matched but has no Connection configured").format(route.get("name", "")), retry=False)
-	mo.connection = route["connection"]
-	mo.address_type = route.get("address_type")
-	mo.address = route.get("address")
+	# --- route (skip if already resolved at queue time) ---
+	if not mo.connection:
+		route = resolve_route(
+			mo.message_type,
+			carrier_code=source.get("by_carrier1"),
+			airline_prefix=source.get("airline_prefix"),
+			origin=source.get("origin"),
+			destination=source.get("destination"),
+		)
+		if not route:
+			return _fail_out(mo, "ROUTE", _("No routing rule matched this message"), retry=False)
+		if not route.get("connection"):
+			return _fail_out(mo, "ROUTE", _("Routing rule {0} matched but has no Connection configured").format(route.get("name", "")), retry=False)
+		mo.connection = route["connection"]
+		mo.address_type = route.get("address_type")
+		mo.address = route.get("address")
 
 	# --- send ---
 	try:
