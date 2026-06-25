@@ -181,6 +181,8 @@ scheduler_events = {
 		"*/1 * * * *": ["awbix.edx.engine.pipeline.dispatch_outbound_queue"],
 	},
 	"all": ["awbix.edx.engine.pipeline.retry_failed"],
+	# Project: re-check active tasks and surface likely-done ones for human review.
+	"daily": ["awbix.project.completion.detect_completed_tasks"],
 }
 
 # Testing

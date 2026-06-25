@@ -1,0 +1,118 @@
+{
+ "actions": [],
+ "creation": "2026-06-25 12:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "provider",
+  "cb_provider",
+  "model",
+  "api_base_url",
+  "sb_credentials",
+  "api_key",
+  "sb_limits",
+  "max_tokens",
+  "request_timeout",
+  "cb_limits",
+  "monthly_budget_usd"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "description": "When off, the AI layer is disabled and only the deterministic TODO scanner runs.",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enable AI Layer"
+  },
+  {
+   "default": "Claude (Anthropic)",
+   "description": "Choose Custom for any OpenAI-compatible endpoint (set API Base URL).",
+   "fieldname": "provider",
+   "fieldtype": "Select",
+   "label": "Provider",
+   "options": "Claude (Anthropic)\nChatGPT (OpenAI)\nCustom"
+  },
+  {
+   "fieldname": "cb_provider",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Model id, e.g. claude-opus-4-8 or gpt-4o. Leave blank to use the provider default.",
+   "fieldname": "model",
+   "fieldtype": "Data",
+   "label": "Model"
+  },
+  {
+   "description": "Override the API base URL. Required for Custom; optional otherwise.",
+   "fieldname": "api_base_url",
+   "fieldtype": "Data",
+   "label": "API Base URL"
+  },
+  {
+   "fieldname": "sb_credentials",
+   "fieldtype": "Section Break",
+   "label": "Credentials"
+  },
+  {
+   "description": "Stored encrypted. Falls back to site_config.json / environment variable when blank.",
+   "fieldname": "api_key",
+   "fieldtype": "Password",
+   "label": "API Key"
+  },
+  {
+   "fieldname": "sb_limits",
+   "fieldtype": "Section Break",
+   "label": "Limits"
+  },
+  {
+   "default": "1024",
+   "fieldname": "max_tokens",
+   "fieldtype": "Int",
+   "label": "Max Tokens"
+  },
+  {
+   "default": "60",
+   "fieldname": "request_timeout",
+   "fieldtype": "Int",
+   "label": "Request Timeout (s)"
+  },
+  {
+   "fieldname": "cb_limits",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "description": "Soft cap. 0 means no cap.",
+   "fieldname": "monthly_budget_usd",
+   "fieldtype": "Currency",
+   "label": "Monthly Budget (USD)"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-25 12:00:00",
+ "modified_by": "Administrator",
+ "module": "Project",
+ "name": "Project AI Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
