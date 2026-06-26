@@ -1,0 +1,213 @@
+{
+ "actions": [],
+ "autoname": "AWB-SER-.YYYY.DD.MM-.#####",
+ "creation": "2026-04-11 00:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "series_info_section",
+  "awb_prefix",
+  "column_break_a1",
+  "awb_cycle",
+  "column_break_a2",
+  "awb_type",
+  "range_section",
+  "serial_start",
+  "column_break_e1",
+  "serial_end",
+  "column_break_e2",
+  "total_count",
+  "status_section",
+  "generation_status",
+  "column_break_f1",
+  "generated_count",
+  "column_break_f2",
+  "generated_date",
+  "notes_section",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "series_info_section",
+   "fieldtype": "Section Break",
+   "label": "Series Information"
+  },
+  {
+   "description": "3-digit carrier prefix (e.g. 157)",
+   "fieldname": "awb_prefix",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "AWB Prefix",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_a1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "Year in YYYY format (e.g. 2026)",
+   "fieldname": "awb_cycle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "AWB Cycle (Year)",
+   "options": "AWB Cycle",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_a2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "awb_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "AWB Type",
+   "options": "AWB Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "range_section",
+   "fieldtype": "Section Break",
+   "label": "Serial Number Range"
+  },
+  {
+   "description": "7-digit starting serial number",
+   "fieldname": "serial_start",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Serial Start",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_e1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "7-digit ending serial number",
+   "fieldname": "serial_end",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Serial End",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_e2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "total_count",
+   "fieldtype": "Int",
+   "label": "Total Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Generation Status"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "generation_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Generation Status",
+   "options": "Draft\nGenerated",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_f1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "generated_count",
+   "fieldtype": "Int",
+   "label": "Generated Count",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_f2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "generated_date",
+   "fieldtype": "Datetime",
+   "label": "Generated On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks1"
+  }
+ ],
+ "links": [],
+ "modified": "2026-06-26 14:52:37.555050",
+ "modified_by": "Administrator",
+ "module": "AWB",
+ "name": "AWB Series Generator",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo Admin",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo AWB Control",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo Ops",
+   "select": 1,
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

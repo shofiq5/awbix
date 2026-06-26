@@ -1,0 +1,153 @@
+{% if data %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  /* ---- Page & Typography ---- */
+  body         { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #222; margin: 0; padding: 0; }
+  .report-wrap { padding: 24px 32px; }
+
+  /* ---- Cover Header ---- */
+  .rpt-header   { display: flex; align-items: center; justify-content: space-between;
+                  border-bottom: 3px solid #1a3c5e; padding-bottom: 12px; margin-bottom: 18px; }
+  .rpt-title    { font-size: 18px; font-weight: 700; color: #1a3c5e; letter-spacing: 0.5px; }
+  .rpt-subtitle { font-size: 11px; color: #555; margin-top: 3px; }
+  .rpt-logo     { font-size: 24px; font-weight: 900; color: #1a3c5e; letter-spacing: 2px; }
+
+  /* ---- Filter Summary ---- */
+  .rpt-filters  { background: #f4f8ff; border: 1px solid #d0dff0; border-radius: 4px;
+                  padding: 8px 14px; margin-bottom: 16px; font-size: 10.5px; }
+  .rpt-filters span { margin-right: 20px; }
+  .rpt-filters .lbl { font-weight: 600; color: #1a3c5e; }
+
+  /* ---- Customer Group Header ---- */
+  .cust-block      { margin-bottom: 28px; }
+  .cust-header     { background: #1a3c5e; color: #fff; padding: 7px 12px;
+                     border-radius: 4px 4px 0 0; font-size: 12px; font-weight: 700;
+                     display: flex; justify-content: space-between; }
+  .cust-header .cn { letter-spacing: 0.3px; }
+  .cust-header .ct { font-weight: 400; font-size: 10.5px; opacity: 0.85; }
+
+  /* ---- Data Table ---- */
+  table      { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+  thead tr   { background: #e8f0fb; }
+  thead th   { padding: 6px 9px; text-align: left; border: 1px solid #c5d4e8;
+               font-weight: 700; color: #1a3c5e; white-space: nowrap; }
+  tbody tr   { border-bottom: 1px solid #e0e8f5; }
+  tbody tr:nth-child(even) { background: #f9fbff; }
+  tbody tr:hover { background: #eef4ff; }
+  td         { padding: 5px 9px; border: 1px solid #dbe6f5; vertical-align: middle; }
+
+  /* ---- Status Badges ---- */
+  .badge     { display: inline-block; padding: 2px 8px; border-radius: 10px;
+               font-size: 9.5px; font-weight: 700; letter-spacing: 0.3px; }
+  .badge-available   { background: #d4edda; color: #155724; }
+  .badge-assigned    { background: #cce5ff; color: #004085; }
+  .badge-withdrawn   { background: #ffe8cc; color: #7a4100; }
+  .badge-void        { background: #f8d7da; color: #721c24; }
+  .badge-hold        { background: #fff3cd; color: #856404; }
+  .badge-blacklisted { background: #e2e3e5; color: #383d41; }
+
+  /* ---- Footer ---- */
+  .rpt-footer { border-top: 2px solid #1a3c5e; margin-top: 24px; padding-top: 8px;
+                text-align: center; font-size: 10px; color: #888; }
+</style>
+</head>
+<body>
+<div class="report-wrap">
+
+  <!-- ====== Cover Header ====== -->
+  <div class="rpt-header">
+    <div>
+      <div class="rpt-title">AIR WAYBILL – CUSTOMER DETAIL REPORT</div>
+      <div class="rpt-subtitle">AWB Stock Control System &nbsp;|&nbsp; Generated: {{ frappe.utils.now() }}</div>
+    </div>
+    <div class="rpt-logo">CARGO</div>
+  </div>
+
+  <!-- ====== Filter Summary ====== -->
+  <div class="rpt-filters">
+    {% if filters.customer %}<span><span class="lbl">Customer:</span> {{ filters.customer }}</span>{% endif %}
+    {% if filters.awb_cycle %}<span><span class="lbl">Cycle:</span> {{ filters.awb_cycle }}</span>{% endif %}
+    {% if filters.awb_prefix %}<span><span class="lbl">Prefix:</span> {{ filters.awb_prefix }}</span>{% endif %}
+    {% if filters.awb_type %}<span><span class="lbl">Type:</span> {{ filters.awb_type }}</span>{% endif %}
+    {% if filters.status %}<span><span class="lbl">Status:</span> {{ filters.status }}</span>{% endif %}
+    {% if not (filters.customer or filters.awb_cycle or filters.awb_prefix or filters.awb_type or filters.status) %}
+      <span>All Records</span>
+    {% endif %}
+  </div>
+
+  <!-- ====== Group by Customer ====== -->
+  {% set ns = namespace(current_cust=None, cust_count=0) %}
+  {% for row in data %}
+    {% if row.customer_name != ns.current_cust %}
+      {% if ns.current_cust is not none %}
+          </tbody></table>
+        </div><!-- .cust-block -->
+      {% endif %}
+      {% set ns.current_cust = row.customer_name %}
+      {% set cust_rows = data | selectattr("customer_name","equalto", row.customer_name) | list %}
+      <div class="cust-block">
+        <div class="cust-header">
+          <span class="cn">{{ row.customer_name or "— Unassigned —" }}</span>
+          <span class="ct">{{ cust_rows | length }} AWB(s)</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Full AWB Number</th>
+              <th>Prefix</th>
+              <th>Serial</th>
+              <th>CD</th>
+              <th>Type</th>
+              <th>Cycle</th>
+              <th>Status</th>
+              <th>Assigned Date</th>
+              <th>Withdrawn Date</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+    {% endif %}
+    {% set row_num = loop.index %}
+    {% set badge_class = {
+        "Available":   "badge-available",
+        "Assigned":    "badge-assigned",
+        "Withdrawn":   "badge-withdrawn",
+        "Void":        "badge-void",
+        "Hold":        "badge-hold",
+        "Blacklisted": "badge-blacklisted"
+      }.get(row.status, "") %}
+    <tr>
+      <td style="color:#aaa; text-align:right; width:30px;">{{ loop.index }}</td>
+      <td><strong>{{ row.full_awb_number }}</strong></td>
+      <td>{{ row.awb_prefix }}</td>
+      <td>{{ row.awb_serial }}</td>
+      <td style="text-align:center;">{{ row.awb_check_digit }}</td>
+      <td>{{ row.awb_type }}</td>
+      <td>{{ row.awb_cycle }}</td>
+      <td><span class="badge {{ badge_class }}">{{ row.status }}</span></td>
+      <td>{{ row.assigned_date or "" }}</td>
+      <td>{{ row.withdrawn_date or "" }}</td>
+      <td style="color:#666;">{{ row.remarks or "" }}</td>
+    </tr>
+  {% endfor %}
+  {% if ns.current_cust is not none %}
+      </tbody></table>
+    </div><!-- .cust-block -->
+  {% endif %}
+
+  <!-- ====== Footer ====== -->
+  <div class="rpt-footer">
+    AWB Customer Detail Report &nbsp;|&nbsp; Total Records: {{ data | length }}
+    &nbsp;|&nbsp; Confidential – For Internal Use Only
+  </div>
+
+</div><!-- .report-wrap -->
+</body>
+</html>
+{% else %}
+<p style="padding:20px; font-family:Arial; color:#888;">No AWB records match the selected filters.</p>
+{% endif %}

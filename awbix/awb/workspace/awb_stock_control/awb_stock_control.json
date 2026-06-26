@@ -1,0 +1,116 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"awb_h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Stock Management</b></span>\",\"col\":12}},{\"id\":\"awb_s5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Series Generator\",\"col\":3}},{\"id\":\"awb_s1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AWB Inventory\",\"col\":3}},{\"id\":\"awb_h2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Configuration</b></span>\",\"col\":12}},{\"id\":\"awb_s3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AWB Settings\",\"col\":3}},{\"id\":\"awb_s4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AWB Cycle\",\"col\":3}},{\"id\":\"awb_s2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Bulk Operations\",\"col\":3}},{\"id\":\"awb_s6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"AWB Type\",\"col\":3}},{\"id\":\"awb_h3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Audit &amp; Logs</b></span>\",\"col\":12}},{\"id\":\"awb_s7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Audit Log\",\"col\":3}},{\"id\":\"awb_h4\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"awb_s8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer Detail\",\"col\":3}},{\"id\":\"awb_s9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer Summary\",\"col\":3}}]",
+ "creation": "2026-06-06 19:59:48.650070",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "milestone",
+ "idx": 0,
+ "indicator_color": "purple",
+ "is_hidden": 0,
+ "label": "AWB Stock Control",
+ "links": [],
+ "modified": "2026-06-06 20:32:42.156213",
+ "modified_by": "Administrator",
+ "module": "AWB",
+ "name": "AWB Stock Control",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "CargoXy",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {
+   "role": "Cargo Admin"
+  },
+  {
+   "role": "Cargo Ops"
+  }
+ ],
+ "sequence_id": 3.0,
+ "shortcuts": [
+  {
+   "color": "Purple",
+   "label": "AWB Workbench",
+   "link_to": "awb-workbench",
+   "type": "Page"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "AWB Inventory",
+   "link_to": "AWB Inventory",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Bulk Operations",
+   "link_to": "AWB Bulk Operation",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "AWB Settings",
+   "link_to": "AWB Settings",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "AWB Cycle",
+   "link_to": "AWB Cycle",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Yellow",
+   "doc_view": "List",
+   "label": "Series Generator",
+   "link_to": "AWB Series Generator",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "AWB Type",
+   "link_to": "AWB Type",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Red",
+   "doc_view": "List",
+   "label": "Audit Log",
+   "link_to": "AWB Audit Log",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Customer Detail",
+   "link_to": "AWB Customer Detail",
+   "report_ref_doctype": "AWB Inventory",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Customer Summary",
+   "link_to": "AWB Customer Summary",
+   "report_ref_doctype": "AWB Inventory",
+   "type": "Report"
+  }
+ ],
+ "title": "AWB Stock Control"
+}

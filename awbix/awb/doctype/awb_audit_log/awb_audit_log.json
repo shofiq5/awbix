@@ -1,0 +1,184 @@
+{
+ "actions": [],
+ "autoname": "AWB-AUDIT-.YYYY.-.#####",
+ "creation": "2026-04-11 00:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "sec_awb",
+  "awb_inventory",
+  "cb_a1",
+  "operation_id",
+  "cb_a2",
+  "operation_type",
+  "sec_state",
+  "prev_status",
+  "cb_s1",
+  "new_status",
+  "cb_s2",
+  "prev_assigned_to",
+  "cb_s3",
+  "new_assigned_to",
+  "sec_audit",
+  "reason",
+  "cb_au1",
+  "performed_by",
+  "cb_au2",
+  "performed_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "sec_awb",
+   "fieldtype": "Section Break",
+   "label": "AWB Reference"
+  },
+  {
+   "fieldname": "awb_inventory",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "AWB Inventory",
+   "options": "AWB Inventory",
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_a1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operation_id",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Bulk Operation",
+   "options": "AWB Bulk Operation"
+  },
+  {
+   "fieldname": "cb_a2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operation_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Operation Type",
+   "options": "Assign\nWithdraw\nHold\nVoid\nBlacklist\nMakeAvailable\nUndo",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sec_state",
+   "fieldtype": "Section Break",
+   "label": "State Change"
+  },
+  {
+   "fieldname": "prev_status",
+   "fieldtype": "Select",
+   "label": "Previous Status",
+   "options": "Available\nAssigned\nWithdrawn\nVoid\nHold\nBlacklisted"
+  },
+  {
+   "fieldname": "cb_s1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "new_status",
+   "fieldtype": "Select",
+   "label": "New Status",
+   "options": "Available\nAssigned\nWithdrawn\nVoid\nHold\nBlacklisted"
+  },
+  {
+   "fieldname": "cb_s2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "prev_assigned_to",
+   "fieldtype": "Link",
+   "label": "Previously Assigned To",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "cb_s3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "new_assigned_to",
+   "fieldtype": "Link",
+   "label": "Now Assigned To",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "sec_audit",
+   "fieldtype": "Section Break",
+   "label": "Audit"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason / Notes"
+  },
+  {
+   "fieldname": "cb_au1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "performed_by",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Performed By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_au2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "performed_at",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Performed At",
+   "read_only": 1
+  }
+ ],
+ "in_create": 0,
+ "links": [],
+ "modified": "2026-04-11 00:00:00",
+ "modified_by": "Administrator",
+ "module": "AWB",
+ "name": "AWB Audit Log",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo AWB Control",
+   "share": 0,
+   "write": 0
+  }
+ ],
+ "restrict_to_domain": "Cargo GSA",
+ "row_format": "Dynamic",
+ "sort_field": "performed_at",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

@@ -1,0 +1,131 @@
+{% if data %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  body         { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #222; margin: 0; padding: 0; }
+  .report-wrap { padding: 24px 32px; }
+
+  .rpt-header   { display: flex; align-items: center; justify-content: space-between;
+                  border-bottom: 3px solid #1a3c5e; padding-bottom: 12px; margin-bottom: 18px; }
+  .rpt-title    { font-size: 18px; font-weight: 700; color: #1a3c5e; letter-spacing: 0.5px; }
+  .rpt-subtitle { font-size: 11px; color: #555; margin-top: 3px; }
+  .rpt-logo     { font-size: 24px; font-weight: 900; color: #1a3c5e; letter-spacing: 2px; }
+
+  .rpt-filters  { background: #f4f8ff; border: 1px solid #d0dff0; border-radius: 4px;
+                  padding: 8px 14px; margin-bottom: 16px; font-size: 10.5px; }
+  .rpt-filters span { margin-right: 20px; }
+  .rpt-filters .lbl { font-weight: 600; color: #1a3c5e; }
+
+  table      { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+  thead tr   { background: #1a3c5e; }
+  thead th   { padding: 8px 10px; text-align: left; color: #fff;
+               font-weight: 700; white-space: nowrap; border: 1px solid #163257; }
+  tbody tr   { border-bottom: 1px solid #e0e8f5; }
+  tbody tr:nth-child(even) { background: #f4f8ff; }
+  tbody tr:hover { background: #ddeeff; }
+  td         { padding: 6px 10px; border: 1px solid #dbe6f5; vertical-align: middle; }
+  td.num     { text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Totals row */
+  tfoot tr   { background: #e8f0fb; font-weight: 700; }
+  tfoot td   { padding: 7px 10px; border: 1px solid #b8ccde; }
+
+  /* Mini progress bar */
+  .bar-wrap   { background: #e0e8f5; border-radius: 4px; width: 80px; height: 8px; display: inline-block; vertical-align: middle; }
+  .bar-fill   { background: #1a3c5e; border-radius: 4px; height: 8px; }
+
+  .rpt-footer { border-top: 2px solid #1a3c5e; margin-top: 24px; padding-top: 8px;
+                text-align: center; font-size: 10px; color: #888; }
+</style>
+</head>
+<body>
+<div class="report-wrap">
+
+  <!-- ====== Cover Header ====== -->
+  <div class="rpt-header">
+    <div>
+      <div class="rpt-title">AIR WAYBILL – CUSTOMER SUMMARY REPORT</div>
+      <div class="rpt-subtitle">AWB Stock Control System &nbsp;|&nbsp; Generated: {{ frappe.utils.now() }}</div>
+    </div>
+    <div class="rpt-logo">CARGO</div>
+  </div>
+
+  <!-- ====== Filter Summary ====== -->
+  <div class="rpt-filters">
+    {% if filters.customer %}<span><span class="lbl">Customer:</span> {{ filters.customer }}</span>{% endif %}
+    {% if filters.awb_cycle %}<span><span class="lbl">Cycle:</span> {{ filters.awb_cycle }}</span>{% endif %}
+    {% if filters.awb_type %}<span><span class="lbl">Type:</span> {{ filters.awb_type }}</span>{% endif %}
+    {% if not (filters.customer or filters.awb_cycle or filters.awb_type) %}<span>All Records</span>{% endif %}
+  </div>
+
+  <!-- ====== Summary Table ====== -->
+  {% set grand_total     = data | sum(attribute='total')       %}
+  {% set grand_used      = data | sum(attribute='used')        %}
+  {% set grand_void      = data | sum(attribute='void_count')  %}
+  {% set grand_black     = data | sum(attribute='blacklisted') %}
+  {% set grand_balance   = grand_total - grand_used - grand_void - grand_black %}
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Customer</th>
+        <th>Cycle</th>
+        <th>AWB Type</th>
+        <th style="text-align:right;">Total</th>
+        <th style="text-align:right;">Used</th>
+        <th style="text-align:right;">Void</th>
+        <th style="text-align:right;">Blacklisted</th>
+        <th style="text-align:right;">Balance</th>
+        <th>Utilisation</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in data %}
+      {% set pct = ((row.used / row.total * 100) | round(0)) if row.total > 0 else 0 %}
+      <tr>
+        <td style="color:#aaa; text-align:right; width:28px;">{{ loop.index }}</td>
+        <td><strong>{{ row.customer_name }}</strong></td>
+        <td>{{ row.awb_cycle }}</td>
+        <td>{{ row.awb_type }}</td>
+        <td class="num"><strong>{{ row.total }}</strong></td>
+        <td class="num" style="color:#28a745;"><strong>{{ row.used }}</strong></td>
+        <td class="num" style="color:#721c24;">{{ row.void_count }}</td>
+        <td class="num" style="color:#383d41;">{{ row.blacklisted }}</td>
+        <td class="num" style="color:#0066cc;"><strong>{{ row.balance }}</strong></td>
+        <td>
+          <div class="bar-wrap">
+            <div class="bar-fill" style="width:{{ [pct, 100] | min }}%;"></div>
+          </div>
+          &nbsp;{{ pct }}%
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align:right;">Grand Total</td>
+        <td class="num">{{ grand_total }}</td>
+        <td class="num">{{ grand_used }}</td>
+        <td class="num">{{ grand_void }}</td>
+        <td class="num">{{ grand_black }}</td>
+        <td class="num">{{ grand_balance }}</td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <!-- ====== Footer ====== -->
+  <div class="rpt-footer">
+    AWB Customer Summary Report &nbsp;|&nbsp; {{ data | length }} Customer Group(s)
+    &nbsp;|&nbsp; Confidential – For Internal Use Only
+  </div>
+
+</div><!-- .report-wrap -->
+</body>
+</html>
+{% else %}
+<p style="padding:20px; font-family:Arial; color:#888;">No AWB records match the selected filters.</p>
+{% endif %}

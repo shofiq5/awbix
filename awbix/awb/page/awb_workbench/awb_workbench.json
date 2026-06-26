@@ -1,0 +1,25 @@
+{
+ "content": "1",
+ "creation": "2026-05-29 00:00:00.000000",
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-05-29 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AWB",
+ "name": "awb-workbench",
+ "owner": "Administrator",
+ "page_name": "awb-workbench",
+ "roles": [
+  {
+   "role": "Cargo Admin"
+  },
+  {
+   "role": "Cargo AWB Control"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "AWB Inventory Workbench"
+}

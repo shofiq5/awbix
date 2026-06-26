@@ -1,0 +1,94 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"awb_h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Stock Management</b></span>\",\"col\":12}},{\"id\":\"o2mqVXrtT6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Series Generator\",\"col\":3}},{\"id\":\"0VIyq7Y5L_\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Inventory\",\"col\":3}},{\"id\":\"z2g4p-OM8i\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Workbench\",\"col\":3}},{\"id\":\"awb_h2\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Configuration</b></span>\",\"col\":12}},{\"id\":\"gTNy0PB6VH\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Cycle\",\"col\":3}},{\"id\":\"40dGl8m99r\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Type\",\"col\":3}},{\"id\":\"jhuyoxx1eo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Audit Log\",\"col\":3}},{\"id\":\"awb_h3\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Audit &amp; Logs</b></span>\",\"col\":12}},{\"id\":\"8dSNjvLfdM\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Audit Log\",\"col\":3}},{\"id\":\"awb_h4\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports</b></span>\",\"col\":12}},{\"id\":\"nkkZmTmhvX\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Customer Detail\",\"col\":3}},{\"id\":\"P5yHSqlNAM\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Awb Customer Summary\",\"col\":3}}]",
+ "creation": "2026-06-06 19:59:48.650070",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "milestone",
+ "idx": 0,
+ "indicator_color": "purple",
+ "is_hidden": 0,
+ "label": "AWB Stock",
+ "links": [],
+ "modified": "2026-06-06 21:00:29.815710",
+ "modified_by": "Administrator",
+ "module": "AWB",
+ "name": "AWB Stock",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [],
+ "sequence_id": 1.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Series Generator",
+   "link_to": "AWB Series Generator",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Workbench",
+   "link_to": "awb-workbench",
+   "type": "Page"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Cycle",
+   "link_to": "AWB Cycle",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Audit Log",
+   "link_to": "AWB Audit Log",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Customer Detail",
+   "link_to": "AWB Customer Detail",
+   "report_ref_doctype": "AWB Inventory",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Customer Summary",
+   "link_to": "AWB Customer Summary",
+   "report_ref_doctype": "AWB Inventory",
+   "type": "Report"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Inventory",
+   "link_to": "AWB Inventory",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Awb Type",
+   "link_to": "AWB Type",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "AWB Stock"
+}

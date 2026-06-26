@@ -1,0 +1,190 @@
+{
+ "actions": [],
+ "autoname": "AWB-BULK-.YYYY.-.#####",
+ "creation": "2026-04-11 00:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "sec_op",
+  "status",
+  "cb_op1",
+  "owner_user",
+  "cb_op2",
+  "operation_params",
+  "sec_prog",
+  "total",
+  "cb_pr1",
+  "processed",
+  "cb_pr2",
+  "errors",
+  "sec_result",
+  "result_file",
+  "cb_res1",
+  "cancel_requested",
+  "sec_timing",
+  "started_at",
+  "cb_t1",
+  "finished_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "sec_op",
+   "fieldtype": "Section Break",
+   "label": "Operation"
+  },
+  {
+   "default": "Queued",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Queued\nRunning\nCompleted\nCancelled\nFailed",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "cb_op1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "owner_user",
+   "fieldtype": "Link",
+   "label": "Started By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_op2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "operation_params",
+   "fieldtype": "Code",
+   "label": "Operation Parameters (JSON)",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sec_prog",
+   "fieldtype": "Section Break",
+   "label": "Progress"
+  },
+  {
+   "default": "0",
+   "fieldname": "total",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Total AWBs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_pr1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "processed",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Processed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_pr2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "errors",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Errors",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sec_result",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  },
+  {
+   "fieldname": "result_file",
+   "fieldtype": "Link",
+   "label": "Result CSV File",
+   "options": "File",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_res1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "cancel_requested",
+   "fieldtype": "Check",
+   "label": "Cancel Requested"
+  },
+  {
+   "fieldname": "sec_timing",
+   "fieldtype": "Section Break",
+   "label": "Timing"
+  },
+  {
+   "fieldname": "started_at",
+   "fieldtype": "Datetime",
+   "label": "Started At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_t1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "finished_at",
+   "fieldtype": "Datetime",
+   "label": "Finished At",
+   "read_only": 1
+  }
+ ],
+ "in_create": 0,
+ "links": [],
+ "modified": "2026-04-11 00:00:00",
+ "modified_by": "Administrator",
+ "module": "AWB",
+ "name": "AWB Bulk Operation",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Cargo AWB Control",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "restrict_to_domain": "Cargo GSA",
+ "row_format": "Dynamic",
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}
