@@ -11,18 +11,23 @@
   "column_break_mbvh",
   "origin",
   "destination",
+  "commodity_item_no",
   "column_break_oxcu",
-  "weight_code",
+  "nature_of_goods",
   "e_awb",
   "console",
   "sb_12",
   "column_break_eijq",
   "number_of_pieces",
   "weight",
-  "cb_13",
   "volume_amount",
+  "cb_13",
+  "volume_weight",
   "chargeable_weight",
   "cb_14",
+  "weight_code",
+  "volume_weight_factor",
+  "dimensions",
   "section_break_iomb",
   "shipment_description_code",
   "column_break_pohx",
@@ -90,7 +95,7 @@
   "insurance_type",
   "insurance_amount",
   "sb_25",
-  "auto_rete_line",
+  "auto_rate_line",
   "rate_lines",
   "other_charges",
   "goods_details",
@@ -176,7 +181,6 @@
    "bold": 1,
    "fieldname": "awb_number",
    "fieldtype": "Data",
-   "hidden": 1,
    "in_list_view": 1,
    "label": "AWB Number",
    "read_only": 1
@@ -927,11 +931,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "auto_rete_line",
-   "fieldtype": "Button",
-   "label": "Auto Rete Line"
-  },
-  {
    "fieldname": "chargeable_weight",
    "fieldtype": "Float",
    "label": "Chargeable Weight",
@@ -980,12 +979,47 @@
    "fieldname": "console",
    "fieldtype": "Check",
    "label": "Console"
+  },
+  {
+   "fieldname": "nature_of_goods",
+   "fieldtype": "Data",
+   "label": "Nature of Goods",
+   "length": 20
+  },
+  {
+   "fieldname": "commodity_item_no",
+   "fieldtype": "Data",
+   "label": "Commodity Item No",
+   "length": 7
+  },
+  {
+   "fieldname": "auto_rate_line",
+   "fieldtype": "Button",
+   "label": "Auto Rate Line"
+  },
+  {
+   "fieldname": "volume_weight",
+   "fieldtype": "Float",
+   "label": "Volume Weight"
+  },
+  {
+   "default": "6000",
+   "fieldname": "volume_weight_factor",
+   "fieldtype": "Int",
+   "label": "Volume Weight Factor"
+  },
+  {
+   "fieldname": "dimensions",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Dimensions",
+   "options": "Shipment Dimension"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-27 12:13:17.029295",
+ "modified": "2026-06-27 14:27:52.823471",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",

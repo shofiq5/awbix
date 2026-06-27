@@ -1,0 +1,102 @@
+{
+ "actions": [],
+ "creation": "2026-06-27 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "line_number",
+  "pieces",
+  "length",
+  "width",
+  "height",
+  "dim_unit",
+  "cb_dim1",
+  "volume",
+  "volume_weight",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "line_number",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Line"
+  },
+  {
+   "default": "1",
+   "fieldname": "pieces",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Pieces"
+  },
+  {
+   "fieldname": "length",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Length",
+   "precision": "2"
+  },
+  {
+   "fieldname": "width",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Width",
+   "precision": "2"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Height",
+   "precision": "2"
+  },
+  {
+   "default": "cm",
+   "fieldname": "dim_unit",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Unit",
+   "options": "cm\nin\nm"
+  },
+  {
+   "fieldname": "cb_dim1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "volume",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Volume (m³)",
+   "precision": "4",
+   "read_only": 1
+  },
+  {
+   "fieldname": "volume_weight",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Vol. Weight (kg)",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-06-27 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Shipment",
+ "name": "Shipment Dimension",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
