@@ -104,16 +104,6 @@
   "rate_lines",
   "other_charges",
   "goods_details",
-  "sb_27",
-  "charge_summary",
-  "sb_28",
-  "cdc_section_note",
-  "cc_dest_currency",
-  "rate_of_exchange",
-  "cb_29",
-  "cc_charges_dest",
-  "charges_at_dest",
-  "total_collect_charges",
   "sb_30",
   "special_service_requests",
   "other_service_info",
@@ -151,6 +141,17 @@
   "edx_ack_detail",
   "edx_ack_at",
   "amended_from",
+  "tab_5_tab",
+  "sb_27",
+  "charge_summary",
+  "sb_28",
+  "cdc_section_note",
+  "cc_dest_currency",
+  "rate_of_exchange",
+  "cb_29",
+  "cc_charges_dest",
+  "charges_at_dest",
+  "total_collect_charges",
   "accounts_tab",
   "section_break_hhvf",
   "column_break_wzwh",
@@ -551,8 +552,7 @@
   },
   {
    "fieldname": "sb_25",
-   "fieldtype": "Section Break",
-   "label": "Rate Description (RTD)"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "rate_lines",
@@ -1023,7 +1023,8 @@
   },
   {
    "fieldname": "section_break_fakv",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Rate Description (RTD)"
   },
   {
    "fieldname": "iata_rate",
@@ -1045,12 +1046,17 @@
   {
    "fieldname": "column_break_ehcv",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "tab_5_tab",
+   "fieldtype": "Tab Break",
+   "label": "Other Info"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-27 17:11:16.606586",
+ "modified": "2026-06-27 19:50:09.031567",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",
