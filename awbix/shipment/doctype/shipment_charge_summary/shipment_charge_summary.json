@@ -16,7 +16,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Settlement",
-   "options": "Prepaid\nCollect",
+   "options": "PPD\nCOL",
    "reqd": 1
   },
   {

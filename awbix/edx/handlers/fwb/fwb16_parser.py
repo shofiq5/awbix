@@ -516,7 +516,7 @@ class FWB16Parser(BaseParser):
 
 	def _parse_charge_summary(self, t):
 		rows = []
-		for code, settlement in (("PPD", "Prepaid"), ("COL", "Collect")):
+		for code, settlement in (("PPD", "PPD"), ("COL", "COL")):
 			seg = cargoimp.first(t, code)
 			if not seg:
 				continue

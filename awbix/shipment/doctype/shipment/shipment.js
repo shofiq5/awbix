@@ -3,13 +3,20 @@
 
 frappe.ui.form.on("Shipment", {
 	volume_amount(frm) {
-		// When no dimension rows exist, recalculate volume_weight and chargeable_weight
-		// from the manually-entered volume_amount via the same backend math.
-		if (frm.doc.dimensions && frm.doc.dimensions.length) return;
+		// Recalculate volume_weight and chargeable_weight when volume_amount changes.
+		// With dimensions: take max(dim_volume_weight, volume_amount_derived_vw).
+		// Without dimensions: derive volume_weight solely from volume_amount.
+		const dim_rows = frm.doc.dimensions || [];
 		frappe.call({
 			method: "awbix.shipment.doctype.shipment.shipment.calculate_dimension_totals",
 			args: {
-				rows: JSON.stringify([]),
+				rows: JSON.stringify(dim_rows.map((r) => ({
+					pieces: r.pieces,
+					length: r.length,
+					width: r.width,
+					height: r.height,
+					dim_unit: r.dim_unit,
+				}))),
 				weight: frm.doc.weight || 0,
 				volume_weight_factor: frm.doc.volume_weight_factor || 6000,
 				volume_amount: frm.doc.volume_amount || 0,
@@ -36,6 +43,12 @@ frappe.ui.form.on("Shipment", {
 		row.description = frm.doc.nature_of_goods;
 		row.goods_data_identifier = frm.doc.console ? "C" : "G";
 		row.commodity_item_number = frm.doc.commodity_item_no;
+		const iata_rate = frm.doc.iata_rate || 0;
+		row.rate_charge = iata_rate;
+		row.total =
+			row.rate_class_code === "Q"
+				? iata_rate * (row.chargeable_weight || 0)
+				: iata_rate;
 		frm.refresh_field("rate_lines");
 	},
 

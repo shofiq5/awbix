@@ -147,7 +147,7 @@ class FWB16Composer(BaseComposer):
 
 	def _has_charge_total(self, d) -> bool:
 		return any(
-			(r.get("charge_identifier") or "").strip() == "CT" and r.get("settlement") in ("Prepaid", "Collect")
+			(r.get("charge_identifier") or "").strip() == "CT" and r.get("settlement") in ("PPD", "COL")
 			for r in d.get("charge_summary") or []
 		)
 
@@ -520,7 +520,7 @@ class FWB16Composer(BaseComposer):
 
 	def _charge_summary_lines(self, doc) -> list[str]:
 		rows = doc.get("charge_summary") or []
-		groups = {"Prepaid": ("PPD", []), "Collect": ("COL", [])}
+		groups = {"PPD": ("PPD", []), "COL": ("COL", [])}
 		order = ["WT", "VC", "TX", "OA", "OC", "CT"]
 		for r in rows:
 			settlement = r.get("settlement")
@@ -529,7 +529,7 @@ class FWB16Composer(BaseComposer):
 				groups[settlement][1].append((ident, r.get("amount")))
 
 		lines = []
-		for settlement in ("Prepaid", "Collect"):
+		for settlement in ("PPD", "COL"):
 			code, items = groups[settlement]
 			if not items:
 				continue

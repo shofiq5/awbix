@@ -1,7 +1,9 @@
 import json
 
 import frappe
+from frappe import _
 from frappe.model.document import Document
+from frappe.utils import flt
 
 DEFAULT_VOLUME_FACTOR = 6000  # cm³ per kg (IATA)
 _UNIT_TO_CM = {"cm": 1.0, "in": 2.54, "m": 100.0}
@@ -28,6 +30,7 @@ class Shipment(Document):
 		self.validate_awb_serial_number()
 		self.set_awb_number()
 		self.compute_dimensions()
+		self.populate_charge_summary()
 		if self.origin and self.destination and self.origin == self.destination:
 			frappe.throw("Origin and Destination cannot be the same airport.")
 
@@ -49,6 +52,45 @@ class Shipment(Document):
 				f"Invalid AWB check digit: serial ends in {serial[7]} but the "
 				f"modulus-7 check digit of {serial[:7]} is {expected}."
 			)
+
+	def populate_charge_summary(self):
+		if not self.rate_lines:
+			frappe.throw(_("Rate Lines are required. Please add at least one rate line before saving."))
+
+		if not self.other_charges:
+			frappe.msgprint(
+				_("No Other Charges entered. Charge summary will include weight charges only."),
+				indicator="orange",
+				alert=True,
+			)
+
+		self.charge_summary = []
+
+		# WT — one row per settlement group (sum of all rate line totals)
+		wt_settlement = "PPD" if self.wt_val_prepaid_collect == "P" else "COL"
+		wt_amount = sum(flt(r.total) for r in self.rate_lines)
+		self.append("charge_summary", {"settlement": wt_settlement, "charge_identifier": "WT", "amount": wt_amount})
+
+		# OC — sum all other charges per settlement group into a single row each
+		oc_totals = {"PPD": 0.0, "COL": 0.0}
+		for row in self.other_charges:
+			pc = row.prepaid_collect or self.other_charges_prepaid_collect or "P"
+			group = "PPD" if pc == "P" else "COL"
+			oc_totals[group] += flt(row.amount)
+
+		for group in ("PPD", "COL"):
+			if oc_totals[group]:
+				self.append("charge_summary", {"settlement": group, "charge_identifier": "OC", "amount": oc_totals[group]})
+
+		# CT — grand total per settlement group (WT + OC for that group)
+		for group in ("PPD", "COL"):
+			group_rows = [r for r in self.charge_summary if r.settlement == group]
+			if group_rows:
+				self.append("charge_summary", {
+					"settlement": group,
+					"charge_identifier": "CT",
+					"amount": sum(flt(r.amount) for r in group_rows),
+				})
 
 	def compute_dimensions(self):
 		"""Compute per-row volume/volume_weight and roll up totals onto the parent."""
@@ -86,23 +128,25 @@ class Shipment(Document):
 			return
 
 		calc_vw = round(total_cm3 / factor, 2)
-		self.volume_weight = calc_vw
-
 		calc_m3 = total_cm3 / 1_000_000
 
-		# Only auto-set volume_amount when the volume_code is m³ (or unset).
 		vol_code = (self.volume_code or "").strip().upper()
 		if not vol_code or vol_code in _M3_VOLUME_CODES:
+			# Auto-raise volume_amount to at least the dimension-calculated m³.
 			if not self.volume_amount or self.volume_amount < calc_m3:
 				self.volume_amount = round(calc_m3, 4)
+			# volume_weight is the larger of dimension VW and volume_amount-derived VW.
+			manual_vw = round(float(self.volume_amount) * 1_000_000 / factor, 2)
+			self.volume_weight = max(calc_vw, manual_vw)
 		else:
 			frappe.msgprint(
 				f"Dimensions calculated {calc_m3:.4f} m³ but volume_code is '{self.volume_code}' "
 				"(not m³). volume_amount was not updated automatically — please set it manually.",
 				alert=True,
 			)
+			self.volume_weight = calc_vw
 
-		self.chargeable_weight = round(max(self.weight or 0, self.volume_weight or 0), 2)
+		self.chargeable_weight = round(max(float(self.weight or 0), self.volume_weight or 0), 2)
 
 
 @frappe.whitelist()
@@ -153,14 +197,21 @@ def calculate_dimension_totals(rows, weight=0, volume_weight_factor=None, volume
 		}
 
 	total_m3 = total_cm3 / 1_000_000
-	vw = round(total_cm3 / factor, 2)
-	chargeable = round(max(weight, vw), 2)
+	calc_vw = round(total_cm3 / factor, 2)
 
 	suggested_volume_amount = None
 	if not vol_code or vol_code in _M3_VOLUME_CODES:
 		existing = float(volume_amount or 0)
 		if not existing or existing < total_m3:
 			suggested_volume_amount = round(total_m3, 4)
+		# volume_weight = max of dimension VW and volume_amount-derived VW.
+		effective_m3 = suggested_volume_amount if suggested_volume_amount is not None else existing
+		manual_vw = round(effective_m3 * 1_000_000 / factor, 2) if effective_m3 else 0.0
+		vw = max(calc_vw, manual_vw)
+	else:
+		vw = calc_vw
+
+	chargeable = round(max(weight, vw), 2)
 
 	return {
 		"rows": out_rows,

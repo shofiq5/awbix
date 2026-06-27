@@ -94,8 +94,13 @@
   "column_break_tvtx",
   "insurance_type",
   "insurance_amount",
-  "sb_25",
+  "section_break_fakv",
+  "iata_rate",
+  "column_break_ornp",
+  "rate_class",
+  "column_break_ehcv",
   "auto_rate_line",
+  "sb_25",
   "rate_lines",
   "other_charges",
   "goods_details",
@@ -1000,7 +1005,8 @@
   {
    "fieldname": "volume_weight",
    "fieldtype": "Float",
-   "label": "Volume Weight"
+   "label": "Volume Weight",
+   "read_only": 1
   },
   {
    "default": "6000",
@@ -1014,12 +1020,37 @@
    "hidden": 1,
    "label": "Dimensions",
    "options": "Shipment Dimension"
+  },
+  {
+   "fieldname": "section_break_fakv",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "iata_rate",
+   "fieldtype": "Float",
+   "label": "IATA rate",
+   "precision": "3"
+  },
+  {
+   "fieldname": "column_break_ornp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rate_class",
+   "fieldtype": "Select",
+   "label": "Rate Class",
+   "length": 1,
+   "options": "Q\nM"
+  },
+  {
+   "fieldname": "column_break_ehcv",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-27 14:27:52.823471",
+ "modified": "2026-06-27 17:11:16.606586",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",

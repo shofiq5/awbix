@@ -26,6 +26,7 @@
  ],
  "fields": [
   {
+   "columns": 1,
    "description": "DE106",
    "fieldname": "line_number",
    "fieldtype": "Int",
@@ -33,6 +34,7 @@
    "label": "Line"
   },
   {
+   "columns": 1,
    "description": "DE701",
    "fieldname": "number_of_pieces",
    "fieldtype": "Int",
@@ -54,6 +56,7 @@
    "options": "K\nL"
   },
   {
+   "columns": 1,
    "description": "DE600",
    "fieldname": "gross_weight",
    "fieldtype": "Float",
@@ -61,6 +64,7 @@
    "label": "Gross Weight"
   },
   {
+   "columns": 1,
    "description": "DE507",
    "fieldname": "rate_class_code",
    "fieldtype": "Link",
@@ -89,6 +93,7 @@
    "label": "Rate Class %"
   },
   {
+   "columns": 1,
    "description": "DE600",
    "fieldname": "chargeable_weight",
    "fieldtype": "Float",
@@ -96,6 +101,7 @@
    "label": "Chargeable Weight"
   },
   {
+   "columns": 1,
    "description": "DE506",
    "fieldname": "rate_charge",
    "fieldtype": "Float",
@@ -103,6 +109,7 @@
    "label": "Rate / Charge"
   },
   {
+   "columns": 1,
    "description": "DE501",
    "fieldname": "total",
    "fieldtype": "Float",
@@ -110,6 +117,7 @@
    "label": "Total"
   },
   {
+   "columns": 1,
    "description": "DE710 \u2014 G = goods description (NG), C = consolidation description (NC)",
    "fieldname": "goods_data_identifier",
    "fieldtype": "Select",
@@ -118,6 +126,7 @@
    "options": "\nG\nC"
   },
   {
+   "columns": 1,
    "description": "DE709 \u2014 RTD_SecondLine nature and quantity of goods (NG/NC)",
    "fieldname": "description",
    "fieldtype": "Data",
@@ -142,7 +151,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-27 12:31:22.275137",
+ "modified": "2026-06-27 17:22:14.820083",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment Rate Line",
