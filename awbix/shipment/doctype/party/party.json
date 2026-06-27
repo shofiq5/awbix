@@ -28,7 +28,13 @@
   "cass_address",
   "cb_7",
   "participant_id",
-  "participant_code"
+  "participant_code",
+  "document_execution_section",
+  "issue_place",
+  "column_break_glkf",
+  "issue_airport",
+  "column_break_ejty",
+  "signature"
  ],
  "fields": [
   {
@@ -184,11 +190,44 @@
    "fieldtype": "Data",
    "label": "Participant Code",
    "length": 17
+  },
+  {
+   "fieldname": "document_execution_section",
+   "fieldtype": "Section Break",
+   "label": "Document Execution"
+  },
+  {
+   "description": "DE302",
+   "fieldname": "issue_place",
+   "fieldtype": "Data",
+   "label": "Issue Place",
+   "length": 17
+  },
+  {
+   "fieldname": "column_break_glkf",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "issue_airport",
+   "fieldtype": "Link",
+   "label": "Issue Airport",
+   "options": "Airport"
+  },
+  {
+   "fieldname": "column_break_ejty",
+   "fieldtype": "Column Break"
+  },
+  {
+   "description": "DE414",
+   "fieldname": "signature",
+   "fieldtype": "Data",
+   "label": "Signature",
+   "length": 20
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-06-25 05:23:38.459969",
+ "modified": "2026-06-28 00:16:15.487086",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Party",

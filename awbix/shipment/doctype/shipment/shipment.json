@@ -39,10 +39,13 @@
   "column_break_oamu",
   "section_break_awvc",
   "to_airport1",
-  "by_carrier1",
   "column_break_mytr",
+  "by_carrier1",
+  "column_break_jzuu",
   "to_airport2",
+  "column_break_lwcu",
   "by_carrier2",
+  "flight_tab",
   "sb_24",
   "routing",
   "flight_bookings",
@@ -103,18 +106,18 @@
   "sb_25",
   "rate_lines",
   "other_charges",
-  "goods_details",
-  "sb_30",
-  "special_service_requests",
-  "other_service_info",
-  "special_handling",
-  "accounting_information",
   "sb_31",
   "shippers_certification_signature",
   "cb_32",
   "issue_date",
   "issue_place",
   "carrier_execution_signature",
+  "sb_30",
+  "special_service_requests",
+  "special_handling",
+  "column_break_uivo",
+  "other_service_info",
+  "accounting_information",
   "sb_33",
   "sender_file_reference",
   "sender_office_address",
@@ -144,6 +147,7 @@
   "tab_5_tab",
   "sb_27",
   "charge_summary",
+  "goods_details",
   "sb_28",
   "cdc_section_note",
   "cc_dest_currency",
@@ -372,7 +376,8 @@
    "fetch_from": "shipper.street_address",
    "fieldname": "shipper_address",
    "fieldtype": "Small Text",
-   "label": "Street Address"
+   "label": "Street Address",
+   "max_height": "50px"
   },
   {
    "fetch_from": "shipper.place",
@@ -428,7 +433,8 @@
    "fetch_from": "consignee.street_address",
    "fieldname": "consignee_address",
    "fieldtype": "Small Text",
-   "label": "Street Address"
+   "label": "Street Address",
+   "max_height": "50px"
   },
   {
    "fetch_from": "consignee.place",
@@ -643,7 +649,7 @@
   {
    "fieldname": "special_handling",
    "fieldtype": "Table",
-   "label": "Special Handling (SPH)",
+   "label": "Special Handling (SHC)",
    "options": "Shipment Special Handling"
   },
   {
@@ -658,6 +664,8 @@
    "label": "Certification & Execution"
   },
   {
+   "fetch_from": "agent.signature",
+   "fetch_if_empty": 1,
    "fieldname": "shippers_certification_signature",
    "fieldtype": "Data",
    "label": "Shipper's Certification Signature",
@@ -673,6 +681,8 @@
    "label": "Issue Date"
   },
   {
+   "fetch_from": "agent.place",
+   "fetch_if_empty": 1,
    "fieldname": "issue_place",
    "fieldtype": "Data",
    "label": "Issue Place",
@@ -702,12 +712,14 @@
    "length": 8
   },
   {
+   "fetch_from": "agent.participant_id",
    "fieldname": "sender_participant_id",
    "fieldtype": "Data",
    "label": "Sender Participant Identifier",
    "length": 3
   },
   {
+   "fetch_from": "agent.participant_code",
    "fieldname": "sender_participant_code",
    "fieldtype": "Data",
    "label": "Sender Participant Code",
@@ -846,7 +858,7 @@
   {
    "fieldname": "tab_break_imtg",
    "fieldtype": "Tab Break",
-   "label": "Charges"
+   "label": "Doc"
   },
   {
    "fieldname": "column_break_vrcx",
@@ -1051,12 +1063,30 @@
    "fieldname": "tab_5_tab",
    "fieldtype": "Tab Break",
    "label": "Other Info"
+  },
+  {
+   "fieldname": "column_break_uivo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "flight_tab",
+   "fieldtype": "Tab Break",
+   "hidden": 1,
+   "label": "Flight"
+  },
+  {
+   "fieldname": "column_break_jzuu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_lwcu",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-27 19:50:09.031567",
+ "modified": "2026-06-28 00:24:53.576831",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",

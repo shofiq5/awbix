@@ -13,8 +13,8 @@
    "label": "Shipments by Destination"
   }
  ],
- "content": "[{\"id\":\"awbix_hdr_ov\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Overview</b></span>\",\"col\":12}},{\"id\":\"awbix_nc_total\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total AWBs\",\"col\":3}},{\"id\":\"awbix_nc_month\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"AWBs This Month\",\"col\":3}},{\"id\":\"awbix_nc_draft\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Draft AWBs\",\"col\":3}},{\"id\":\"awbix_nc_sub\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Submitted AWBs\",\"col\":3}},{\"id\":\"awbix_sp_1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_ch_trend\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipment Trends\",\"col\":12}},{\"id\":\"awbix_ch_air\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipments by Airline\",\"col\":6}},{\"id\":\"awbix_ch_dest\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipments by Destination\",\"col\":6}},{\"id\":\"awbix_sp_2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_hdr_qa\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"id\":\"awbix_sc_ship\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shipment\",\"col\":3}},{\"id\":\"awbix_sc_party\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Party\",\"col\":3}},{\"id\":\"awbix_sc_airl\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Airline\",\"col\":3}},{\"id\":\"awbix_sc_airp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Airport\",\"col\":3}},{\"id\":\"awbix_ql_recent\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Recent AWBs\",\"col\":4}},{\"id\":\"awbix_sp_3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_hdr_md\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters &amp; Reference Data</b></span>\",\"col\":12}},{\"id\":\"awbix_cd_ops\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"awbix_cd_geo\",\"type\":\"card\",\"data\":{\"card_name\":\"Geography and Carriers\",\"col\":4}},{\"id\":\"awbix_cd_party\",\"type\":\"card\",\"data\":{\"card_name\":\"Parties\",\"col\":4}},{\"id\":\"awbix_cd_codes\",\"type\":\"card\",\"data\":{\"card_name\":\"Codes and Identifiers\",\"col\":4}},{\"id\":\"awbix_hdr_cfg\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Configuration</b></span>\",\"col\":12}},{\"id\":\"awbix_sc_shipsettings\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shipment Settings\",\"col\":3}}]",
- "creation": "2026-06-13 10:00:00.000000",
+ "content": "[{\"id\":\"awbix_hdr_ov\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Overview</b></span>\",\"col\":12}},{\"id\":\"awbix_nc_total\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Total AWBs\",\"col\":3}},{\"id\":\"awbix_nc_month\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"AWBs This Month\",\"col\":3}},{\"id\":\"awbix_nc_draft\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Draft AWBs\",\"col\":3}},{\"id\":\"awbix_nc_sub\",\"type\":\"number_card\",\"data\":{\"number_card_name\":\"Submitted AWBs\",\"col\":3}},{\"id\":\"awbix_sp_1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_ch_trend\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipment Trends\",\"col\":12}},{\"id\":\"awbix_ch_air\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipments by Airline\",\"col\":6}},{\"id\":\"awbix_ch_dest\",\"type\":\"chart\",\"data\":{\"chart_name\":\"Shipments by Destination\",\"col\":6}},{\"id\":\"awbix_sp_2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_hdr_qa\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Quick Access</b></span>\",\"col\":12}},{\"id\":\"awbix_sc_ship\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Shipment\",\"col\":3}},{\"id\":\"awbix_sc_party\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Party\",\"col\":3}},{\"id\":\"awbix_sc_airl\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Airline\",\"col\":3}},{\"id\":\"awbix_sc_airp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Airport\",\"col\":3}},{\"id\":\"awbix_ql_recent\",\"type\":\"quick_list\",\"data\":{\"quick_list_name\":\"Recent AWBs\",\"col\":4}},{\"id\":\"awbix_sp_3\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"awbix_hdr_md\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Masters &amp; Reference Data</b></span>\",\"col\":12}},{\"id\":\"awbix_cd_ops\",\"type\":\"card\",\"data\":{\"card_name\":\"Operations\",\"col\":4}},{\"id\":\"awbix_cd_geo\",\"type\":\"card\",\"data\":{\"card_name\":\"Geography and Carriers\",\"col\":4}},{\"id\":\"awbix_cd_party\",\"type\":\"card\",\"data\":{\"card_name\":\"Parties\",\"col\":4}},{\"id\":\"awbix_cd_codes\",\"type\":\"card\",\"data\":{\"card_name\":\"Codes and Identifiers\",\"col\":4}},{\"id\":\"RMQ_sNwNGG\",\"type\":\"card\",\"data\":{\"card_name\":\"Settings\",\"col\":4}}]",
+ "creation": "2026-06-13 10:00:00",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -232,9 +232,28 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Settings",
+   "link_count": 1,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Shipment Settings",
+   "link_count": 0,
+   "link_to": "Shipment Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-06-13 10:00:00.000000",
+ "modified": "2026-06-28 00:41:39.497444",
  "modified_by": "Administrator",
  "module": "AWBix",
  "name": "Ops",
@@ -298,15 +317,7 @@
    "label": "Airport",
    "link_to": "Airport",
    "type": "DocType"
-  },
-  {
-   "color": "Grey",
-   "doc_view": "Form",
-   "label": "Shipment Settings",
-   "link_to": "Shipment Settings",
-   "type": "DocType"
   }
  ],
- "title": "Ops",
- "type": "Workspace"
+ "title": "Ops"
 }

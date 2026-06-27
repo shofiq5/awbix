@@ -26,6 +26,9 @@ def _row_volume_cm3(row):
 
 
 class Shipment(Document):
+	def before_insert(self):
+		self.apply_shipment_settings_defaults()
+
 	def validate(self):
 		self.validate_awb_serial_number()
 		self.set_awb_number()
@@ -33,6 +36,17 @@ class Shipment(Document):
 		self.populate_charge_summary()
 		if self.origin and self.destination and self.origin == self.destination:
 			frappe.throw("Origin and Destination cannot be the same airport.")
+
+	def apply_shipment_settings_defaults(self):
+		settings = frappe.get_single("Shipment Settings")
+		if not self.origin and settings.default_origin:
+			self.origin = settings.default_origin
+		if not self.destination and settings.default_destination:
+			self.destination = settings.default_destination
+		if not self.agent and settings.default_agent:
+			self.agent = settings.default_agent
+		if not self.sender_office_address and settings.default_sender_office_message_address:
+			self.sender_office_address = settings.default_sender_office_message_address
 
 	def set_awb_number(self):
 		if self.airline_prefix and self.awb_serial_number:

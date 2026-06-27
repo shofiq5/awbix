@@ -57,6 +57,19 @@ frappe.ui.form.on("Shipment", {
 		frm.add_custom_button(__("Dimension"), () => open_dimension_dialog(frm));
 
 		if (frm.is_new()) {
+			frappe.db.get_single_value("Shipment Settings", "default_origin").then(() => {
+				frappe.model.with_doc("Shipment Settings", "Shipment Settings", () => {
+					const s = frappe.get_doc("Shipment Settings", "Shipment Settings");
+					if (!frm.doc.origin && s.default_origin)
+						frm.set_value("origin", s.default_origin);
+					if (!frm.doc.destination && s.default_destination)
+						frm.set_value("destination", s.default_destination);
+					if (!frm.doc.agent && s.default_agent)
+						frm.set_value("agent", s.default_agent);
+					if (!frm.doc.sender_office_address && s.default_sender_office_message_address)
+						frm.set_value("sender_office_address", s.default_sender_office_message_address);
+				});
+			});
 			return;
 		}
 
