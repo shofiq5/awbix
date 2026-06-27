@@ -11,7 +11,9 @@
   "sb_parties",
   "default_agent",
   "column_break_2",
-  "default_sender_office_message_address"
+  "default_sender_office_message_address",
+  "sb_financial",
+  "default_currency"
  ],
  "fields": [
   {
@@ -55,6 +57,17 @@
    "fieldtype": "Link",
    "label": "Default Sender Office Message Address",
    "options": "Participant Identifier"
+  },
+  {
+   "fieldname": "sb_financial",
+   "fieldtype": "Section Break",
+   "label": "Default Financial"
+  },
+  {
+   "fieldname": "default_currency",
+   "fieldtype": "Link",
+   "label": "Default Currency",
+   "options": "Currency"
   }
  ],
  "grid_page_length": 50,

@@ -47,6 +47,8 @@ class Shipment(Document):
 			self.agent = settings.default_agent
 		if not self.sender_office_address and settings.default_sender_office_message_address:
 			self.sender_office_address = settings.default_sender_office_message_address
+		if not self.currency and settings.default_currency:
+			self.currency = settings.default_currency
 
 	def set_awb_number(self):
 		if self.airline_prefix and self.awb_serial_number:
@@ -69,7 +71,7 @@ class Shipment(Document):
 
 	def populate_charge_summary(self):
 		if not self.rate_lines:
-			frappe.throw(_("Rate Lines are required. Please add at least one rate line before saving."))
+			return
 
 		if not self.other_charges:
 			frappe.msgprint(

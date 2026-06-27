@@ -68,6 +68,8 @@ frappe.ui.form.on("Shipment", {
 						frm.set_value("agent", s.default_agent);
 					if (!frm.doc.sender_office_address && s.default_sender_office_message_address)
 						frm.set_value("sender_office_address", s.default_sender_office_message_address);
+					if (!frm.doc.currency && s.default_currency)
+						frm.set_value("currency", s.default_currency);
 				});
 			});
 			return;
