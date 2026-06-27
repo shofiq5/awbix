@@ -1,6 +1,6 @@
 {
  "actions": [],
- "autoname": "naming_series:",
+ "autoname": "HWB.DD.MM.YY.-.#####",
  "creation": "2026-06-19 12:00:00",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -622,11 +622,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-20 12:34:48.589394",
+ "modified": "2026-06-26 17:47:00.905313",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "House Airway Bill",
- "naming_rule": "By \"Naming Series\" field",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {

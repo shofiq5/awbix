@@ -366,9 +366,9 @@ class FWB16Parser(BaseParser):
 					identifier = first_token[1:2]
 					data = tokens[1:]
 					if identifier in ("G", "C"):
+						# NC/NG description belongs on the rate line, not goods_details.
 						current_rate_line["goods_data_identifier"] = identifier
 						current_rate_line["description"] = ("/".join(data)).strip()[:20]
-						goods.append(self._parse_goods_line(current_rate_line["line_number"], tokens))
 					else:
 						goods.append(self._parse_goods_line(current_rate_line["line_number"], tokens))
 				continue
@@ -385,13 +385,10 @@ class FWB16Parser(BaseParser):
 					and current_rate_line is not None
 					and line_no == current_rate_line["line_number"]
 				):
-					# Explicit SecondLine (NC/NG) sharing the same RTD_ChargeLineCount as
-					# the current rate line — merge into the rate-line row and also add to
-					# the goods list so round-trip code can find it by identifier.
+					# Explicit SecondLine (NC/NG) — merge description into the rate-line row only.
 					data = rest[1:]
 					current_rate_line["goods_data_identifier"] = identifier
 					current_rate_line["description"] = ("/".join(data)).strip()[:20]
-					goods.append(self._parse_goods_line(line_no, rest))
 				else:
 					# Independent goods group — preserve its own RTD line-count.
 					goods.append(self._parse_goods_line(line_no, rest))

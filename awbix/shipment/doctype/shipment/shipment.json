@@ -5,29 +5,38 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "sb_12",
   "airline_prefix",
   "awb_serial_number",
   "awb_number",
-  "cb_13",
+  "column_break_mbvh",
   "origin",
   "destination",
-  "cb_14",
-  "shipment_description_code",
-  "number_of_pieces",
+  "column_break_oxcu",
   "weight_code",
+  "e_awb",
+  "console",
+  "sb_12",
+  "column_break_eijq",
+  "number_of_pieces",
   "weight",
-  "volume_code",
+  "cb_13",
   "volume_amount",
+  "chargeable_weight",
+  "cb_14",
+  "section_break_iomb",
+  "shipment_description_code",
+  "column_break_pohx",
   "density_indicator",
+  "column_break_nypu",
   "density_group",
-  "routing_section",
+  "column_break_ywfg",
+  "volume_code",
+  "column_break_oamu",
+  "section_break_awvc",
   "to_airport1",
-  "column_break_rrjl",
   "by_carrier1",
-  "column_break_dkmj",
+  "column_break_mytr",
   "to_airport2",
-  "column_break_easj",
   "by_carrier2",
   "sb_24",
   "routing",
@@ -36,9 +45,9 @@
   "sb_21",
   "agent",
   "agent_name",
-  "agent_account",
   "agent_place",
   "cb_22",
+  "agent_account",
   "agent_iata_code",
   "agent_cass_address",
   "agent_participant_id",
@@ -81,10 +90,10 @@
   "insurance_type",
   "insurance_amount",
   "sb_25",
+  "auto_rete_line",
   "rate_lines",
-  "goods_details",
-  "sb_26",
   "other_charges",
+  "goods_details",
   "sb_27",
   "charge_summary",
   "sb_28",
@@ -131,7 +140,15 @@
   "edx_ack_status",
   "edx_ack_detail",
   "edx_ack_at",
-  "amended_from"
+  "amended_from",
+  "accounts_tab",
+  "section_break_hhvf",
+  "column_break_wzwh",
+  "customer",
+  "column_break_cyzs",
+  "supplier",
+  "column_break_tdol",
+  "column_break_eary"
  ],
  "fields": [
   {
@@ -159,6 +176,7 @@
    "bold": 1,
    "fieldname": "awb_number",
    "fieldtype": "Data",
+   "hidden": 1,
    "in_list_view": 1,
    "label": "AWB Number",
    "read_only": 1
@@ -210,7 +228,8 @@
   {
    "fieldname": "weight",
    "fieldtype": "Float",
-   "label": "Weight"
+   "label": "Weight",
+   "precision": "2"
   },
   {
    "fieldname": "volume_code",
@@ -331,6 +350,7 @@
    "fetch_from": "shipper.account_number",
    "fieldname": "shipper_account",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Account Number",
    "length": 14
   },
@@ -390,6 +410,7 @@
    "fetch_from": "consignee.account_number",
    "fieldname": "consignee_account",
    "fieldtype": "Data",
+   "hidden": 1,
    "label": "Account Number",
    "length": 14
   },
@@ -535,11 +556,6 @@
    "fieldtype": "Table",
    "label": "Goods Details",
    "options": "Shipment Goods Detail"
-  },
-  {
-   "fieldname": "sb_26",
-   "fieldtype": "Section Break",
-   "label": "Other Charges (OTH)"
   },
   {
    "fieldname": "other_charges",
@@ -844,27 +860,10 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "routing_section",
-   "fieldtype": "Section Break",
-   "label": "Routing"
-  },
-  {
    "fieldname": "to_airport1",
    "fieldtype": "Link",
    "label": "To Airport1",
    "options": "Airport"
-  },
-  {
-   "fieldname": "column_break_rrjl",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_dkmj",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_easj",
-   "fieldtype": "Column Break"
   },
   {
    "fieldname": "by_carrier1",
@@ -883,12 +882,110 @@
    "fieldtype": "Link",
    "label": "By Carrier2",
    "options": "Airline"
+  },
+  {
+   "fieldname": "section_break_hhvf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_wzwh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_eary",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cyzs",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "label": "Customer"
+  },
+  {
+   "fieldname": "supplier",
+   "fieldtype": "Data",
+   "label": "Supplier"
+  },
+  {
+   "fieldname": "accounts_tab",
+   "fieldtype": "Tab Break",
+   "label": "Accounts"
+  },
+  {
+   "fieldname": "section_break_awvc",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_mytr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_tdol",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "auto_rete_line",
+   "fieldtype": "Button",
+   "label": "Auto Rete Line"
+  },
+  {
+   "fieldname": "chargeable_weight",
+   "fieldtype": "Float",
+   "label": "Chargeable Weight",
+   "precision": "2"
+  },
+  {
+   "fieldname": "section_break_iomb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_pohx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_nypu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ywfg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_mbvh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_eijq",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_oamu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_oxcu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "e_awb",
+   "fieldtype": "Check",
+   "label": "E AWB"
+  },
+  {
+   "default": "0",
+   "fieldname": "console",
+   "fieldtype": "Check",
+   "label": "Console"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-25 05:51:45.725030",
+ "modified": "2026-06-27 12:13:17.029295",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment",

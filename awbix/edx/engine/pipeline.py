@@ -313,7 +313,8 @@ def _amendment_decision(definition, target_doctype, key, received_at):
 
 
 def _get_delivery(target_doctype, key):
-	name = frappe.db.exists("EDX Delivery", {"business_key": key, "target_doctype": target_doctype})
+	filters = {"business_key": key, "target_doctype": target_doctype}
+	name = frappe.db.exists("EDX Delivery", filters)
 	if not name:
 		return None
 	# row-lock to serialise concurrent workers processing the same business key
@@ -324,7 +325,8 @@ def _get_delivery(target_doctype, key):
 def _upsert_delivery(target_doctype, key, target_name, message_in, received_at):
 	if not key:
 		return 1
-	name = frappe.db.exists("EDX Delivery", {"business_key": key, "target_doctype": target_doctype})
+	filters = {"business_key": key, "target_doctype": target_doctype}
+	name = frappe.db.exists("EDX Delivery", filters)
 	if name:
 		d = frappe.get_doc("EDX Delivery", name)
 		d.revision = (d.revision or 1) + 1

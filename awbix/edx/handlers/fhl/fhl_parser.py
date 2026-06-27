@@ -355,7 +355,6 @@ class FHLParser(BaseParser):
 		master = data["master"]
 		awb_number = master["awb_number"]
 
-		self._ensure("Airline", {"airline_prefix": master["airline_prefix"]}, master["airline_prefix"])
 		self._ensure("Airport", {"iata_code": master["origin"]}, master["origin"])
 		self._ensure("Airport", {"iata_code": master["destination"]}, master["destination"])
 

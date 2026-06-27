@@ -1,25 +1,32 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2026-06-12 12:00:00.000000",
+ "creation": "2026-06-12 12:00:00",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "line_number",
+  "rate_class_code",
+  "gross_weight",
+  "chargeable_weight",
+  "column_break_ollv",
+  "rate_charge",
+  "total",
+  "column_break_alri",
+  "goods_data_identifier",
+  "description",
+  "section_break_isnk",
   "number_of_pieces",
   "rate_combination_point",
   "gross_weight_code",
-  "gross_weight",
-  "rate_class_code",
   "commodity_item_number",
   "uld_rate_class_type",
   "rate_class_percentage",
-  "chargeable_weight",
-  "rate_charge",
-  "total",
-  "goods_data_identifier",
-  "description"
+  "column_break_swug",
+  "column_break_txcx",
+  "column_break_sdac",
+  "column_break_ivbr"
  ],
  "fields": [
   {
@@ -107,7 +114,7 @@
    "label": "Total"
   },
   {
-   "description": "DE710 — G = goods description (NG), C = consolidation description (NC)",
+   "description": "DE710 \u2014 G = goods description (NG), C = consolidation description (NC)",
    "fieldname": "goods_data_identifier",
    "fieldtype": "Select",
    "in_list_view": 1,
@@ -115,19 +122,47 @@
    "options": "\nG\nC"
   },
   {
-   "description": "DE709 — RTD_SecondLine nature and quantity of goods (NG/NC)",
+   "description": "DE709 \u2014 RTD_SecondLine nature and quantity of goods (NG/NC)",
    "fieldname": "description",
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Nature of Goods",
    "length": 20
+  },
+  {
+   "fieldname": "column_break_swug",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_txcx",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_sdac",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ivbr",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_ollv",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_alri",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_isnk",
+   "fieldtype": "Section Break"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-06-12 12:00:00.000000",
+ "modified": "2026-06-27 02:40:52.581323",
  "modified_by": "Administrator",
  "module": "Shipment",
  "name": "Shipment Rate Line",

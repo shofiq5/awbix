@@ -24,15 +24,15 @@
    "in_list_view": 1,
    "label": "Business Key",
    "reqd": 1,
-   "search_index": 1,
-   "unique": 1
+   "search_index": 1
   },
   {
    "fieldname": "target_doctype",
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Target DocType",
-   "options": "DocType"
+   "options": "DocType",
+   "reqd": 1
   },
   {
    "fieldname": "target_name",
@@ -81,6 +81,11 @@
  ],
  "index_web_pages_for_search": 0,
  "links": [],
+ "unique_constraints": [
+  {
+   "fields": ["business_key", "target_doctype"]
+  }
+ ],
  "modified": "2026-06-20 13:00:00.000000",
  "modified_by": "Administrator",
  "module": "EDX",
