@@ -229,7 +229,10 @@
             <RoutingRailPanel
               v-show="activeRail === 'routing'"
               :flight-bookings="flightBookings"
-              :routing="routing"
+              v-model:to-airport1="form.to_airport1"
+              v-model:by-carrier1="form.by_carrier1"
+              v-model:to-airport2="form.to_airport2"
+              v-model:by-carrier2="form.by_carrier2"
             />
             <RateLinesRailPanel
               v-show="activeRail === 'rating'"
@@ -354,7 +357,6 @@ const dimensions             = ref([])
 const alsoNotify             = ref([])
 const otherParticipants      = ref([])
 const flightBookings         = ref([])
-const routing                = ref([])
 const rateLines              = ref([])
 const goodsDetails           = ref([])
 const otherCharges           = ref([])
@@ -406,6 +408,8 @@ const form = reactive({
   // CDC
   cc_dest_currency: '', rate_of_exchange: null, cc_charges_dest: null,
   charges_at_dest: null, total_collect_charges: null,
+  // Routing
+  to_airport1: '', by_carrier1: '', to_airport2: '', by_carrier2: '',
   // Customs
   customs_origin_code: '',
   // Internal
@@ -473,7 +477,6 @@ function applyDoc(doc) {
   alsoNotify.value             = doc.also_notify            || []
   otherParticipants.value      = doc.other_participants     || []
   flightBookings.value         = doc.flight_bookings        || []
-  routing.value                = doc.routing                || []
   rateLines.value              = doc.rate_lines             || []
   goodsDetails.value           = doc.goods_details          || []
   otherCharges.value           = doc.other_charges          || []
@@ -557,7 +560,6 @@ function buildPayload() {
   data.also_notify             = alsoNotify.value
   data.other_participants      = otherParticipants.value
   data.flight_bookings         = flightBookings.value
-  data.routing                 = routing.value
   data.rate_lines              = rateLines.value
   data.goods_details           = goodsDetails.value
   data.other_charges           = otherCharges.value

@@ -1,4 +1,4 @@
-/* ../../../../../tmp/tmp-72167-1cdUdYYgT3f8/awbix/awbix/public/scss/awbix.bundle.css */
+/* ../../../../../tmp/tmp-13023-n82jEiAHo5ji/awbix/awbix/public/scss/awbix.bundle.css */
 :root,
 [data-theme=light] {
   --awbix-deep-blue: #16324f;
@@ -30,7 +30,7 @@
 }
 header .navbar {
   --icon-stroke: rgba(255, 255, 255, 0.92);
-  background: linear-gradient(-90deg, var(--awbix-deep-blue), var(--awbix-deep-blue-light));
+  background: linear-gradient(90deg, var(--awbix-deep-blue), var(--awbix-deep-blue-light));
   border-bottom: none;
 }
 header .navbar .navbar-brand,
@@ -68,7 +68,7 @@ header .navbar .indicator-pill {
 }
 .desk-sidebar .desk-sidebar-item.selected {
   background-color: var(--sidebar-select-color);
-  box-shadow: inset -3px 0 0 var(--awbix-green);
+  box-shadow: inset 3px 0 0 var(--awbix-green);
 }
 .desk-sidebar .desk-sidebar-item.selected .sidebar-item-label {
   color: var(--awbix-deep-blue);
@@ -162,4 +162,4 @@ header .navbar .indicator-pill {
 [data-theme=dark] .frappe-list .list-subject a {
   color: var(--text-color);
 }
-/*# sourceMappingURL=awbix.bundle.L44VSPPW.css.map */
+/*# sourceMappingURL=awbix.bundle.NPHAH4M6.css.map */

@@ -98,15 +98,40 @@
             </button>
           </div>
 
-          <!-- Add row -->
-          <button
-            type="button"
-            @click="addRow"
-            class="flex items-center gap-1.5 text-sm mt-2"
-            style="color:var(--color-primary);"
-          >
-            <Icon name="plus" :size="13" /> Add Row
-          </button>
+          <!-- Add row + CSV upload -->
+          <div class="flex items-center gap-3 mt-2 flex-wrap">
+            <button
+              type="button"
+              @click="addRow"
+              class="flex items-center gap-1.5 text-sm"
+              style="color:var(--color-primary);"
+            >
+              <Icon name="plus" :size="13" /> Add Row
+            </button>
+
+            <label
+              class="flex items-center gap-1.5 text-sm cursor-pointer"
+              :class="uploading ? 'opacity-60 pointer-events-none' : ''"
+              style="color:var(--color-text-muted);"
+              title="Import rows from a CSV or XLSX file (columns: pieces, length, width, height, unit)"
+            >
+              <Icon :name="uploading ? 'loader' : 'upload'" :size="13" :class="uploading ? 'animate-spin' : ''" />
+              {{ uploading ? 'Importing…' : 'Import CSV / XLSX' }}
+              <input
+                ref="fileInputEl"
+                type="file"
+                accept=".csv,.xlsx,.xls"
+                class="hidden"
+                @change="onFileChange"
+              />
+            </label>
+          </div>
+
+          <!-- Import errors -->
+          <div v-if="importErrors.length" class="mt-3 p-3 rounded-lg border text-xs space-y-1" style="border-color:#fca5a5;background:#fee2e2;color:#b91c1c;">
+            <p class="font-semibold">Import warnings (rows still added):</p>
+            <p v-for="e in importErrors" :key="e.row">Row {{ e.row }}: {{ e.message }}</p>
+          </div>
         </div>
 
         <!-- Preview footer — mirrors compute_dimensions() output -->
@@ -151,7 +176,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 
 const props = defineProps({
   initialRows:         { type: Array,  default: () => [] },
@@ -166,6 +191,9 @@ const emit = defineEmits(['apply', 'close'])
 const gridClass = 'grid-cols-[48px_64px_72px_72px_72px_64px_1fr_32px]'
 
 const rows = ref([])
+const fileInputEl = ref(null)
+const uploading   = ref(false)
+const importErrors = ref([])
 
 function blankRow(i) {
   return { line_number: i + 1, pieces: null, length: null, width: null, height: null, dim_unit: 'CM', remarks: '' }
@@ -205,6 +233,61 @@ function recalc() {
 function fmtNum(n, decimals = 2) {
   if (n == null || isNaN(n)) return '—'
   return Number(n).toFixed(decimals)
+}
+
+function csrf() { return window.frappe?.csrf_token || '' }
+
+async function onFileChange(e) {
+  const file = e.target.files?.[0]
+  if (!fileInputEl.value) return
+  fileInputEl.value.value = ''   // reset so same file can be re-imported
+  if (!file) return
+
+  uploading.value = true
+  importErrors.value = []
+  try {
+    // Step 1: upload file to Frappe's file manager
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('is_private', '1')
+    fd.append('cmd', 'uploadfile')
+    const upRes = await fetch('/api/method/uploadfile', {
+      method: 'POST',
+      headers: { 'X-Frappe-CSRF-Token': csrf() },
+      body: fd,
+    })
+    const upJson = await upRes.json()
+    const fileUrl = upJson.message?.file_url
+    if (!fileUrl) throw new Error('Upload failed — no file_url returned.')
+
+    // Step 2: call parse_dimension_file with the uploaded URL
+    const u = new URL('/api/method/awbix.shipment.doctype.shipment.shipment.parse_dimension_file', window.location.origin)
+    u.searchParams.set('file_url', fileUrl)
+    const parseRes = await fetch(u.toString(), { headers: { 'X-Frappe-CSRF-Token': csrf() } })
+    const parseJson = await parseRes.json()
+    if (parseJson.exc) throw new Error('Parse error — check file format.')
+    const { rows: newRows, errors } = parseJson.message || {}
+
+    // Merge: append parsed rows (auto line_number from current length)
+    const base = rows.value.length
+    ;(newRows || []).forEach((r, i) => {
+      rows.value.push({
+        line_number: base + i + 1,
+        pieces: r.pieces || 1,
+        length: r.length || null,
+        width:  r.width  || null,
+        height: r.height || null,
+        dim_unit: (r.dim_unit || 'cm').toUpperCase(),
+        remarks: '',
+      })
+    })
+    importErrors.value = errors || []
+    recalc()
+  } catch (err) {
+    importErrors.value = [{ row: '—', message: err.message || 'Import failed.' }]
+  } finally {
+    uploading.value = false
+  }
 }
 
 function apply() {

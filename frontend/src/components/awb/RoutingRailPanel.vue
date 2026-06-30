@@ -83,49 +83,28 @@
 
     <hr class="section-divider" />
 
-    <!-- ── Routing Segments ────────────────────────────────────────────── -->
+    <!-- ── Routing ───────────────────────────────────────────────────────── -->
     <section>
-      <div class="flex items-center justify-between mb-3">
+      <h3 class="section-title mb-3">Routing <span class="hint normal-case font-normal">(RTG)</span></h3>
+      <p class="text-xs mb-3" style="color:var(--color-text-subtle);">Up to 2 onward destinations from origin.</p>
+
+      <div class="grid grid-cols-2 gap-3">
         <div>
-          <h3 class="section-title mb-0">Routing Segments <span class="hint normal-case font-normal">(RTG)</span></h3>
-          <p class="text-xs mt-0.5" style="color:var(--color-text-subtle);">Origin → up to 2 onward destinations. First row = first destination.</p>
+          <label class="field-label">To Airport 1</label>
+          <LinkField :model-value="toAirport1" @update:model-value="$emit('update:toAirport1', $event)" doctype="Airport" placeholder="Airport…" />
         </div>
-        <button @click="addRoutingRow" type="button" class="add-btn">
-          <Icon name="plus" :size="13" /> Add Segment
-        </button>
-      </div>
-
-      <div v-if="!routing.length" class="empty-state">No routing segments defined.</div>
-
-      <div v-else class="overflow-x-auto rounded-xl border" style="border-color:var(--color-border);">
-        <table class="w-full text-sm">
-          <thead>
-            <tr style="background:var(--color-bg);">
-              <th class="th w-16">Seq #</th>
-              <th class="th">Airport</th>
-              <th class="th">Carrier</th>
-              <th class="th w-8"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, i) in routing" :key="i" class="border-t" style="border-color:var(--color-border);">
-              <td class="p-1.5">
-                <input v-model.number="row.sequence" type="number" min="1" v-bind="cell" class="text-center" />
-              </td>
-              <td class="p-1.5">
-                <LinkField v-model="row.airport" doctype="Airport" placeholder="Airport…" />
-              </td>
-              <td class="p-1.5">
-                <LinkField v-model="row.carrier" doctype="Airline" placeholder="Carrier…" />
-              </td>
-              <td class="p-1.5 text-center">
-                <button @click="routing.splice(i, 1); renumber()" type="button" style="color:#dc2626;">
-                  <Icon name="x" :size="13" />
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div>
+          <label class="field-label">By Carrier 1</label>
+          <LinkField :model-value="byCarrier1" @update:model-value="$emit('update:byCarrier1', $event)" doctype="Airline" placeholder="Airline…" />
+        </div>
+        <div>
+          <label class="field-label">To Airport 2</label>
+          <LinkField :model-value="toAirport2" @update:model-value="$emit('update:toAirport2', $event)" doctype="Airport" placeholder="Airport…" />
+        </div>
+        <div>
+          <label class="field-label">By Carrier 2</label>
+          <LinkField :model-value="byCarrier2" @update:model-value="$emit('update:byCarrier2', $event)" doctype="Airline" placeholder="Airline…" />
+        </div>
       </div>
     </section>
 
@@ -137,8 +116,13 @@ import LinkField from '@/components/ui/LinkField.vue'
 
 const props = defineProps({
   flightBookings: { type: Array, required: true },
-  routing:        { type: Array, required: true },
+  toAirport1:     { type: String, default: '' },
+  byCarrier1:     { type: String, default: '' },
+  toAirport2:     { type: String, default: '' },
+  byCarrier2:     { type: String, default: '' },
 })
+
+defineEmits(['update:toAirport1', 'update:byCarrier1', 'update:toAirport2', 'update:byCarrier2'])
 
 const MONTHS = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
 
@@ -157,20 +141,11 @@ const SPACE_CODE_LABELS = [
   { code: 'LL', label: 'Wait-listed' },
 ]
 
-const inp  = { class: 'w-full px-3 py-2 text-sm rounded-lg border outline-none transition', style: 'background:var(--color-bg);border-color:var(--color-border);color:var(--color-text-base);' }
-const sel  = { class: 'w-full px-3 py-2 text-sm rounded-lg border outline-none', style: 'background:var(--color-bg);border-color:var(--color-border);color:var(--color-text-base);' }
-const cell = { class: 'w-full px-2 py-1.5 text-sm rounded border outline-none', style: 'background:var(--color-bg);border-color:var(--color-border);color:var(--color-text-base);' }
+const inp = { class: 'w-full px-3 py-2 text-sm rounded-lg border outline-none transition', style: 'background:var(--color-bg);border-color:var(--color-border);color:var(--color-text-base);' }
+const sel = { class: 'w-full px-3 py-2 text-sm rounded-lg border outline-none', style: 'background:var(--color-bg);border-color:var(--color-border);color:var(--color-text-base);' }
 
 function addFlight() {
   props.flightBookings.push({ carrier: '', carrier_code: '', flight_number: '', flight_day: '', flight_month: '', departure_airport: '', arrival_airport: '', space_allocation_code: '', allotment_id: '' })
-}
-
-function addRoutingRow() {
-  props.routing.push({ sequence: props.routing.length + 1, airport: '', carrier: '', carrier_code: '' })
-}
-
-function renumber() {
-  props.routing.forEach((r, i) => { r.sequence = i + 1 })
 }
 </script>
 
@@ -181,5 +156,4 @@ function renumber() {
 .section-divider{ border:0; border-top:1px solid var(--color-border); }
 .empty-state    { font-size:.8rem; padding:.75rem; text-align:center; border-radius:.5rem; border:1px dashed var(--color-border); color:var(--color-text-muted); }
 .add-btn        { display:flex; align-items:center; gap:.375rem; font-size:.8rem; color:var(--color-primary); }
-.th             { padding:.4rem .5rem; text-align:left; font-size:.65rem; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--color-text-muted); white-space:nowrap; }
 </style>
