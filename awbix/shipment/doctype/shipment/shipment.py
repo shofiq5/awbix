@@ -30,12 +30,34 @@ class Shipment(Document):
 		self.apply_shipment_settings_defaults()
 
 	def validate(self):
+		self.uppercase_text_fields()
 		self.validate_awb_serial_number()
 		self.set_awb_number()
 		self.compute_dimensions()
 		self.populate_charge_summary()
 		if self.origin and self.destination and self.origin == self.destination:
 			frappe.throw("Origin and Destination cannot be the same airport.")
+
+	def uppercase_text_fields(self):
+		_fields = [
+			"airline_prefix",
+			"nature_of_goods", "commodity_item_no", "density_indicator",
+			"shipper_name", "shipper_account", "shipper_address", "shipper_place",
+			"shipper_state", "shipper_post_code",
+			"consignee_name", "consignee_account", "consignee_address", "consignee_place",
+			"consignee_state", "consignee_post_code",
+			"agent_name", "agent_account", "agent_place", "agent_iata_code",
+			"agent_cass_address", "agent_participant_id",
+			"shippers_certification_signature", "issue_place", "carrier_execution_signature",
+			"sender_file_reference", "sender_office_address",
+			"sender_participant_id", "sender_participant_code",
+			"customs_origin_code", "nominated_handling_name", "nominated_handling_place",
+			"no_commission_indicator", "sales_incentive_indicator", "agent_reference",
+		]
+		for f in _fields:
+			val = self.get(f)
+			if val:
+				self.set(f, val.upper())
 
 	def apply_shipment_settings_defaults(self):
 		settings = frappe.get_single("Shipment Settings")

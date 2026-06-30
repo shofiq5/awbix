@@ -23,8 +23,20 @@ const routes = [
       {
         path: 'awb',
         name: 'AWBList',
-        component: () => import('@/pages/Placeholder.vue'),
+        component: () => import('@/pages/AWBList.vue'),
         meta: { breadcrumb: ['Shipments', 'Air Waybills'], title: 'Air Waybills' },
+      },
+      {
+        path: 'awb/new',
+        name: 'AWBNew',
+        component: () => import('@/pages/AWBForm.vue'),
+        meta: { breadcrumb: ['Shipments', 'New AWB'], title: 'New Air Waybill' },
+      },
+      {
+        path: 'awb/:name',
+        name: 'AWBEdit',
+        component: () => import('@/pages/AWBForm.vue'),
+        meta: { breadcrumb: ['Shipments', 'Edit AWB'], title: 'Edit Air Waybill' },
       },
       {
         path: 'hawb',

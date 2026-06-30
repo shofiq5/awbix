@@ -177,7 +177,8 @@
    "in_list_view": 1,
    "label": "Airline Prefix",
    "length": 3,
-   "reqd": 1
+   "reqd": 1,
+   "uppercase": 1
   },
   {
    "fieldname": "awb_serial_number",
@@ -262,7 +263,8 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Density Indicator",
-   "length": 2
+   "length": 2,
+   "uppercase": 1
   },
   {
    "fieldname": "density_group",
@@ -358,7 +360,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Shipper",
-   "length": 35
+   "length": 35,
+   "uppercase": 1
   },
   {
    "fetch_from": "shipper.account_number",
@@ -366,7 +369,8 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Account Number",
-   "length": 14
+   "length": 14,
+   "uppercase": 1
   },
   {
    "fieldname": "cb_18",
@@ -377,21 +381,24 @@
    "fieldname": "shipper_address",
    "fieldtype": "Small Text",
    "label": "Street Address",
-   "max_height": "50px"
+   "max_height": "50px",
+   "uppercase": 1
   },
   {
    "fetch_from": "shipper.place",
    "fieldname": "shipper_place",
    "fieldtype": "Data",
    "label": "Place",
-   "length": 17
+   "length": 17,
+   "uppercase": 1
   },
   {
    "fetch_from": "shipper.state_province",
    "fieldname": "shipper_state",
    "fieldtype": "Data",
    "label": "State / Province",
-   "length": 9
+   "length": 9,
+   "uppercase": 1
   },
   {
    "fetch_from": "shipper.country",
@@ -405,7 +412,8 @@
    "fieldname": "shipper_post_code",
    "fieldtype": "Data",
    "label": "Post Code",
-   "length": 9
+   "length": 9,
+   "uppercase": 1
   },
   {
    "fieldname": "consignee",
@@ -419,7 +427,8 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Consignee",
-   "length": 35
+   "length": 35,
+   "uppercase": 1
   },
   {
    "fetch_from": "consignee.account_number",
@@ -427,28 +436,32 @@
    "fieldtype": "Data",
    "hidden": 1,
    "label": "Account Number",
-   "length": 14
+   "length": 14,
+   "uppercase": 1
   },
   {
    "fetch_from": "consignee.street_address",
    "fieldname": "consignee_address",
    "fieldtype": "Small Text",
    "label": "Street Address",
-   "max_height": "50px"
+   "max_height": "50px",
+   "uppercase": 1
   },
   {
    "fetch_from": "consignee.place",
    "fieldname": "consignee_place",
    "fieldtype": "Data",
    "label": "Place",
-   "length": 17
+   "length": 17,
+   "uppercase": 1
   },
   {
    "fetch_from": "consignee.state_province",
    "fieldname": "consignee_state",
    "fieldtype": "Data",
    "label": "State / Province",
-   "length": 9
+   "length": 9,
+   "uppercase": 1
   },
   {
    "fetch_from": "consignee.country",
@@ -462,7 +475,8 @@
    "fieldname": "consignee_post_code",
    "fieldtype": "Data",
    "label": "Post Code",
-   "length": 9
+   "length": 9,
+   "uppercase": 1
   },
   {
    "fieldname": "sb_21",
@@ -669,7 +683,8 @@
    "fieldname": "shippers_certification_signature",
    "fieldtype": "Data",
    "label": "Shipper's Certification Signature",
-   "length": 20
+   "length": 20,
+   "uppercase": 1
   },
   {
    "fieldname": "cb_32",
@@ -686,13 +701,15 @@
    "fieldname": "issue_place",
    "fieldtype": "Data",
    "label": "Issue Place",
-   "length": 17
+   "length": 17,
+   "uppercase": 1
   },
   {
    "fieldname": "carrier_execution_signature",
    "fieldtype": "Data",
    "label": "Carrier Execution Signature",
-   "length": 20
+   "length": 20,
+   "uppercase": 1
   },
   {
    "fieldname": "sb_33",
@@ -703,27 +720,31 @@
    "fieldname": "sender_file_reference",
    "fieldtype": "Data",
    "label": "Sender File Reference",
-   "length": 15
+   "length": 15,
+   "uppercase": 1
   },
   {
    "fieldname": "sender_office_address",
    "fieldtype": "Data",
    "label": "Sender Office Message Address",
-   "length": 8
+   "length": 8,
+   "uppercase": 1
   },
   {
    "fetch_from": "agent.participant_id",
    "fieldname": "sender_participant_id",
    "fieldtype": "Data",
    "label": "Sender Participant Identifier",
-   "length": 3
+   "length": 3,
+   "uppercase": 1
   },
   {
    "fetch_from": "agent.participant_code",
    "fieldname": "sender_participant_code",
    "fieldtype": "Data",
    "label": "Sender Participant Code",
-   "length": 17
+   "length": 17,
+   "uppercase": 1
   },
   {
    "fieldname": "cb_34",
@@ -733,19 +754,22 @@
    "fieldname": "customs_origin_code",
    "fieldtype": "Data",
    "label": "Customs Origin Code",
-   "length": 2
+   "length": 2,
+   "uppercase": 1
   },
   {
    "fieldname": "nominated_handling_name",
    "fieldtype": "Data",
    "label": "Nominated Handling Party",
-   "length": 35
+   "length": 35,
+   "uppercase": 1
   },
   {
    "fieldname": "nominated_handling_place",
    "fieldtype": "Data",
    "label": "Nominated Handling Place",
-   "length": 17
+   "length": 17,
+   "uppercase": 1
   },
   {
    "fieldname": "sb_35",
@@ -779,7 +803,8 @@
    "fieldname": "no_commission_indicator",
    "fieldtype": "Data",
    "label": "No Commission Indicator",
-   "length": 2
+   "length": 2,
+   "uppercase": 1
   },
   {
    "fieldname": "commission_amount",
@@ -804,13 +829,15 @@
    "fieldname": "sales_incentive_indicator",
    "fieldtype": "Data",
    "label": "Sales Incentive Indicator",
-   "length": 2
+   "length": 2,
+   "uppercase": 1
   },
   {
    "fieldname": "agent_reference",
    "fieldtype": "Data",
    "label": "Agent Reference",
-   "length": 15
+   "length": 15,
+   "uppercase": 1
   },
   {
    "collapsible": 1,
@@ -1001,13 +1028,15 @@
    "fieldname": "nature_of_goods",
    "fieldtype": "Data",
    "label": "Nature of Goods",
-   "length": 20
+   "length": 20,
+   "uppercase": 1
   },
   {
    "fieldname": "commodity_item_no",
    "fieldtype": "Data",
    "label": "Commodity Item No",
-   "length": 7
+   "length": 7,
+   "uppercase": 1
   },
   {
    "fieldname": "auto_rate_line",
@@ -1085,7 +1114,13 @@
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
+ "links": [
+  {
+   "group": "House Airway Bills",
+   "link_doctype": "House Airway Bill",
+   "link_fieldname": "master_shipment"
+  }
+ ],
  "modified": "2026-06-28 00:24:53.576831",
  "modified_by": "Administrator",
  "module": "Shipment",
