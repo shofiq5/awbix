@@ -56,7 +56,7 @@ class Shipment(Document):
 		]
 		for f in _fields:
 			val = self.get(f)
-			if val:
+			if val and isinstance(val, str):
 				self.set(f, val.upper())
 
 	def apply_shipment_settings_defaults(self):

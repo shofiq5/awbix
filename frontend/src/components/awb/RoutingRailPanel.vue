@@ -1,6 +1,33 @@
 <template>
   <div class="space-y-6">
 
+    <!-- ── Routing ───────────────────────────────────────────────────────── -->
+    <section>
+      <h3 class="section-title mb-3">Routing <span class="hint normal-case font-normal">(RTG)</span></h3>
+      <p class="text-xs mb-3" style="color:var(--color-text-subtle);">Up to 2 onward destinations from origin.</p>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="field-label">To Airport 1</label>
+          <LinkField :model-value="toAirport1" @update:model-value="$emit('update:toAirport1', $event)" doctype="Airport" placeholder="Airport…" />
+        </div>
+        <div>
+          <label class="field-label">By Carrier 1</label>
+          <LinkField :model-value="byCarrier1" @update:model-value="$emit('update:byCarrier1', $event)" doctype="Airline" placeholder="Airline…" />
+        </div>
+        <div>
+          <label class="field-label">To Airport 2</label>
+          <LinkField :model-value="toAirport2" @update:model-value="$emit('update:toAirport2', $event)" doctype="Airport" placeholder="Airport…" />
+        </div>
+        <div>
+          <label class="field-label">By Carrier 2</label>
+          <LinkField :model-value="byCarrier2" @update:model-value="$emit('update:byCarrier2', $event)" doctype="Airline" placeholder="Airline…" />
+        </div>
+      </div>
+    </section>
+
+    <hr class="section-divider" />
+
     <!-- ── Flight Bookings ─────────────────────────────────────────────── -->
     <section>
       <div class="flex items-center justify-between mb-3">
@@ -77,33 +104,6 @@
             <input v-model="row.allotment_id" type="text" maxlength="14" v-bind="inp" />
           </div>
 
-        </div>
-      </div>
-    </section>
-
-    <hr class="section-divider" />
-
-    <!-- ── Routing ───────────────────────────────────────────────────────── -->
-    <section>
-      <h3 class="section-title mb-3">Routing <span class="hint normal-case font-normal">(RTG)</span></h3>
-      <p class="text-xs mb-3" style="color:var(--color-text-subtle);">Up to 2 onward destinations from origin.</p>
-
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label class="field-label">To Airport 1</label>
-          <LinkField :model-value="toAirport1" @update:model-value="$emit('update:toAirport1', $event)" doctype="Airport" placeholder="Airport…" />
-        </div>
-        <div>
-          <label class="field-label">By Carrier 1</label>
-          <LinkField :model-value="byCarrier1" @update:model-value="$emit('update:byCarrier1', $event)" doctype="Airline" placeholder="Airline…" />
-        </div>
-        <div>
-          <label class="field-label">To Airport 2</label>
-          <LinkField :model-value="toAirport2" @update:model-value="$emit('update:toAirport2', $event)" doctype="Airport" placeholder="Airport…" />
-        </div>
-        <div>
-          <label class="field-label">By Carrier 2</label>
-          <LinkField :model-value="byCarrier2" @update:model-value="$emit('update:byCarrier2', $event)" doctype="Airline" placeholder="Airline…" />
         </div>
       </div>
     </section>
